@@ -1,0 +1,20 @@
+<% flash.each do |k, v| %>
+	<% if [:notice, :error].include? k %>
+		<div class="flash_<%= k %> flash"><%= v %></div>
+	<% end %>
+<% end%>
+
+<table >
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+  </tr>
+<% for fund_raiser in fund_raisers %>
+  <tr>
+    <td><%=h fund_raiser.name %></td>
+    <td><%=h fund_raiser.description %></td>
+    <td><%= link_to 'Edit', edit_fund_raiser_path(fund_raiser)  %></td>
+    <td><%= link_to_remote 'Destroy', :url=>fund_raiser_path(fund_raiser), :update=>'fund_raisers_div', :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>

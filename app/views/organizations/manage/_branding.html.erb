@@ -1,0 +1,61 @@
+<% if logged_in_user.has_role?('Administrator') %>
+	<%= managed_form_radio_row f,
+		:disable_background_color, 
+		"Background Color",
+		[[false, "Enable"], [true, "Disable"]] %>
+<% end %>
+
+<tr class="<%= @show_bg_disabled ? "disabled" : "" %>">
+	<th class="tall_label">
+		<%= f.label :background_color, "Background Color:"%>
+		<%= @show_bg_disabled ? "<br>(disabled)" : "" %>
+	</th>
+	<td>
+		<% if @show_bg_disabled %>
+			<img src="/images/fake_color_picker.png">
+		<% else %>	
+			<div id="color_value" style="display:none;background-color:#<%= @organization.background_color %>;"></div>
+			<div id="color_container" style="float:none;"></div>
+		<% end %>
+	</td>
+</tr>
+
+
+
+
+<% if @organization.branded_logo %>
+	<tr>
+		<th></th>
+		<td>
+			<img src="<%= @organization.branded_logo.public_filename %>">
+		</td>
+	</tr>
+<% end %>
+
+<% if logged_in_user.has_role?('Administrator') %>
+	<%= managed_form_radio_row f,
+		:disable_branded_logo, 
+		"Branded Logo",
+		[[false, "Enable"], [true, "Disable"]] %>
+<% end %>
+
+
+<% fields_for :photo do |photo| %>
+	<tr class="<%= @show_logo_disabled ? "disabled" : "" %>">
+		<th>
+			<%= photo.label :uploaded_data, "Branded Logo:"%>
+			<%= @show_logo_disabled ? "<br>(disabled)" : "" %>
+		</th>
+		<td>
+			<%= photo.file_field :uploaded_data, :disabled=>@show_logo_disabled %>
+			<br><br>
+		</td>
+	</tr>
+     <tr>
+      <th></th>
+      <td>
+        <i><span class="field-subtext">The space allotted for logos is 350 pixels by 65 pixels.</span></i>
+      </td>
+    </tr>
+<% end %>
+

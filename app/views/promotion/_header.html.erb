@@ -1,0 +1,60 @@
+<% content_for :head do %>
+<%= render :partial=>'layouts/text_editor' %>
+<% end %>
+
+<style>
+.yui-editor-container {
+	margin:0;
+}
+.generic_form .email_body {
+	margin:5px;
+	padding:15px;
+	background:#eee;
+}
+</style>
+
+<script>
+var toggle_to_contact_form = function(eid) {
+	var go_ahead = false;
+	var emails = [];
+	for(var i=0; i<contact_ids.size(); i++) {
+		var contact_input = $('contact_' + contact_ids[i]);
+		if (contact_input.checked) {
+			go_ahead = true;
+			var contact_email = $('email_'+contact_input.value).innerHTML;
+			emails.push(contact_email);
+		}
+	}
+	if (go_ahead){
+		$('contact_error').style.display = "none";
+		manage_appeals_toggle(eid);
+		
+		var html = [emails.join(", ")];
+		html.push("<a href='#' onclick='manage_appeals_toggle(\""+eid+"\"); return false'>Add Recipients</a>");
+		$(eid + '_recipients').innerHTML = html.join(" ");
+	} else {
+		$('contact_error').style.display = "block";
+	}
+}
+
+var manage_appeals_toggle = function(eid) {
+	$(eid + '_1').toggle();
+	$(eid + '_2').toggle();
+}
+</script>
+
+<%= cms("manage_contacts", %|
+<h1>Manage Your Appeals</h1>
+
+<p>Nudge your prospects, thank your contributors, communicate with everybody.</p>|) %>
+<%setup_yield%>
+
+<ul class="generic_link_list message_center_tabs">
+	<%= header_link_for("Prospects", "/promotion/manage_contacts?campaign_id=#{@campaign.id}&type=Prospects", @type) %>
+	<%= header_link_for("Contributors", "/promotion/manage_contacts?campaign_id=#{@campaign.id}&type=Contributors", @type) %>
+	<%= header_link_for("Thanked","/promotion/manage_contacts?campaign_id=#{@campaign.id}&type=Thanked",  @type) %>
+	<%= header_link_for("All", "/promotion/manage_contacts?campaign_id=#{@campaign.id}&type=All", @type, true) %>
+	<% if !@campaign.shared_contacts.empty? %>
+		<li class="right last <%= (@type == "Shared") ? "current" : "" %>"><a href="/promotion/shared?campaign_id=<%= @campaign.id %>">Supplied Contacts (<%= @campaign.active_shared_contacts.size %>)</a></li>
+	<% end %>
+</ul>

@@ -1,0 +1,110 @@
+<ul class="generic_link_list message_actions_list">
+	<li>Actions:</li>
+	<li><a href="#" onclick="mark('all');return false">Select All</a></li>
+	<li><a href="#" onclick="mark('none');return false">Select None</a></li>
+</ul>
+<form action="/organizations/send_contacts/<%= @organization.id %>" method="POST">
+	<input type="hidden" name="sheet_id" value="<%= params[:sheet_id] %>" />
+<table class="generic_selectable_list all_users_list">
+	<tr>
+		<td class="select_column">&nbsp;</td>
+		<td class="name_column">Email</td>
+		<td>Name</td>
+		<td>Assigned To</td>
+		<td>Accepted?</td>
+	</tr>
+	<% @sheet.shared_contacts.each do |c| %>
+	<tr id="row_<%= c.id %>">
+		<td class="select_column">
+			<% if !c.accepted? %>
+			<input type="checkbox" name="contacts[]" value="<%= c.id %>" id="contact_<%= c.id %>" onclick="select_row(<%= c.id %>)" />
+			<% end %>
+		</td>
+		<td class="name_column">
+			<label for="contact_<%= c.id %>"><%= c.email %></label>
+		</td>
+		<td>
+			<label for="contact_<%= c.id %>"><%= c.name %></label>
+		</td>
+		<td><%= (c.campaign) ? c.campaign.name : "Unassigned" %></td>
+		<td><%= (c.accepted?) ? "Yes" : "No" %></td>
+	</tr>
+	<% end %>
+</table>
+
+<div class="send_to">
+	<h2>Send To Campaign Owner..</h2>
+	<strong id="num_contacts">0 contacts</strong><br /><br />
+	Campaign: 
+	
+	<select name="campaign">
+		<% @organization.campaigns.active.each do |c| %>
+		<option value="<%= c.id %>"><%= c.name %></option>
+		<% end %>
+	</select>
+	<br /><br />
+	<input type="submit" value="Send" onclick="return cancel_if_empty();">
+	or <a href="/organizations/contacts/<%= @organization.id %>">cancel</a>
+</div>
+</form>
+
+<script>
+var select_row = function(uid) {
+	if ($("row_" + uid).className == "selected") {
+		$("row_" + uid).className = "";
+		$("contact_" + uid).checked = false;
+		update_selected(num_selected - 1);
+	} else {
+		$("row_" + uid).className = "selected";
+		$("contact_" + uid).checked = true;
+		update_selected(num_selected + 1);
+	}
+}
+
+var user_ids = <%= @sheet.shared_contacts.map(&:id).to_json %>;
+var num_selected = 0;
+
+var update_selected = function(num) {
+	num_selected = num;
+	$('num_contacts').innerHTML = (num + " contacts");
+}
+
+var mark = function(which) {
+	for(var i=0; i<user_ids.size(); i++) {
+		if (which == "none") {
+			$("row_" + user_ids[i]).className = "";
+			$("contact_" + user_ids[i]).checked = false;
+			update_selected(0);
+		} else {
+			$("row_" + user_ids[i]).className = "selected";
+			$("contact_" + user_ids[i]).checked = true;
+			update_selected(user_ids.size());
+		}
+	}
+}
+
+var cancel_if_empty = function() {
+	if (num_selected == 0) return false
+	return true
+}
+
+</script>
+
+<style>
+.send_to {
+	width:250px;
+	height:300px;
+	float:right;
+	margin:11px 20px 0 0;
+}
+
+.send_to h2 {
+	margin-bottom:6px;
+}
+
+table {
+	float:left;
+	width:550px !important;
+}
+
+</style>

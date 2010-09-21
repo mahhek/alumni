@@ -1,0 +1,221 @@
+<p> * = Required field </p>
+
+<%= error_messages_for('organization', 'organization_address','paypal_credential' ,:object_name=>'School Info')%>
+
+<table class="generic_form edit_org_form">
+	<tr>
+		<th><%= f.label :school_id, "School:"%></th>
+		<td><%= f.select :school_id, [["",""]] + School.find(:all).collect {|item| [item.name,item.id]} %></td>
+	</tr>
+	
+	<tr>
+		<th><%= f.label :name, "501(c) Organization Name:" %></th>
+		<td><%= f.text_field :name %></td>
+	</tr>
+	
+	<%= form_section_header "Address" %>
+	
+	<tr>
+		<th><%= label :organization_address, :street, "Street:" %></th>
+		<td><%= text_field :organization_address, :street %> *</td>
+	</tr>
+	
+	<tr>
+		<th><%= label :organization_address, :city, "City:" %></th>
+		<td><%= text_field :organization_address, :city %> *</td>
+	</tr>
+	
+	<tr>
+		<th><%= label :organization_address, :state, "State:" %></th>
+		<td><%= select :organization_address, :state, State.find(:all).collect {|item| [item.name[0..22],item.id]}%> *</td>
+	</tr>
+	
+	<tr>
+		<th><%= label :organization_address, :zip, "Zip:" %></th>
+		<td><%= text_field :organization_address, :zip %> *</td>
+	</tr>
+	
+	<%= form_section_header "General" %>
+	
+	<tr>
+		<th><%= f.label :tax_status, "Tax Status:" %></th>
+		<td><%= f.text_field :tax_status %></td>
+	</tr>
+	
+	<tr>
+		<th class="tall_label">
+			<%= f.label :description, "Message to Fundraisers:" %>
+			<br>
+			<span class="field-subtext">Your organization page will serve as springboard for supporters to create their own personal fundraising pages.  Write text for your organization page to inspire your supporters to create fundraising pages!</span>
+		</th>
+		<td><%= f.text_area :description, :rows=>"10" %></td>
+	</tr>
+	
+	<tr>
+		<th class="tall_label">
+			<%= f.label :campaign_pitch, "Pitch:" %>
+			<br>
+			<span class="field-subtext">Suggest text that your fundraisers may want to use on their personal fundraising pages to generate support for your organization.</span>
+		</th>
+		<td><%= f.text_area :campaign_pitch, :rows=>"10" %></td>
+	</tr>
+	
+	<tr>
+		<th class="tall_label"><%= f.label :thank_you_email, "Donation Thank You Email" %></th>
+		<td><%= f.text_area :thank_you_email%></td>
+	</tr>
+	
+	<%= form_section_header %|Paypal Payment Processing <a href="#" onclick="enable_paypal();return false">(edit)</a>| %>
+	
+	<tr>
+		<th><%= label :paypal_credential, :un_user, "Username:" %></th>
+		<td><%= text_field :paypal_credential, :un_user, :disabled=>true %></td>
+	</tr>
+	
+	<tr>
+		<th><%= label :paypal_credential, :un_password, "Password:" %></th>
+		<td><%= text_field :paypal_credential, :un_password, :disabled=>true %></td>
+	</tr>
+	
+	<tr>
+		<th><%= label :paypal_credential, :un_signature, "Signature:" %></th>
+		<td><%= text_field :paypal_credential, :un_signature, :disabled=>true %></td>
+	</tr>
+	
+	<tr>
+		<th><%= label :paypal_credential, :un_server, "Server:" %></th>
+		<td><%= text_field :paypal_credential, :un_server, :disabled=>true %></td>
+	</tr>
+	
+	<tr>
+		<th><%= label :paypal_credential, :un_service, "Service:" %></th>
+		<td><%= text_field :paypal_credential, :un_service, :disabled=>true %></td>
+	</tr>
+	
+	<%= form_section_header "Settings" %>
+	
+	<% form_row_raw_block do %>
+		<%= f.check_box :show_raised_amount %>
+		Publicly show the amount raised across all fundraising pages
+	<% end %>
+	
+	<% form_row_raw_block do %>
+		<%= f.check_box :show_donor_amount %>
+		Publicly show the number of donors across all fundraising pages
+	<% end %>
+	
+	<tr>
+		<th></th>
+		<td>
+			<%= f.check_box :blind_copy_on_donation_receipt %>
+			Receive bcc copies of all donation receipts
+		</td>
+	</tr>
+	
+	<tr>
+		<th><%= f.label :blind_copy_email, "Bcc Email Address:" %></th>
+		<td><%= f.text_field :blind_copy_email %></td>
+	</tr>
+	
+	<%= form_section_header "Customized Branding" %>
+	
+	<tr class="<%= @show_bg_disabled ? "disabled" : "" %>">
+		<th class="tall_label">
+			<%= f.label :background_color, "Background Color:"%>
+			<%= @show_bg_disabled ? "<br>(disabled)" : "" %>
+		</th>
+		<td>
+			<% if @show_bg_disabled %>
+				<img src="/images/fake_color_picker.png">
+			<% else %>	
+				<div id="color_value" style="display:none;background-color:#<%= @organization.background_color %>;"></div>
+				<div id="color_container" style="float:none;"></div>
+			<% end %>
+		</td>
+	</tr>
+	
+	<% if logged_in_user.has_role?('Administrator') %>
+		<tr>
+			<th></th>
+			<td>
+				<%= f.check_box :disable_background_color %>
+				Disable Background Color Customization
+			</td>
+		</tr>
+	<% end %>
+
+	
+	<% if @organization.branded_logo %>
+		<tr>
+			<th></th>
+			<td>
+				<img src="<%= @organization.branded_logo.public_filename %>">
+			</td>
+		</tr>
+	<% end %>
+	
+	<% fields_for :photo do |photo| %>
+		<tr class="<%= @show_logo_disabled ? "disabled" : "" %>">
+			<th>
+				<%= photo.label :uploaded_data, "Branded Logo:"%>
+				<%= @show_logo_disabled ? "<br>(disabled)" : "" %>
+			</th>
+			<td>
+				<%= photo.file_field :uploaded_data, :disabled=>@show_logo_disabled %>
+				<br><br>
+			</td>
+		</tr>
+	<% end %>
+	
+	<% if logged_in_user.has_role?('Administrator') %>
+		<tr>
+			<th></th>
+			<td>
+				<%= f.check_box :disable_branded_logo %>
+				Disable Branded Logo Customization
+			</td>
+		</tr>
+	<% end %>
+	
+	<tr>
+		<th></th>
+		<td><%= f.submit "Save Organization Information" %></td>
+	</tr>
+	
+</table>
+
+<div style="clear:both;"></div>
+
+<script>
+	render_editor();
+	var enable_paypal = function() {
+		$('paypal_credential_un_user').disabled = false;
+		$('paypal_credential_un_password').disabled = false;
+		$('paypal_credential_un_signature').disabled = false;
+		$('paypal_credential_un_server').disabled = false;
+		$('paypal_credential_un_service').disabled = false;
+	};
+</script>
+
+<% if !@show_bg_disabled %>
+<!-- Dependencies -->  
+<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/utilities/utilities.js" ></script> 
+<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/slider/slider-min.js" ></script> 
+
+<!-- Color Picker source files for CSS and JavaScript --> 
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.6.0/build/colorpicker/assets/skins/sam/colorpicker.css"> 
+<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/colorpicker/colorpicker-min.js" ></script>
+
+<script>
+	var picker = new YAHOO.widget.ColorPicker("color_container", {
+	    showcontrols: false, 
+		images: { 
+			PICKER_THUMB: "http://yui.yahooapis.com/2.6.0/build/colorpicker/assets/picker_thumb.png", 
+			HUE_THUMB: "http://yui.yahooapis.com/2.6.0/build/colorpicker/assets/hue_thumb.png" 
+		}
+	});
+	
+	picker.setValue($('color_value').style.backgroundColor.slice(4,-1).split(", "));
+	
+</script>
+<% end %>

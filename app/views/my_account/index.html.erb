@@ -1,0 +1,98 @@
+<div id="my_account">
+		
+	<div id="header" class="bgstyle7">
+		<div class="top_left"><div class="top_right"></div></div>
+		<div class="content">
+			<h1>Your Account &amp; Profile</h1>
+		</div>
+		<div class="bottom_left"><div class="bottom_right"></div></div>
+	</div>
+
+	<div id="left">
+
+		<div id="profile_pic" class="bgstyle7">
+			<div class="top_left"><div class="top_right"></div></div>
+			<div class="content">
+			<h2>My Profile Picture</h2>
+			<div>
+				<%= link_to load_small(@user), user_path(@user) %> 
+				<%= link_to "Update photo", :action => "photo"  %>
+			</div>
+			</div>
+			<div class="bottom_left"><div class="bottom_right"></div></div>
+		</div>
+	
+		<div id="profile" class="bgstyle7">
+			
+			<div class="content">
+			<h2>My Profile</h2>
+			<ul class="blank">
+				<li>
+					<%= link_to "Update My Profile", :action => 'profile' %> <br />
+					Answer questions about yourself and your organizations.
+				</li>
+				<li>
+					<%= link_to "View My Profile", user_path(@user) %> <br />
+					Your profile allows others to learn more about you
+				</li>
+			</ul>
+			</div>
+			<div class="bottom_left"><div class="bottom_right"></div></div>
+		</div>
+
+	</div>
+	<div id="right">
+
+		<div id="login_settings" class="bgstyle7">
+			<div class="top_left"><div class="top_right"></div></div>
+			<div class="content">
+			<h2>Login Settings</h2>
+			<ul class="blank">
+				<li>
+					<%= link_to "Change Password", :action => "password" %> <br />
+					Change your password and login settings
+				</li>
+			</ul>
+			</div>
+			<div class="bottom_left"><div class="bottom_right"></div></div>
+		</div>
+
+		<div id="account" class="bgstyle7">
+			<div class="top_left"><div class="top_right"></div></div>
+			<div class="content">
+			<h2>Account Info</h2>
+			<ul class="blank">
+				<li>
+					<%= link_to "Update Personal Info", :action => "details" %> <br />
+					Update your name, email, and other personal information
+				</li>
+			</ul>
+			</div>
+			<div class="bottom_left"><div class="bottom_right"></div></div>
+		</div>
+
+		<!--<div id="faves" class="bgstyle7">
+			<div class="top_left"><div class="top_right"></div></div>
+			<div class="content">
+			<h2>My Stuff</h2>
+			<ul class="links">
+				<li>
+					<%= link_to "Manage My Places", :controller => 'my_stuff', :action => 'places' %> <br />
+					Your favorite places, with convenient links to specials and more
+				</li>
+				<li>
+					<%= link_to "Manage My Reviews", :controller => 'my_stuff', :action => 'saved_reviews'%> <br>
+					Reviews you've saved, and written
+				</li>
+				<li>
+					<%= link_to "See My Saved Specials", :controller => 'my_stuff', :action => 'saved_specials'%> <br>
+					Easy access to all the cool specials you've found on the site
+				</li>
+			</ul>
+			</div>
+			<div class="bottom_left"><div class="bottom_right"></div></div>
+		</div>-->
+		
+	</div>
+
+</div>

@@ -1,0 +1,130 @@
+<%setup_yield%>
+<script>
+
+var photo_block_ids = <%= @campaign.photos.map(&:id).to_json %>;
+
+var select_photo = function(elm) {
+	for(var i=0; i< photo_block_ids.length; i++) {
+		var photo_elm = $("photo_block_" + photo_block_ids[i]);
+		var big_photo_elm = $("big_photo_block_" + photo_block_ids[i]);
+		
+		if (photo_elm.className == "photo_block selected") {
+			photo_elm.className = "photo_block";
+			big_photo_elm.style.display = "none";
+		} else if (photo_elm == elm){
+			elm.className = "photo_block selected";
+			big_photo_elm.style.display = "block";
+		}
+	}
+}
+
+var set_as_main = function(pid) {
+	$("main_photo").value = pid;
+	$("main_photo_form").submit();
+}
+
+</script>
+
+<style>
+h3 {
+	border-bottom:1px solid #ccc;
+}
+</style>
+
+
+
+
+<div id="form_photo_upload">
+	
+<% if @campaign.photos.length >0 %>	
+	<div id="photo_panel">
+		<div id="photo_lists">
+			<h3>Main Photo</h3>
+
+			<div style="margin-bottom:12px">
+	
+				<% if default_photo(@campaign) %>
+					<div class="photo_block selected" onclick="select_photo(this);" id="photo_block_<%= default_photo(@campaign).id %>">
+						<img src="<%= default_photo(@campaign).public_filename('small')%>"/>
+					</div>
+				<%end%>
+	
+				<div style="clear: both"></div>
+
+			</div>
+
+			<h3>Gallery Photos</h3>
+			<div>
+
+				<% @campaign.photos.each do |photo| %>
+					<% if !photo.main_image %>
+					<div class="photo_block" onclick="select_photo(this);" id="photo_block_<%= photo.id %>">
+						<img src="<%=photo.public_filename('small')%>"/>
+					</div>
+					<% end %>
+				<% end %>
+	
+				<div style="clear: both"></div>
+
+			</div>
+		</div>
+
+		<div id="photo_action">
+			<h3>Photo</h3>
+			<% @campaign.photos.each do |photo| %>
+			<div class="big_photo_block" id="big_photo_block_<%= photo.id %>" style="display:<%= (photo.main_image) ? "block" : "none" %>;">
+				<img src="<%= photo.public_filename('reg')%>"/>
+				<div id="big_photo_block_commands_<%= photo.id %>" class="big_photo_block_commands">
+					<%= (photo.main_image) ? "<strong>Main Photo</strong>" : "<a href='#' onclick='set_as_main(#{photo.id});return false;'>Set As Main Image</a>" %> |
+					<%= link_to "Remove", campaign_photo_url(photo), :method => :delete, :confirm => "Are you sure you want to remove your picture? The picture will be permanently deleted." %>
+				</div>
+				<% form_for photo, :url => {:action => :edit_caption}, :html=>{:method=>:post} do |f| %>
+				<%= hidden_field_tag "campaign_id", @campaign.id %>
+				<%= f.hidden_field :id %>
+				<%= f.text_area :caption, :value=>photo.caption %>
+				<input type="submit" value="Save Caption"><br>
+				
+				<span style="font-size:10px">Limit 150 Characters.<br>
+				<% if photo.main_image %><br>Captions will not appear on the Fundraising Page for images set as Main Image.<% end %></span>
+				
+				<% end %>
+			</div>
+			<% end %>
+		</div>
+		<div style="clear: both"></div>
+	</div>
+
+
+
+
+	<% form_for :photo, :url => {:action => :select_main}, :html=>{:id=>"main_photo_form"} do |f| %>
+	<%= hidden_field_tag "campaign_id", @campaign.id %>
+	<%= hidden_field_tag "main_photo" %>
+	<%end%>
+
+
+<%= cms("campaign_upload_image", %|
+<p>Click on the picture you want to be the main fundraising page image, then
+click on <b>Set as Main Image</b>; all
+other pictures will appear in the Photo/Video gallery beneath the
+Donate button.</p>|) %>
+
+<%end%>
+
+
+<% form_for(:photo, :url => {:action => :create_camp_photo}, :html => {:multipart => true, :method => :post, :class => "standard" } ) do |f| %>
+<h2>Upload a new image</h2>
+<%= error_messages_for :photo %>
+<%= f.file_field 'uploaded_data' %>
+<%= hidden_field_tag "id", @photo.id unless !@photo %>
+<%= hidden_field_tag "campaign_id", @campaign.id unless !@campaign %>
+<p>Photos larger than 1.5 MB may take longer to upload.</p>
+<%= submit_tag 'upload file' %>
+<%end%>
+
+
+
+<br>
+<%= link_to "Back to fundraising page", "/" + @campaign.url + ".html" %>
+
+</div>

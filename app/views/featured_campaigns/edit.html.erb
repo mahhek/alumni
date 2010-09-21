@@ -1,0 +1,19 @@
+<h1>Editing featured_campaign</h1>
+
+<% form_for :featured_campaign,@featured_campaign, :url=>{:action=>'update',:controller=>'featured_campaigns/',:id=>@featured_campaign.id},:html=>{ :method=>:put } do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :campaign_id %><br />
+    <%= @featured_campaign.campaign.name %>
+  </p>
+  <p>
+    <%= f.label :expiration %><br />
+    <%= f.datetime_select :expiration %>
+  </p>
+  <p>
+    <%= f.submit "Update" %> or <%= link_to 'cancel', featured_campaigns_path %>
+  </p>
+<% end %>
+
+

@@ -1,0 +1,48 @@
+= stylesheet_link_tag 'organization_registration'
+
+#organization_registration
+  %h1 Organization Information
+  - form_for @org_reg, :url => "/register/create" do |f|
+    = f.error_messages :class=>"flash flash_notice"
+    %table.generic_form.edit_org_form
+      %tr
+        %th
+        %td
+      = form_section_header "Primary Contact Information"
+      = form_text_row f, :contact_name, "Name", true
+      = form_text_row f, :contact_phone, "Phone", true
+      = form_text_row f, :contact_email, "Email", true
+      
+      = form_section_header "Organization Information"
+      = form_text_row f, :name, "Organization Name", true
+      = form_text_row f, :address, "Street Address", true
+      = form_text_row f, :city, "City", true
+      = form_select_row f, :state, "State", State.find(:all).map(&:name).map(&:titlecase), true
+      = form_text_row f, :zip, "Zip", true
+      = form_text_row f, :year_established, "Year Established", true
+      = form_text_row f, :federal_ein, "Federal Employee ID Number", true
+      
+      = form_section_header "Bank Information"
+      = form_text_row f, :bank_name, "Bank Name", true
+      = form_select_row f, :bank_type, "Account Type", ["Checking", "Savings"], true
+      - form_row_block f, :bank_routing_no, "Routing Number" do
+        %img{ :src=>'/images/routing_number_symbol.gif', :style=>"margin:0 0 -8px -16px;" }
+        = f.text_field :bank_routing_no
+        %img{ :src=>'/images/routing_number_symbol.gif', :style=>"margin:0 0 -8px -5px;" }
+        *
+      - form_row_block f, :bank_acct_no, "Account Number" do
+        = f.text_field :bank_acct_no
+        %img{ :src=>'/images/account_number_symbol.gif', :style=>"margin:0 0 -8px -3px;" }
+        *
+      = form_section_header ""
+  %p
+    By hitting continue, I indicate that I have read and agree to AlumniFidelity's
+
+    = link_to "Terms of Service", "/home/terms", :popup => true, :class => 'show-as-link'
+    and
+    = link_to "Services Agreement", "/home/services", :popup => true, :class => 'show-as-link'
+
+    
+  .continue
+    %a{ :onclick=>"$('new_organization_registration').submit(); return false;", :href=>"#" } Continue &#187;
+  = render :partial=>'register/help'

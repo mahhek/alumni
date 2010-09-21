@@ -1,0 +1,27 @@
+<%= cms("contact_signup_as_org", %|
+<h1>Register as a School/Organization</h1>
+<h2>Complete the fields below and an AlumniFidelity representative will contact soon you about registering your organization.</h2>|) %>
+<% form_for @contact_alert, :url => "/home/add_to_contact_alerts", :html=>{:class=>"standard"} do |f| %>
+	<div> * = Required field </div>
+	<%= error_messages_for :contact_alert %>
+
+	<%= f.hidden_field :as_org %>
+	<input type="hidden" name="go_to" value="organization_thank_you" />
+
+	<strong>School:</strong>
+	<%= f.select :school_id, School.find(:all).collect {|item| [item.name, item.id]}, :include_blank=> true%>
+	<br/>
+   <br/>
+	
+	<div>
+		<label>-or- School/501(c) Organization Name:</label>
+		<%= f.text_field :school_name %>
+	</div>	
+	<div>Your individual contact information</div>
+	<div class="field"><label>First Name</label><%= f.text_field :first_name%> * </div>
+	<div class="field"><label>Last Name</label><%= f.text_field :last_name%> * </div>
+	<div class="field"><label>Email Address:</label><%= f.text_field :email%> * </div>
+    <div class="field"><label>Phone Number:</label><%= f.text_field :phone%> </div>
+	<div class="field"><input type="submit" value="Submit" /></div>
+	
+<% end %>

@@ -1,0 +1,5 @@
+<p><%= @friend.short_name%> requsted to be a member of <%= @campaign_name %>.</p>
+<%= "<p>#{@friend.first_name} said,\" #{@message}\"</p>"  if @message %>
+<p>To confirm or ignore this membership request, visit the following link:
+<a href="<%= @link %>" target="_blank"><%= @link %></a>
+</p>

@@ -1,0 +1,10 @@
+<div class="campaign-profile-donation-tracker">
+	<div class="tracker_data">
+		<div style="float:left;"><%= start %></div>
+		<div style="float:right;"><%= goal %></div>
+		<div style="clear:both;"></div>
+	</div>
+	<div class="tracker_bar" style="overflow:hidden;">
+		<div class="tracker_bar_fill" style="background:url(/images/tracker_fill_<%= color %>.png); width:<%= (progress.to_f * 100) %>%;height:100%"></div>
+	</div>
+</div>

@@ -1,0 +1,34 @@
+<h1>Listing schools</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Street 1</th>
+    <th>Street 2</th>
+    <th>City</th>
+    <th>State</th>
+    <th>Zip</th>
+    <th>Longitude</th>
+    <th>Lattitude</th>
+  </tr>
+
+<% for school in @schools %>
+  <tr>
+    <td><%=h school.name %></td>
+    <td><%=h school.street_1 %></td>
+    <td><%=h school.street_2 %></td>
+    <td><%=h school.city %></td>
+    <td><%=h school.state %></td>
+    <td><%=h school.zip %></td>
+    <td><%=h school.longitude %></td>
+    <td><%=h school.lattitude %></td>
+    <td><%= link_to 'Show', school %></td>
+    <td><%= link_to 'Edit', edit_school_path(school) %></td>
+    <td><%= link_to 'Destroy', school, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New school', new_school_path %>

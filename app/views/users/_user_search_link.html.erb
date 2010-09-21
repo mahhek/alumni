@@ -1,0 +1,4 @@
+<% users.each do |auser|%>
+	<a onclick="<%=remote_function(:update => "",
+				:url => { :action => :insert_user_icon, :controller=>:users }, :with=>"'user_id=' + #{auser.id}")%>" onmouseover="this.className='search_hover';" onmouseout="this.className='search_no_hover';" class="search_no_hover" ><%=auser.first_name%> <%=auser.last_name%><img src="/imges/lightbox/blank.gif" /></a>
+<% end %>

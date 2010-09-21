@@ -1,0 +1,39 @@
+<input id="big-search-field" 
+	class="internal-prompt" 
+	name="school_name" 
+	autocomplete="off"
+	type="text" 
+	size="30"
+	value="<%= @selected_org ? @selected_org.name : "Type Your School/Organization Name" %>"
+	
+	onblur="setTimeout(function(){school_results.hide()}, 250);"
+	onfocus="school_results.focus(this);"
+	onkeyup="school_results.fetch(this);" > *
+<br/>
+<div id="search_results_div" style="display:none;"  ></div>
+<div style="display: none;" class="error" id="unregisteredOrgMessage">
+	<p>The organization you have selected has not yet registered with AlumniFidelity.  If you are an organization 
+		administrator, <a id='unregisteredOrgLink' href="#">register your organization</a>.  If you are a member or supporter 
+		of the organization, <a id='unregisteredOrgUserLink' href="#">sign up</a> to be notified as soon as the organization 
+		joins and you may start fundraising.
+	</p>
+</div>
+<br><span class="field-subtext">
+or <%= link_to 'Register a new organization with AlumniFidelity', 
+	:controller => "home", 
+	:action => "contact_signup", 
+	:as_org=>1, 
+	:school_name=>"" %></span>
+
+<%= f.hidden_field :organization_id, :onchange => remote_function(	
+	:url => { :action => :campaign_fund_view, :controller=>:fund_raisers },	
+	:with=>"'organization_id=' + this.value"
+	) %>
+
+<%= f.hidden_field :status, :value=>Campaign::ACTIVE %>
+
+<script>
+	<%= render :partial=>"layouts/school_autocomplete.js.erb" %>
+	school_results.default_value = "Type Your School/Organization Name";
+	school_results.search_path = "/organizations/search";
+</script>

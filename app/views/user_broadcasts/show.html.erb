@@ -1,0 +1,23 @@
+<p>
+  <b>User:</b>
+  <%=h @user_broadcast.user_id %>
+</p>
+
+<p>
+  <b>Broadcast:</b>
+  <%=h @user_broadcast.broadcast_id %>
+</p>
+
+<p>
+  <b>Campaign:</b>
+  <%=h @user_broadcast.campaign_id %>
+</p>
+
+<p>
+  <b>Setting:</b>
+  <%=h @user_broadcast.setting %>
+</p>
+
+
+<%= link_to 'Edit', edit_user_broadcast_path(@user_broadcast) %> |
+<%= link_to 'Back', user_broadcasts_path %>

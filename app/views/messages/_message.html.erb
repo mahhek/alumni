@@ -1,0 +1,18 @@
+<% first_message = message.get_first_message %>
+<tr class="<%= (!read) ? "important" : "" %>">
+	
+	<td class="select_column">
+		<input type="checkbox" name="ids[]" value="<%= message.id %>" id="message_<%= message.id %>">
+	</td>
+	
+	<td class="name_column">
+		<%= respond_link message %><br>
+		<span class="secondary_data"><%= longer_date(message.created_at) %></span>
+	</td>
+	
+	<td class="content_column">
+		<%=link_to " #{'Re: ' if first_message.id != message.id}  #{message.get_first_message.subject}",message %><br>
+		<span class="secondary_data"><a href="/messages/<%= message.id %>"><%= message.text_summary(75) %>...</a></span>
+	</td>
+	
+</tr>

@@ -1,0 +1,27 @@
+<% if campaign.status == Campaign::ACTIVE %>
+	<% if logged_in_user && campaign.creator.id == logged_in_user.id %>
+	<li id='ns02'><span>Edit</span>
+		<ul>
+			<li><a href='/campaigns/edit/<%= campaign.id %>'>Edit</a></li>
+			<li><a href='/campaigns/upload_image?campaign_id=<%= campaign.id %>'>Photos</a></li>
+			<li><a href='/campaigns/upload_video?campaign_id=<%= campaign.id %>' >Videos </a></li>
+			<li class='last'> <a href='/campaigns/advanced?campaign_id=<%= campaign.id %>'>Advanced Settings </a></li>
+		</ul>
+	</li>
+	<% end %>
+
+	<% if logged_in_user && campaign.is_member?(logged_in_user) %>
+	<li  id='ns09'><span>Promote</span>
+		<ul>
+			<li><a href='/promotion/new?campaign_id=<%= campaign.id %>'>New Appeal</a></li>
+			<li><a href='/campaigns/campaign_stickers?campaign_id=<%= campaign.id %>'>e-Bumper Stickers </a></li>
+			<li class='last'><a href='/promotion/manage_contacts?campaign_id=<%= campaign.id %>'>Manage Appeals</a></li>
+		</ul>
+	</li>
+	<% end %>
+
+	<% if logged_in_user && campaign.creator.id == logged_in_user.id %>
+		<li><%= link_to 'Contributors', :controller => "campaigns", :action => "contributors", :id => campaign.id %></li>
+	<% end %>
+
+<% end %>

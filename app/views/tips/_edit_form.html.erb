@@ -1,0 +1,12 @@
+<style>.yui-editor-container { margin:0; }</style>
+
+<% form_for(tip) do |f| %>
+	<%= f.error_messages %>
+	<table class="generic_form">
+		<tr>
+			<th class="tall_label"><%= f.label :text %></th>
+			<td><%= f.text_area :text %></td>
+		</tr>
+	</table>
+	<%= f.submit submit_name %>
+<% end %>

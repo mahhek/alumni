@@ -1,0 +1,9 @@
+<p><%= @blast_message %></p>
+<p>Current Activity</p>
+<% @payments.each do |payment| %>
+<li><%= number_to_currency(payment.amount) %></li>
+<%end%>
+<% if @payments.empty? %>No donations today.<% end %>
+<p>Current Amount Collected: <%= number_to_currency(@campaign. currentAmount) %></p>
+<p>Current Percent of Goal: <%= (@campaign.currentPercent.to_f * 100).to_i %>%</p>
+<%= render :partial => "opt_out" %>

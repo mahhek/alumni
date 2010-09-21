@@ -1,0 +1,51 @@
+<%= render :partial => "home/sign_in" if !is_logged_in? %>
+
+<div id="homepage_explanation">	
+	<%= cms("homepage_explanation", %|
+	<h3>Use AlumniFidelity to:</h3>
+	<ul>
+		<li><a href="/campaigns/new">Start a Fundraising Page</a> to Support Your School/Organization</li>
+		<li><a href="/register/organization">Sign up a Local Community Organization</a> that Needs Help Raising Money Online</li>
+		<li><a href="/organizations">Donate Money</a> to Your School/Organization</li>
+	</ul>|) %>
+</div>
+
+<div id="signup_links">
+	<%= link_to("", {:controller=>'users', :action=>'new_org_user',:destination=>'new_campaign'}, {:id=>"individual_join"}) if !is_logged_in? %>
+	
+	<%= link_to "", "/register/organization", {:id=>"organization_join"} %>
+</div>
+
+
+<% if Admin.get("homepage_statistics").on? %>
+<div id="homepage_statistics">
+		<h3>Site Statistics</h3>
+
+		<div class="module-three bdrb-sld">
+			<span class="stats-number"><%= @donor_count %></span>
+			<span class="stats-category">active donors</span>
+		</div>
+
+		<div class="module-three bdrb-sld">
+			<span class="stats-number"><%= @campaign_count %></span>
+			<span class="stats-category">fundraising campaigns</span>
+		</div>
+
+		<div class="module-three">
+			<span class="stats-number"><%= number_to_currency(@total_donations) %></span>
+			<span class="stats-category">dollars raised</span>
+		</div>
+</div>
+<% end %>
+
+<div id="homepage_callout">    
+	<h3>Find your school and start fundraising</h3>
+	<%= render :partial => "find_your_school"  %>
+</div>
+
+<div id="homepage_hottest">
+	<h3>Welcome to Our Newest Members!</h3>
+	 <div id="search_results">
+      <%= render :partial => "new_members" %>
+    </div>
+</div>

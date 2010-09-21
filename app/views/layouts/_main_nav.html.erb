@@ -1,0 +1,108 @@
+<div id="bottom-header-div">
+<%if logged_in_user%>
+<div id="nav-sub">
+	<ul>
+
+		<% campaign = selected_campaign %>
+		<% if campaign %>
+		<li id='ns01' class='first'>
+			<a href='/<%= campaign.url %>.html'><%= elide_to(campaign.name, 15) %></a>
+		</li>
+		<% else  %>
+		<li id="ns01" class="first">
+			<a href="/campaigns/new" style="font-weight: bold;" >Create a Fundraising Page</a>
+		</li>
+
+		<% end %>
+
+		<% if campaign %>
+		<%= render :partial => "/layouts/campaign_menus", :locals => {:campaign => campaign} %>
+		<% end %>
+
+		<% logged_in_user.administrated_organizations.map(&:organization).each do |o| %>
+		<li id='ns03' class="org_tools">
+			<span>
+				<img src="/images/wrench.png" class="org_tools_edit" />
+				<%= o.name.first(6) + ".." %>
+                
+			</span>
+			<ul>              
+                <%if o.organization_addresses.first.url_portion.nil? || o.organization_addresses.first.url_portion == ""%>
+                  <li><a href='/organizations/manage/<%= o.id %>'>Edit</a></li>                  
+                <%else%>
+                  <li><a href='/organizations/manage/<%= o.organization_addresses.first.url_portion %>'>Edit</a></li>                  
+                <%end%>
+				
+				<li><a href='/flagged_campaigns?organization_id=<%= o.id %>'>Flagged Pages</a></li>
+				<li><a href='/campaigns/list_all?organization_id=<%= o.id %>'>All Pages</a></li>
+				<li><a href='/organizations/upload_image?organization_id=<%= o.id %>'>Photos</a></li>
+				<li><a href='/sticker_attributes?organization_id=<%= o.id %>'>e-Bumper Stickers</a></li>
+				<li><a href='/organizations/contacts/<%= o.id %>'>Contact Sheets</a></li>
+				<li><a href='/organizations/statistics/<%= o.id %>'>Page Statistics</a></li>
+				<li><a href='/campaigns/action_buttons?organization_id=<%= o.id%>'>Action Buttons</a></li>
+                <li class='last'><a href='/organizations/help/1'>Help</a></li>
+			</ul>
+		</li>
+		<% end %>
+
+		<%= yield :contributors %>
+
+		<!-- Admin -->
+		<%if is_administrator? %>
+		<li  id='ns07'  ><span style="width:54px;">Admin</span>
+			<ul>
+				<li><a href='/organizations/new'>Add Org</a></li>
+				<li><a href='/organizations/list_all'>Org List</a></li>
+				<li><a href='/campaigns/list_all'>Campaign List</a></li>
+				<li><a href='/organization_users'>Org Users</a></li>
+
+				<li>
+					<%if params[:mode] == "edit"%>
+					<a href='<%=request.url.gsub(/\?+mode=edit|&+mode=edit/,'') %>'> ViewMode </a>
+					<% elsif RAILS_ENV != "test" %>
+					<a href='<%=request.url %><%=request.query_string == "" ? "?mode=edit" : "&mode=edit" %>'> Edit Mode </a>
+					<% end %>
+				</li>
+				<li class="last"><a href='/admin'>Administrative Tools</a></li>
+			</ul>
+		</li>
+		<%end%>
+
+		<!-- Dashboard -->
+		<li id="ns08" class="rj first"><a href="/profiles/show/">Dashboard</a></li>
+
+		<!-- My Campaigns -->
+		<li id="ns06" class="rj">
+			<span>My Fundraising Pages</span>
+			<ul>
+				<li style="height:10px"></li>
+				<% campaigns = logged_in_user.owned_campaigns.alive %>                
+				<% campaigns.each do |camp| %>
+					<li><a href="/<%=camp.url%>.html"><%=camp.name[0..17]%></a></li>
+				<% end %>
+				<% campaigns = logged_in_user.member_campaigns.not_deleted %>
+				<% if campaigns.length > 0 %>
+					<li class="memberof"><strong>Member Of</strong></li>
+					<% campaigns.each do |camp| %>
+						<li><a href="/<%=camp.url%>.html"><%=camp.name[0..17]%></a></li>
+					<%end%>
+				<%end%>
+				<li class="last"><a href="/campaigns/new"><strong>New Page</strong></a></li>
+			</ul>
+		</li>
+
+		<li id="ns03"  class="rj">
+			<span class="<%= "highlighted" if logged_in_user.inbox_messages.length > 0 || logged_in_user.has_requests? %>">Inbox&nbsp;<b>(<%= logged_in_user.inbox_messages.length + logged_in_user.request_count %>)</b></span>
+			<ul>
+				<li ><a class="<%= "highlighted" if logged_in_user.inbox_messages.length > 0%>" href="/messages">Inbox<b> (<%=logged_in_user.inbox_messages.length%>)</b></a></li>
+				<li><a href="/messages/new">Compose</a></li>
+				<li><a href="/messages/sent_items">Sent</a></li>
+				<li class="last" ><a class="<%= "highlighted" if logged_in_user.has_requests? %>" href="/my_stuff/member_requests">Requests <b>(<%= logged_in_user.request_count %>)</b></a></li>
+			</ul>
+		</li>
+
+	</ul>
+</div><!-- END #nav-sub -->
+<%end%>
+</div>
+

@@ -1,0 +1,69 @@
+<style>
+
+h2 { margin: 15px 0 0; }
+</style>
+
+<h2 style="font-size: 36px;">
+Hide/Show Action Buttons on Donate Form
+<br/>
+</h2>
+<br><br>
+
+<div style="padding-left:20px;">
+<% form_tag :controller=>"campaigns" , :action=>"change_status" , :organization_id=>@campaign.organization_id  do -%>
+
+
+<div style="width:400px; border-bottom:1px solid #dddddd; padding:0px 0px 8px 0px; overflow:hidden;">
+  <div style="float:left;">
+    <strong>Spread the Word</strong>
+    </div>
+  <div style="float:right;">
+    <%if @campaign.is_spread.to_s == "true" %>
+            <%= radio_button_tag 'spread','true',  :checked=>@campaign.is_spread%>Show
+            <%= radio_button_tag 'spread','false'%>Hide
+    <%else%>
+            <%= radio_button_tag 'spread','true'%>Show
+            <%= radio_button_tag 'spread','false', :checked=>@campaign.is_spread%>Hide
+    <%end%>
+
+  </div>
+</div>
+<br><br>
+
+<div style="width:400px; border-bottom:1px solid #dddddd; padding:0px 0px 8px 0px; overflow:hidden;">
+  <div style="float:left;">
+    <strong>Start a New Fundraising Page</strong>
+    </div>
+  <div style="float:right;">
+    <%if @campaign.is_start.to_s == "true" %>
+            <%= radio_button_tag 'start','true',  :checked=>@campaign.is_start%>Show
+            <%= radio_button_tag 'start','false'%>Hide
+    <%else%>
+            <%= radio_button_tag 'start','true'%>Show
+            <%= radio_button_tag 'start','false', :checked=>@campaign.is_start%>Hide
+    <%end%>
+  </div>
+</div>
+<br><br>
+  
+<div style="width:400px; border-bottom:1px solid #dddddd; padding:0px 0px 8px 0px; overflow:hidden;">
+  <div style="float:left;">
+    <strong>Donate</strong>
+    </div>
+  <div style="float:right;">
+    <%if @campaign.is_donate.to_s == "true" %>
+            <%= radio_button_tag 'donate','true',  :checked=>@campaign.is_donate%>Show
+            <%= radio_button_tag 'donate','false'%>Hide
+    <%else%>
+            <%= radio_button_tag 'donate','true'%>Show
+            <%= radio_button_tag 'donate','false', :checked=>@campaign.is_donate%>Hide
+    <%end%>
+  </div>
+</div>
+<br><br>
+
+  <div><%= submit_tag 'Save Changes' %></div>
+
+</div>  
+
+<% end %>

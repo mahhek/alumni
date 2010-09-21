@@ -1,0 +1,26 @@
+<h1>Listing text_modules</h1>
+
+<table>
+  <tr>
+    <th>Text content</th>
+    <th>Controller</th>
+    <th>Action</th>
+    <th>Key</th>
+  </tr>
+
+<% for text_module in @text_modules %>
+  <tr>
+    <td><%=h text_module.text_content %></td>
+    <td><%=h text_module.controller %></td>
+    <td><%=h text_module.action %></td>
+    <td><%=h text_module.key %></td>
+    <td><%= link_to 'Show', text_module %></td>
+    <td><%= link_to 'Edit', edit_text_module_path(text_module) %></td>
+    <td><%= link_to 'Destroy', text_module, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New text_module', new_text_module_path %>

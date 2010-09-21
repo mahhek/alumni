@@ -1,0 +1,32 @@
+<form action="/home/go_to_school" method="POST" style="vertical-align: bottom;">
+	<!--<input
+		id="big-search-field"
+		class="large-field"
+		name="school_name"
+		autocomplete="off"
+		type="text"
+		value="School Name"
+		onfocus="school_results.focus(this);"
+		onkeyup="school_results.fetch(this);"
+		style="width:490px;"
+	/>-->
+    <div>
+      <div style="float:left">
+        <%= text_field_with_auto_complete :organization, :name, {:skip_style => false,:method => :get} %>
+      </div>
+      <div style="float:left">
+        <input value="Go" type="submit">
+      </div>
+    </div>
+	<!--<br/>
+	<div id="search_results_div" style="display:none;"></div>-->
+</form>
+
+
+
+<script>
+	<%= render :partial=>"layouts/school_autocomplete.js.erb" %>
+	school_results.default_value = "School Name";
+	school_results.search_path = "/home/search_schools";
+    $('organization_name').style.width = "490px";
+</script>

@@ -1,0 +1,57 @@
+
+<h1>Message Center</h1>
+<%= render :partial => "/messages/header" %>
+<div id="main">
+
+<table class="generic_form">
+	<tr>
+		<th>Subject:</th>
+		<td><%= @message.subject %></td>
+	</tr>
+	<% @message_list.each do |a_message| %>
+	
+	<% if params[:sent] %>
+	<tr>
+		<th>To:</th>
+		<td><%= respond_link_sent a_message %></td>
+	</tr>
+	<% else %>
+	<tr>
+		<th>From:</th>
+		<td><%= respond_link a_message %></td>
+	</tr>
+	<% end %>
+	<tr>
+		<th>On:</th>
+		<td><%= longer_date(a_message.created_at) %></td>
+	</tr>
+	
+	<tr>
+		<th></th>
+		<td><%= a_message.message_text %></td>
+	</tr>
+	
+	<% end %>
+	
+<% if @message_list.first.creator %>
+	
+	<% form_for(:new_message, :url => {:action => :create_response},:html=>{:method => :post } ) do |f| %>
+		<tr class="form_divider"></tr>
+		
+		<input type="hidden"  name="new_message[original_message_id]" value="<%= @message.get_original_id %>"  />
+		<tr>
+			<th class="tall_label">Reply:</th>
+			<td><%=text_area :new_message, :message_text, :cols=>35, :rows=>10%></td>
+		</tr>
+		<tr>
+			<th></th>
+			<td><input type="submit" value="Send" ></td>
+		</tr>
+	<%end%>
+
+<% end %>
+
+</table>
+
+<%= link_to 'Back', messages_path %>
+</div>

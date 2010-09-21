@@ -1,0 +1,84 @@
+<div class="campaign_manager">
+	
+	<%= render :partial => "campaigns/suspend_confirm", :locals=>{:campaign=>@campaign} %>
+	<%= render :partial => "campaigns/delete_confirm", :locals=>{:campaign=>@campaign} %>
+	
+	<h2>Admin Tools</h2>
+	
+	<ul class="campaign_manager_info">
+		<li class="campaign_manager_header">INFORMATION</li>
+		<li>Status: <strong><%= @campaign.status_text %></strong></li>
+		<li>Visibility: <strong><%= (@campaign.public?) ? "Public" : "Private" %></strong></li>
+		<li>Has this site ever been reported?: <strong><%= @campaign.has_been_reported? ? "Yes" : "No" %></strong></li>
+		
+		<% if @campaign.has_been_reported? %>
+			<li>Last time this site was reported: <strong><%= time_ago_in_words(@campaign.last_time_reported) %> ago</strong></li>
+		<% end %>
+		
+		<li>Has this site ever been suspended?: <strong><%= @campaign.has_been_suspended? ? "Yes" : "No" %></strong></li>
+		
+		<% if @campaign.has_been_suspended? %>
+			<li>Last time this site was suspended: <strong><%= time_ago_in_words(@campaign.last_time_suspended) %> ago</strong></li>
+		<% end %>
+		
+		<li>Fundraising Page Owner: <strong><%= @campaign.creator.name %></strong></li>
+	</ul>
+
+	<ul class="campaign_manager_actions">
+		<li class="campaign_manager_header">ACTIONS</li>
+		
+		<li><a href="/campaigns/edit/<%=@campaign.id%>">Edit this Fundraising Page</a></li>
+		
+		<li><a href="/flagged_campaigns/new?campaign_id=<%=@campaign.id%>">Report this Fundraising Page</a></li>
+		
+		<% if !@campaign.is_deleted? %>
+			<% if @campaign.is_suspended? %>
+				<li><a href="?unsuspend=1" onclick="reveal('unsuspend_confirm'); return false">Un-suspend this Fundraising Page...</a></li>
+			<% else %>	
+				<li><a href="?suspend=1" onclick="reveal('suspend_confirm'); return false">Suspend this Fundraising Page...</a></li>
+			<% end %>
+		
+			<li><a href="?delete=1" onclick="reveal('delete_confirm'); return false">Delete this Fundraising Page...</a></li>
+		<% else %>
+			<li><a href="?undelete=1" onclick="reveal('undelete_confirm'); return false">Un-delete this Fundraising Page...</a></li>
+		<% end %>
+		
+		<li><a href="/messages/new_to_campaign_owner?campaign_id=<%= @campaign.id%>">Send a message to the owner</a></li>
+		
+		<% if @campaign.has_been_reported? %>
+			<li><a href="?flagged=1" onclick="reveal('campaign_flags_report'); return false">Why was this site flagged?</a></li>
+		<% end %>
+		
+		<% if @campaign.has_been_suspended? %>
+			<li><a href="?suspended=1" onclick="reveal('campaign_suspension_report'); return false">Why was this site suspended?</a></li>
+		<% end %>
+	</ul>
+	
+	<div style="clear:both;"></div>
+	
+	<% if @campaign.has_been_reported? %>
+	<ul class="campaign_manager_info campaign_report" id="campaign_flags_report" style="<%= (params[:flagged] != "1") ? "display:none;" : "" %>">
+		<li class="campaign_manager_header">WHY WAS THIS FLAGGED?</li>
+		<% @campaign.reasons_for_reported.each do |k, v| %>
+		<li><%= k %>: <strong><%= pluralize(v, "time") %></strong></li>
+		<% end %>
+	</ul>
+	<% end %>
+	
+	<% if @campaign.has_been_suspended? %>
+	<ul class="campaign_manager_info campaign_report" id="campaign_suspension_report" style="<%= (params[:suspended] != "1") ? "display:none;" : "" %>">
+		<li class="campaign_manager_header">WHY WAS THIS SUSPENDED?</li>
+		<% @campaign.reasons_for_suspension.each do |k| %>
+		<li><%= time_ago_in_words(k[:time]) %> ago: <strong><%= k[:reason] %></strong></li>
+		<% end %>
+	</ul>
+	<% end %>
+	
+	<div style="clear:both;"></div>
+</div>
+
+<script>
+var reveal = function(elm) {
+	$(elm).style.display = "block";
+}
+</script>

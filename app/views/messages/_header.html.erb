@@ -1,0 +1,8 @@
+<% current = nil if local_assigns[:current].nil? %>
+
+<ul class="generic_link_list message_center_tabs">
+	<%= header_link_for("Inbox", "/messages", current) %>
+	<%= header_link_for("Compose", "/messages/new", current) %>
+	<%= header_link_for("Sent", "/messages/sent_items", current) %>
+	<%= header_link_for("Requests", "/my_stuff/member_requests", current, true) %>
+</ul>

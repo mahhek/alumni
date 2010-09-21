@@ -1,0 +1,7 @@
+ <% if org && org.show_class_year? %>
+            <th><%= label :campaign, :class_year, "Your Class Year"%></th>
+            <td>
+              <%= select(:campaign, :class_year,
+                (["none", ""] + (org.start_class_year..org.end_class_year).map {|year| [year, year]}.reverse)) %>
+            </td>
+<% end %>

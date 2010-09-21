@@ -1,0 +1,28 @@
+<% base_url = [] %>
+<% (for_params | [:sort, :order]).each do |param| %>
+	<% base_url << "#{param}=#{params[param]}" if params[param] %>
+<% end %>
+<% base_url = "?#{base_url.join("&")}"%>
+
+
+<% if @total_pages > 1 %>
+	<div class="pagination">
+		<% if @page == 1 %>
+			<span class="disabled prev_page">Prev</span>
+		<% else %>
+			<a href="<%= "#{base_url}&page=#{ @page-1 }" %>" class="prev_page">Prev</a>
+		<% end %>
+		<% @total_pages.times do |i| %>
+			<% if @page == (i+1) %>
+				<span class="current"><%= i + 1 %></span>
+			<% else %>
+				<a href="<%= "#{base_url}&page=#{ i+1 }" %>"><%= i + 1 %></a>
+			<% end %>
+		<% end %>
+		<% if @page == @total_pages %>
+			<span class="disabled next_page">Next</span>
+		<% else %>
+			<a href="<%= "#{base_url}&page=#{ @page+1 }" %>" class="next_page">Next</a>
+		<% end %>
+	</div>
+<% end %>

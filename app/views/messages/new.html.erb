@@ -1,0 +1,44 @@
+<%= stylesheet_link_tag 'auto' %>
+
+<%= cms("message_center_new", %|<h1>Message Center</h1>|) %>
+
+<%= render :partial => "/messages/header", :locals => {:current => "Compose"} %>
+
+<% form_for(@message) do |f| %>
+	<%= f.error_messages %>	
+	<table class="generic_form">
+		
+		<tr>
+			<th>To</th>
+			<td>
+				<input type="text" value="" id="facebook-demo">
+				<div id="facebook-auto">
+					<div class="default">Type the name of an AlumniFidelity member.</div>
+					<ul class="feed">
+						<%= user_to_list( @to_list ) if @to_list %>
+					</ul>
+				</div>
+				<div id="recipient_inputs"></div>
+			</td>
+		</tr>
+		
+		<tr>
+			<th>Subject</th>
+			<td><input type="text" name="message[subject]" value="" id="testinput"></td>
+		</tr>
+		
+		<tr>
+			<th class="tall_label">Message</th>
+			<td>
+				<textarea class="left" name="message[message_text]" style="width: 508px; height: 200px;"></textarea>
+				<br><br><input name="submit" type="submit" value="Send">
+			</td>
+		</tr>
+	</table>
+<% end %>
+
+<%= link_to 'Cancel', messages_path %>
+
+<script>
+	tlist2 = new FacebookList('facebook-demo', 'facebook-auto',{fetchFile:'/users/search_linked_users/1.json'});
+</script>

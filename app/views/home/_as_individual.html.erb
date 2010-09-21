@@ -1,0 +1,30 @@
+<%= cms("contact_signup_as_ind", %|
+	<h1>AlumniFidelity contact list signup</h1>
+	<h2>Your school is not yet registered with AlumniFidelity, but we are working to change that.  Sign up below to be the first to know when we add your school and you can start fundraising.
+	<br/>
+	If you are a school staff member and are interested in learning more about AlumniFidelity, then select the checkbox below in addition to filling out your contact information, and an AlumniFidelity representative will contact you.</h2>|) %>
+
+<% form_for :contact_alert, :url => "/home/add_to_contact_alerts", :html=>{:class=>"standard"} do |f| %>
+	<div> * = Required field </div>
+	<%= error_messages_for :contact_alert %>
+	
+	<%= f.hidden_field :as_org %>
+	<input type="hidden" name="go_to" value="individual_thank_you" />
+	
+	<strong>School:</strong>
+	<%= f.select :school_id, School.find(:all).collect {|item| [item.name, item.id]},:include_blank=> true%>
+	<br/>
+    <br/>
+	<div>
+		<label>-or- School name if not above:</label>
+		<%= f.text_field :school_name %>
+	</div>
+	<div class="field"><label>First Name</label><%= f.text_field :first_name%> * </div>
+	<div class="field"><label>Last Name</label><%= f.text_field :last_name%> * </div>
+	<div class="field"><label>Email Address:</label><%= f.text_field :email%> * </div>
+	<div class="field"><label>Contact me about registering my organization:</label>
+		<%= check_box :contact_alert, :contact_me %>
+	</div>
+	<div class="field"><input type="submit" value="Submit" /></div>
+	
+<% end %>

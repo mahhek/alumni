@@ -1,0 +1,14 @@
+<p>
+  <b>Campaign:</b>
+  <%=h @featured_campaign.campaign_id %>
+</p>
+
+<p>
+  <b>Expiration:</b>
+  <%=h @featured_campaign.expiration %>
+</p>
+
+
+<%= link_to 'Edit', edit_featured_campaign_path(@featured_campaign) %> |
+
+<%= link_to 'Back', :action=>'',:controller=>'featured_campaigns' %>

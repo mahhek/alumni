@@ -1,0 +1,13 @@
+<form action="/campaigns/report_campaign"  method="POST">
+<label>You are about to report a violation of our Terms of Service [Hyperlinked]. All reports are strictly confidential.</label>
+Please give a reason for reporting this page.</br>
+<select name="flagged_campaign[category]">
+<option></option>
+<option value="Profanity">Profanity</option>
+<option value="Illicit Images">Illicit Images</option>
+<option value="Offensive Statements">Offensive Statements</option>
+<option value="Rude Interaction">Rude Interaction</option>
+</select>
+<textarea name="flagged_campign[description]"></textarea>
+<input type="hidden" name="campaign_id" value="<%=params[:campaign_id]%>"/>
+</form>

@@ -1,0 +1,76 @@
+<%setup_yield%>
+
+<% if @is_campaign_creator %>
+<%= cms("campaign_stickers", %|<h2 class="bumper_sticker_template_header">Fundraising Page e-Bumper Stickers</h2>|) %>
+
+<% if @sticker_setup.empty? %>
+<span class="bumper_sticker_template_explanation">
+	Your organization hasn't set up any e-Bumper Sticker templates.  You can contact <a href="/organizations/<%= @organization.id%>">your organization's</a> administrator to get started.
+</span>
+<% else %>
+<span class="bumper_sticker_template_explanation">
+These are your e-Bumper Sticker templates.  Pick a template to get started.
+</span>
+
+<br>
+<table id="campaigns-top" class="bumper_sticker_list">
+	<tr>
+		<th></th>
+		<th>NAME</th>
+		<th>COLORS</th>
+	</tr>
+	<% @sticker_setup.each_with_index do |a_setup, i| %>
+	<tr>
+		<td class="ordination"><%= i + 1 %>.</td>
+		<td class="bumper_sticker_name"><a href="/sticker_attributes/sticker_creater/<%=a_setup.id%>?campaign_id=<%=@campaign.id%>" ><%=a_setup.name%></a></td>
+		<td>
+			<% a_setup.primary_colors.each do |pc| %>
+				<div class="bumper_sticker_color" style="background-color:#<%= pc.attribute_value %>"></div>
+			<% end %>
+				<div class="spacer"></div>
+			<% a_setup.secondary_colors.each do |sc| %>
+				<div class="bumper_sticker_color" style="background-color:#<%= sc.attribute_value %>"></div>
+			<% end %>
+			<div style="clear:both;" />
+		</td>
+	</tr>
+	<%end%>
+</table>
+
+<% end %>
+
+
+<%end%>
+
+<h2 class="bumper_sticker_template_header">Promote your organization</h2>
+<span class="bumper_sticker_template_explanation">
+Use these bumper stickers to raise awareness of your cause through Facebook, Myspace, blogs, and more.
+</span>
+
+<table id="campaigns-top" class="bumper_sticker_list">
+	<tr>
+		<th></th>
+		<th>NAME</th>
+		<th>COLORS</th>
+		<% if @is_campaign_creator %>
+		<th>ACTIONS</th>
+		<% end %>
+	</tr>
+	<% @stickers.each_with_index do |sticker, i|%>
+	<tr>
+		<td class="ordination"><%= i + 1 %>.</td>
+		<td class="bumper_sticker_name">
+			<a href="/bumperstickers/<%=sticker.id%>"><%=sticker.name || sticker.stickertext%></a>
+		</td>
+		<td>
+			<div class="bumper_sticker_color" style="background-color:#<%= sticker.primarycolor %>"></div>
+			<div class="spacer"></div>
+			<div class="bumper_sticker_color" style="background-color:#<%= sticker.secondarycolor %>"></div>
+			<div style="clear:both;" />
+		</td>
+		<% if @is_campaign_creator %>
+		<td><%= link_to 'Delete', "/bumperstickers/#{sticker.id}?campaign_id=#{@campaign.id}", :method =>:delete, :confirm => "Are you sure?" %></td>
+		<% end %>
+	</tr>
+	<% end %>
+</table>

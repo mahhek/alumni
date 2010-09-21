@@ -1,0 +1,42 @@
+
+<!-- LOGIN  -->
+<div id="login" class="center">
+    
+    <!-- login box -->
+    <div class="bgstyle3 floatl">
+      <div class="fade_in"></div>
+      <div class="content">
+      
+        <h1><img src="/images/login/hdr_login.gif" alt="Get in here!" title="Login below by entering your email and password" /></h1>
+        <br />
+
+		<% form_for :user, :url => {:action=>'authenticate'} do |f| %>
+          <label for="email">Email:</label><br />
+		  <%= f.text_field :email, :class => 'medium' %><br />
+          
+          <label for="email">Password:</label><br />
+		  <%= f.password_field :editable_password, :class => 'medium' %><br />
+          
+          <b class="sm"><input type="checkbox" name="remember" /> Remember me</b><br />
+          <input type="hidden" name="request_url" value="<%=params[:request_url]%>" />
+		  
+          <%= image_submit_tag '/images/login/bt_login_off.jpg', :alt => 'Log in' %>
+		<% end %>
+		
+        <a href="/account/forgot_password" class="sm"><b>Forgot your password?</b></a>
+
+      </div>
+      <div class="bottom_left"><div class="bottom_right"></div></div>
+    </div><!-- END login box  -->
+    
+    <!--no account? -->
+    <div id="pitch" class="floatl">
+    
+        <h1><img src="/images/login/hdr_noaccount.gif" alt="No account? Join now!" /></h1>
+        
+	  <%=link_to image_tag("/images/login/bt_signupnow_off.gif", :alt=>"Sign up now!"), :controller => 'users', :action=> 'new' %>
+      
+   	</div>
+
+</div>
+<!-- END login  -->

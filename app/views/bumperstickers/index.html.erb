@@ -1,0 +1,27 @@
+<h1>Listing bumperstickers</h1>
+
+<table>
+  <tr>
+    <th>Campaign</th>
+    <th>Campaign text</th>
+    <th>Primary color</th>
+    <th>Secondary color</th>
+  </tr>
+
+<% for bumper_sticker in @bumper_stickers %>
+  <tr>
+    <td><%=h bumper_sticker.campaign.name %></td>
+    <td><%=h bumper_sticker.stickertext %></td>
+    <td><%=h bumper_sticker.primarycolor %></td>
+    <td><%=h bumper_sticker.secondarycolor %></td>
+    <td><%= link_to 'Show', bumper_sticker %></td>
+    <td><%= link_to 'Edit', edit_bumpersticker_path(bumper_sticker) %></td>
+    <td><%= link_to 'Destroy', bumper_sticker, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+<%if is_administrator?%>
+<%= link_to 'New bumper_sticker', new_bumpersticker_path %>
+<%end%>

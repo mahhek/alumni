@@ -1,0 +1,22 @@
+<h1>Listing campaign_users</h1>
+
+<table>
+  <tr>
+  <th>Message</th><th>Campaign</th><th>User's Name</th><th></th><th></th>
+  </tr>
+
+<% for campaign_users in @campaign_users %>
+  <tr>
+	<td><%=campaign_users.message%></td>
+	<td><%=campaign_users.campaign.name%></td>
+	<td><%=link_to campaign_users.user.short_name, user_path(campaign_users.user)%></td>
+    <td><%= link_to 'Show', campaign_user_path(campaign_users) %></td>
+    <td><%= link_to 'Edit', edit_campaign_user_path(campaign_users) %></td>
+    <td><%= link_to 'Destroy', campaign_users, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New campaign_users', new_campaign_user_path %>

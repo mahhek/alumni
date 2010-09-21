@@ -1,0 +1,101 @@
+<!-- Dependencies -->  
+<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/utilities/utilities.js" ></script> 
+<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/slider/slider-min.js" ></script> 
+ 
+<!-- Color Picker source files for CSS and JavaScript --> 
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.6.0/build/colorpicker/assets/skins/sam/colorpicker.css"> 
+<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/colorpicker/colorpicker-min.js" ></script>
+
+<h2 class="bumper_sticker_template_header"><%=h @organization.full_name %> e-Bumper Sticker template</h2>
+
+<ul class="generic_link_list bumper_sticker_template_actions_list">
+	<li>Edit:</li>
+	<li>colors</li>
+	<li><a href="/sticker_attributes/upload_image/<%= @sticker_attribute.id %>" style="text-decoration:underline">images</a></li>
+</ul>
+
+<% form_for(@sticker_attribute) do |f| %>
+<table id="campaigns-top" class="bumper_sticker_list bumper_sticker_admin_show edit_sticker_attribute" cellspacing="2">
+	<tr>
+		<th>NAME</th>
+		<td><%=f.text_field :name%></td>
+	</tr>
+	<tr>
+		<th class="images_header">PRIMARY</th>
+		<td id="primary_colors">			
+			<% @sticker_attribute.primary_colors.each do |color| %>
+				<div id="primary_<%= color.attribute_value %>">
+					<input type='hidden' name='sticker_attribute[primary_colors][]' value='<%= color.attribute_value %>'/>
+					<div class='bumper_sticker_color_big' style='background-color:#<%= color.attribute_value %>' onclick="switch_to(this); return false;" ></div>
+					<a href="#" onclick="remove_color('primary_<%= color.attribute_value %>');return false;" style="font-size:0.8em;">remove</a>
+					<div style="clear:both;"></div>
+				</div>
+			<%end%>
+		</td>
+	</tr>
+	<tr>
+		<th class="images_header">SECONDARY</th>
+		<td id="secondary_colors">
+			<% @sticker_attribute.secondary_colors.each do |color| %>
+				<div id="secondary_<%= color.attribute_value %>">
+					<input type='hidden' name='sticker_attribute[secondary_colors][]' value='<%= color.attribute_value %>'/>
+					<div class='bumper_sticker_color_big' style='background-color:#<%= color.attribute_value %>' onclick="switch_to(this); return false;" ></div>
+					<a href="#" onclick="remove_color('secondary_<%= color.attribute_value %>');return false;" style="font-size:0.8em;">remove</a>
+					<div style="clear:both;"></div>
+				</div>
+			<%end%>
+		</td>
+	</tr>
+	<tr>
+		<th class="images_header">
+			IMAGES
+		</th>
+		<td>
+			<% @sticker_attribute.sticker_attribute_photos.each do |photo| %>
+					<%=image_tag(photo.public_filename('small') , :class=>"thumb",  :title=>"#{photo.title}")%>
+			<%end%>
+		</td>
+	</tr>
+</table>
+
+<div id="color_container" class="yui-skin-sam"></div>
+<div style="float:right;">
+	<a onclick="add_color('primary_colors'); return false" href="#">Add Primary Color</a> | 
+	<a onclick="add_color('secondary_colors'); return false" href="#">Add Secondary Color</a>
+</div>
+<div style="clear:both;"></div>
+<%= f.submit "Update" %> or <%= link_to 'cancel',  @sticker_attribute %>
+
+<% end %>
+
+
+<script>
+	var picker = new YAHOO.widget.ColorPicker("color_container", {
+	    showhsvcontrols: false,
+	    showhexcontrols: true,
+	    images: {
+	        PICKER_THUMB: "/javascripts/yui/build/colorpicker/assets/picker_thumb.png",
+	        HUE_THUMB: "/javascripts/yui/build/colorpicker/assets/hue_thumb.png"
+	    }
+	});
+	
+	function add_color(eid) {
+		var color = $('yui-picker-hex').value;
+		var node_id = eid + "_" + color;
+		$(eid).innerHTML += " \
+			<div id='" + node_id + "'> \
+				<input type='hidden' name='sticker_attribute[" + eid + "][]' value='" + color + "'/> \
+				<div class='bumper_sticker_color_big' style='background-color:#" + color + "' onclick='switch_to(this); return false;' ></div> \
+				<a href='#' onclick='remove_color(\"" + node_id + "\");return false;' style='font-size:0.8em;'>remove</a> \
+			<div style='clear:both;'></div></div>"
+	}
+	
+	function switch_to(elm) {
+		picker.setValue(elm.style.backgroundColor.slice(4,-1).split(", "));
+	}
+	
+	function remove_color(color) {
+		var node = $(color);
+		node.parentNode.removeChild(node);
+	}
+</script>

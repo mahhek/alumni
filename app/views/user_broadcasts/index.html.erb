@@ -1,0 +1,26 @@
+<h1>Listing user_broadcasts</h1>
+
+<table>
+  <tr>
+    <th>User</th>
+    <th>Broadcast</th>
+    <th>Campaign</th>
+    <th>Setting</th>
+  </tr>
+
+<% for user_broadcast in @user_broadcasts %>
+  <tr>
+    <td><%=h user_broadcast.user_id %></td>
+    <td><%=h user_broadcast.broadcast_id %></td>
+    <td><%=h user_broadcast.campaign_id %></td>
+    <td><%=h user_broadcast.setting %></td>
+    <td><%= link_to 'Show', user_broadcast %></td>
+    <td><%= link_to 'Edit', edit_user_broadcast_path(user_broadcast) %></td>
+    <td><%= link_to 'Destroy', user_broadcast, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New user_broadcast', new_user_broadcast_path %>

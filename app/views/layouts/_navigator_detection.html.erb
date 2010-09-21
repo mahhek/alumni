@@ -1,0 +1,74 @@
+
+	<style type="text/css">
+#ie6-box {
+			background-color: #eaeaea;
+			padding: 8px;
+			margin-bottom: 4px;
+		}
+#ie6-box .upgrade-message {
+			font-size: 12px;
+            font-family:verdana;
+			width: 381px;
+            float : left;
+		}
+#ie6-box .upgrade-message a {
+			/* Override link properties because of translation */
+			text-decoration: none !important;
+			color: black !important;
+			border-bottom: 0 !important;
+			cursor: text;
+		}
+#ie6-box .close-button {
+			float: right;
+			display: block;
+			margin-left: 8px;
+		}
+#ie6-box .close-icon {
+			background-position: -57px -712px;
+			display: block;
+			height: 12px;
+			width: 12px;
+		}
+#ie6-box .browser-links {
+			float: right;
+		}
+#ie6-box .browser-link img {
+			background-image: url(http://s.ytimg.com/yt/img/browsers-vfl107426.png);
+			width: 172px;
+			height: 32px;
+			margin-left: 8px;
+		}
+#ie6-box .browser-link:hover img {
+			background-position-x: -172px;
+		}
+#ie6-box .chrome-link {
+			background-position-y: 0;
+		}
+#ie6-box .ie8-link {
+			background-position-y: -32px;
+		}
+#ie6-box .firefox-link {
+			background-position-y: -64px;
+		}
+	</style>
+	<div id="ie6-box" style="height:32px;" >
+		<a href="#" class="close-button" onclick="hideIE6UpgradeBox(); return false">x</a>
+		<p class="browser-links">
+          <a href="http://www.google.com/chrome/index.html?brand=CHNY&amp;utm_campaign=en&amp;utm_source=en-et-youtube&amp;utm_medium=et" class="browser-link" onmousedown="sendIE6UpgradeGen204('chrome');"><img src="http://s.ytimg.com/yt/img/pixel-vfl73.gif" class="chrome-link"></a>
+          <a href="http://www.microsoft.com/windows/internet-explorer/default.aspx" class="browser-link" onmousedown="sendIE6UpgradeGen204('ie8');"><img src="http://s.ytimg.com/yt/img/pixel-vfl73.gif" class="ie8-link"></a>
+          <a href="http://www.mozilla.com/?from=sfx&amp;uid=267821&amp;t=449" class="browser-link" onmousedown="sendIE6UpgradeGen204('firefox');"><img src="http://s.ytimg.com/yt/img/pixel-vfl73.gif" class="firefox-link"></a>
+        </p>
+		<span class="upgrade-message">
+          <strong class="nobr">We will be phasing out support for your browser soon.</strong>
+          <br><span class="nobr">Please upgrade to one of these more modern browsers.</span></span>
+	</div>
+	<script type="text/javascript">
+		function sendIE6UpgradeGen204(browser) {
+			var a = new Image();
+				a.src = '/gen_204?action=browserupgrade&browser=' + browser;
+		}
+		function hideIE6UpgradeBox() {            
+			$('ie6-box').style.display = "none";
+		}
+		
+	</script>

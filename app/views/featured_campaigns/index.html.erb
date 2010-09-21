@@ -1,0 +1,26 @@
+<h1>Listing featured_campaigns</h1>
+
+<table>
+  <tr>
+    <th>Campaign</th>
+    <th>Expiration</th>
+    <th>Status</th>
+	<th>Actions</th>
+  </tr>
+
+<% for featured_campaign in @featured_campaigns %>
+  <tr>
+    <td><%= featured_campaign.campaign.name %></td>
+    <td><%= featured_campaign.expiration %></td>
+	<td><%= featured_campaign.active? ? "<strong>Active</strong>" : "Inactive" %></td>
+    <td>
+		<%= link_to 'Edit', :controller=>'featured_campaigns' ,:action=>'edit', :id=>featured_campaign.id %> |
+		<%= link_to 'Delete', {:controller=>'featured_campaigns' ,:action=>'destroy',:id=>featured_campaign.id}, {:confirm => 'Are you sure?', :method => :delete} %>
+	</td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New featured_campaign', :action=>'new',:controller=>'featured_campaigns' %>

@@ -1,0 +1,55 @@
+<div id="statistics2">
+	<p>Current Totals</p>
+	<span class="stat"><strong><%= number_to_currency(@campaign.currentAmount) %></strong></span>
+	<br />
+	<span class="active1">Raised through this page.</span>
+	<div class="line"></div>
+	
+	<% if @organization.show_raised_amount? %>
+	<br/>
+	<span class="stat"><strong><%= number_to_currency(@organization.sum_payments) %></strong></span>
+	<br/>
+	<span class="active1">Raised by <br> <%= @organization.name %>.</span>
+	<div class="line"></div>
+	<% end %>
+
+
+
+	<% class_year_total = @organization.class_year_total(@campaign.class_year) %>
+	<% if @campaign.class_year && (class_year_total > @organization.class_year_dollar_min) %>
+		<br/>
+		<span class="stat"><strong><%= number_to_currency(class_year_total) %></strong></span>
+		<br/>
+		<span class="active1">Total money raised by:<br> Class of <%= @campaign.class_year %></span>
+		<div class="line"></div>
+	<% end %>
+
+
+  <% if @organization.show_funds_total_amount? %>
+  <% if @organization.who_will_choose_fund != "the_donors" %>
+
+	<% if @organization.fund_raisers.size > 2 %>
+		<br/>
+<!--		<%#*<span class="stat"><strong><%= number_to_currency(@campaign.fundraiser_total) %></strong></span>%> -->
+		<br/>
+		<span class="active1" >Total money raised for:<br>
+          <%if @campaign.fund_raiser.nil?%>
+            <% get_sum_payments_against_same_funds(@campaign).each do |payment_against_fund_raiser| %>            
+            <div style="text-align: left; margin-left: 55px;">
+              <b>
+                <%= number_to_currency(payment_against_fund_raiser.amount) %>
+              </b>&nbsp;
+              <%= payment_against_fund_raiser.fund_raiser.name %>
+            </div> 
+          <%end%>
+          <%else%>
+            <%= @campaign.fund_raiser.name %>
+          <%end%>          
+          <br>  
+        </span>
+		<div class="line"></div>
+	<% end %>
+    
+  <%end%>
+  <%end%>
+</div>

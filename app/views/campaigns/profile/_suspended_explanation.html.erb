@@ -1,0 +1,18 @@
+<div class="campaign_suspended">
+     <h2>Your campaign has been suspended</h2>
+    <div>Due to a violation of our <%= link_to "Terms of Service.", "/home/terms", :popup => true, :class => 'show-as-link' %>, your campaign has been suspended and is no longer viewable by the public.</div>
+     <%#@policy_statement = PolicyStatement.find_by_type_of_policy("terms_of_service")%>
+     <%#if @policy_statement.nil?%>
+              <%#= link_to 'Terms of Service', ""%>
+             <%#else%>
+            <%#= link_to 'Terms of Service', "#{@policy_statement.public_filename}"%>
+            <%#end%>
+
+     <h3>Why was my campaign suspended?</h3>
+     <div>
+          Your campaign was reported for
+          <strong><%= @suspended_reasons %></strong>.<br><br>
+          This is what the administrator had to say:<br>
+          <%= @campaign.suspension_explanation %>
+     </div>
+</div>

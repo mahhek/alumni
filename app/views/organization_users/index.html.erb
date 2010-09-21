@@ -1,0 +1,19 @@
+<h1>Listing Organization Admins</h1>
+
+<table>
+  <tr>
+	<th>Organization Name</th><th>User Name</th>
+  </tr>
+
+<% for organization_user in @organization_users %>
+  <tr>
+     <td><%=organization_user.organization.name if organization_user.organization%></td>
+	 <td><%=organization_user.user.short_name if organization_user.user %></td>
+    <td><%= link_to 'Destroy', organization_user, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Organization Admin', new_organization_user_path %>

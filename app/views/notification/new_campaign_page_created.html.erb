@@ -1,0 +1,9 @@
+<%= @campaign.owner.name %> has created a fundraising page titled <%= @campaign.name %>
+<br>
+<br>Dollar Goal: <%= @campaign.formatted_goal %>
+<br>Donor Goal: <%= @campaign.donor_goal %>
+<% @campaign.fund_raisers.each do |fund_raiser|%>
+  <br>Fund: <%= fund_raiser.name %>
+<%end%>
+
+<br>Link: <%= campaign_email_link(@campaign) %>

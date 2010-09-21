@@ -1,0 +1,35 @@
+<% form_for :user, :url => {:action => :update}, :html=>{:method => :put} do |f| %>
+	<%= error_messages_for :user %>
+	<table class="generic_form wide_labels">
+		<tr>
+			<th><%= f.label :first_name, "First Name" %></th>
+			<td><%= f.text_field :first_name %></td>
+		</tr>
+		
+		<tr>
+			<th><%= f.label :last_name, "Last Name" %></th>
+			<td><%= f.text_field :last_name %></td>
+		</tr>
+		
+		<tr>
+			<th><%= f.label :email, "Email Address" %></th>
+			<td><%= f.text_field :email %></td>
+		</tr>
+		
+		<% @questions.each do |attribute|%>
+		<tr>
+			<th><%= attribute.text%></th>
+			<td><%= output_datatype_for_user(attribute)%></td>
+		</tr>
+		<%end%>
+		<tr>
+			<th class="tall_label">
+				My Photo:<br>
+				<a href="/my_account/photo">change</a>
+			</th>
+			<td><%= load_thumb(@user) %></td>
+		</tr>
+	</table>
+	<%= hidden_field_tag :request_action, 'profile' %>
+	<%= submit_tag "Save"%> or <a href="/profiles/show">cancel</a>
+<%end%>

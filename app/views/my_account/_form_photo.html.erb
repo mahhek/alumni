@@ -1,0 +1,33 @@
+<style>
+	.profile_photo_upload_current {
+		width:250px;
+		float:left;
+	}
+	
+	.profile_photo_upload_action {
+		width:250px;
+		float:left;
+	}
+	
+	.or {
+		margin:12px 24px 16px;
+	}
+</style>
+
+	<% form_for(:photo, :url => {:action => :create_user_photo},:html=>{:multipart => true,:method => :post, :class=>"standard" } ) do |f| %>
+		<%= error_messages_for :photo %>
+		<div class="profile_photo_upload_current">
+			<%= load_full(@user) %>
+		</div>
+		<div class="profile_photo_upload_action">
+			<% if @photo %>
+				<%= link_to "Remove this photo", user_photo_url(@photo), :method => :delete, :confirm => "Are you sure you want to remove your profile picture? The picture will be permanently deleted." %>
+				<div class="or">-or-</div>
+			<% end %>
+			Upload a <% if @photo %>new<% end %> photo:<br>
+			<%= f.file_field 'uploaded_data' %>
+			<br><br>
+			<%= hidden_field_tag "id", @photo.id unless !@photo %>
+			<%= submit_tag "Upload" %> or <a href="/my_account/profile">cancel</a>
+		</div>
+	<% end %>

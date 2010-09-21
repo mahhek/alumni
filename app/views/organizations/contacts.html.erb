@@ -1,0 +1,56 @@
+<h1>Org Contact Sheets</h1>
+
+<div id="contact_sheet_list">
+</div>
+
+<style>
+	.section {
+		overflow:hidden;
+		margin-bottom:12px;
+	}
+	
+	.label {
+		float:left;
+		width:100px;
+		text-align:right;
+		margin-right:12px;
+	}
+	
+	.input {
+		float:left;
+		width:300px;
+	}
+	
+	h2 {
+		margin-top:18px;
+		margin-bottom:12px;
+	}
+	
+	.more {
+		background: transparent url(/images/more_arrow.gif) no-repeat right 7px;
+		padding-right: 8px;
+	}
+</style>
+
+<h2>Contact Spreadsheets</h2>
+
+<% @sheets.each_with_index do |s, i| %>
+<%= i + 1 %> |
+<%= s.filename %> |
+<a href="/organizations/contact_sheet/<%= @organization.id %>?sheet_id=<%= s.id %>" class="more"><%= s.shared_contacts.size %> contacts</a>
+<% end %>
+<h2>Add Contact Sheet</h2>
+
+<form method="post" action="/organizations/add_contacts/<%= @organization.id %>" enctype="multipart/form-data">
+	
+	<div class="section">
+		<div class="label">Browse:</div>
+		<div class="input"><input type="file" name="spreadsheet[uploaded_data]" /></div>
+	</div>
+	
+	<div class="section">
+		<div class="label">&nbsp;</div>
+		<div class="input"><input type="submit" value="Upload" /></div>
+	</div>
+	
+</form>

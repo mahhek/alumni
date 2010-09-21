@@ -1,0 +1,140 @@
+
+<%= render :partial => "header" %>
+
+<%# ---------------------Manage Prospects--------------------- %>
+
+<% case @type
+when "Prospects" %>
+	<form action="/promotion/send_nudge" method="POST" >
+		<%= render :partial => "promotion/manage_appeals/hidden_form_values" %>
+		<div id="prospects_step_1">
+			<p>These prospects have not donated; send a reminder!</p>
+
+			<table class="generic_selectable_list appeals_list">
+				<%= render :partial => "promotion/manage_appeals/list_header", :locals => {:extra_info_name=>"Date Most Recent Appeal Was Sent"} %>
+				<% @contacts.each do |c|%>
+					<%= render :partial => "promotion/manage_appeals/contact_row", :locals => {:c => c, :extra_info => longer_date(c.last_contacted)  }%>
+				<%end%>
+				
+				<%= render :partial=>"promotion/manage_appeals/empty_row" if @contacts.empty? %>
+			</table>
+
+			<input type="button" value="Nudge" onclick="toggle_to_contact_form('prospects_step');" />
+			<br><br>You can edit your message after clicking.
+		</div>
+		
+		<%= render \
+			:partial => "promotion/custom_appeals_form",
+			:locals => {
+			:type=> "prospects",
+			:subject=> "A Message From #{@campaign.name}",
+			:body=>
+				%|Dear Friends,<br>
+				<br>
+				Please remember to support #{@campaign.name}!  Every little bit counts.| } %>
+	
+	</form>
+
+<%# ---------------------Manage Donors--------------------- %>
+	
+<% when "Contributors" %>
+	<form action="/promotion/send_thanks" method="POST" >
+		<%= render :partial => "promotion/manage_appeals/hidden_form_values" %>
+		<div id="donors_step_1">
+			<p>These people have donated; thank them!</p>
+			<table class="generic_selectable_list appeals_list">
+				<%= render :partial => "promotion/manage_appeals/list_header", :locals => {:extra_info_name=>"Date of Most Recent Donation"} %>
+				<% @contacts.each do |c|%>
+					<%= render :partial => "promotion/manage_appeals/contact_row", :locals => {:c => c, :extra_info => (c.payment) ? longer_date(c.payment.created_at) : ""  }%>
+				<%end%>
+				
+				<%= render :partial=>"promotion/manage_appeals/empty_row" if @contacts.empty? %>
+			</table>
+			
+			<input type="button" value="Thank" onclick="toggle_to_contact_form('donors_step');" />
+			<br><br>You can edit your message after clicking.
+		</div>
+
+
+		<%= render \
+			:partial => "promotion/custom_appeals_form",
+			:locals => {
+			:type=> "donors",
+			:subject=> "Thank you for contributing to #{@campaign.name}",
+			:body=>
+				%|Dear Contributors,<br>
+				<br>
+				Thank you for your contribution to #{@campaign.name}!  Your support makes a difference.| } %>
+
+	</form>
+
+<%# ---------------------Manage Thanked Contacts--------------------- %>
+
+<% when "Thanked" %>
+
+	<form action="/promotion/send_contact" method="POST" >
+		<%= render :partial => "promotion/manage_appeals/hidden_form_values" %>
+		<div id="thanked_step_1">
+		
+			<table class="generic_selectable_list appeals_list">
+				<%= render :partial => "promotion/manage_appeals/list_header", :locals => {:extra_info_name=>"Date Most Recent Thank You Email Was Sent"} %>
+				<% @contacts.each do |c|%>
+					<%= render :partial => "promotion/manage_appeals/contact_row", :locals => {:c => c, :extra_info => longer_date(c.last_contacted) }%>
+				<%end%>
+			
+				<%= render :partial=>"promotion/manage_appeals/empty_row" if @contacts.empty? %>
+			</table>
+
+			<input type="button" value="Contact" onclick="toggle_to_contact_form('thanked_step'); " />	
+			<br><br>You can edit your message after clicking.
+		</div>
+
+		<%= render \
+			:partial => "promotion/custom_appeals_form",
+			:locals => {
+			:type=> "thanked",
+			:subject=> "A Message From #{@campaign.name}",
+			:body=> %|Dear Contributors,<br>
+				<br>
+				Thank you for your ongoing support for my cause.  Here's an update on what we've done.| } %>
+
+	</form>
+
+<%# ---------------------Manage All Appeals--------------------- %>
+
+<% when "All" %>
+	<form action="/promotion/send_contact" method="POST" >
+		<div id="general_step_1">
+			<%= render :partial => "promotion/manage_appeals/hidden_form_values" %>
+			
+			<table class="generic_selectable_list appeals_list">
+				<%= render :partial => "promotion/manage_appeals/list_header", :locals => {:extra_info_name=>"Status"} %>
+				<% @contacts.each do |c|%>
+					<%= render :partial => "promotion/manage_appeals/contact_row", :locals => {:c => c, :extra_info => c.status_text }%>
+				<%end%>
+				<%= render :partial=>"promotion/manage_appeals/empty_row" if @contacts.empty? %>
+			</table>
+			
+			<input type="button" value="Contact" onclick="toggle_to_contact_form('general_step'); " />	
+			<br><br>You can edit your message after clicking.
+		</div>
+
+		<%= render \
+		:partial => "promotion/custom_appeals_form",
+		:locals => {
+			:type=> "general",
+			:subject=> "A Message From #{@campaign.name}",
+			:body=> %|Dear Friends,<br>
+				<br>
+				Thank you for your ongoing support for my cause.  Here's an update on what we've done.| } %>
+	</form>
+
+<% end %>
+
+<div class="flash flash_error" style="display:none;" id="contact_error"> You must choose someone to contact. </div>
+
+<script>
+	contact_ids = [<%= @contacts.select{|c| c.status_text != "Unsubscribed" }.map(&:id).join(", ") %>];
+	render_specific_editor("promotion_body", '450px', '150px');
+</script>
+

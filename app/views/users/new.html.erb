@@ -1,0 +1,77 @@
+
+<!-- SIGN UP FORM  -->
+<!-- header  -->
+<div id="signup" class="center">
+
+    <!-- right column  -->
+    <div id="right" class="bgstyle3 floatl">
+      <div class="top_left"><div class="top_right"></div></div>
+      <div class="content">
+
+      <% form_for :user, :url=>users_path, :html=>{:class=>"standard"} do |f| %>
+          <p> * = Required field </p>
+          <%= error_messages_for :user%>
+         <ol>
+            <li class="nolabel"><b class="lg">Already a member? <%= link_to "Log in", :controller => :account, :action => :login %> now.</b></li>
+           <li>
+             <label>First Name:</label>
+             <%= f.text_field :first_name, :size=>60, :class=>'medium' %> *
+           </li>
+           <li>
+             <label>Last Name:</label>
+             <%= f.text_field :last_name, :size=>60, :class=>'medium' %><br /> *
+             <span class="hint">Only your last initial will be displayed - ex. Tom P.</span>
+           </li>
+           <li>
+             <label for="email">Email:</label>
+             <%= f.text_field :email, :size=>60, :class=>'medium' %><br /> *
+             <span class="hint">Spam sucks. We'll never share or sell your email. Read our <a href="#">privacy policy</a>.</span>
+<%#if @policy_statement.nil?%>
+              <%#= link_to 'privacy policy', ""%>.
+             <%#else%>
+  <%#= link_to 'privacy policy', "#{@policy_statement.public_filename}"%>.
+<%#end%>
+  
+           </li>
+           <li>
+             <label for="password">Password:</label>
+             <%=f.password_field :editable_password, :size=>60, :class=>'medium' %> *
+           </li>
+           <li>
+             <label for="password_confirm">Confirm password:</label>
+             <%=f.password_field :password_confirmation, :size=>60, :class=>'medium' %> *
+           </li>
+           <li>
+             <label for="zip">Zip code:</label>
+               <%=f.text_field :zip, :size=>20, :class=>'short'%>
+           </li>
+           <li>
+             <label for="gender">Gender:</label>
+               <%=select(:user,:gender,List.get_list_with_default("Genders").collect {|item| [item.name,item.id.to_s]} )%>
+             <span class="hint">(not visible by other members)</span>
+           </li>
+           <li>
+             <label>Birthdate:</label>
+               <%=f.date_select :date_of_birth, :start_year=>1900,:end_year=>Date.today.year - 13,:include_blank=>true , :order=>[:month, :day,:year]%>
+             <span class="hint">(not visible by other members)</span>
+           </li>
+
+           <li class="nolabel">
+               <%=f.check_box :i_agree %>I agree to the <%= link_to "Terms of Service.", "/home/terms", :popup => true, :class => 'show-as-link' %> *
+           </li>
+
+           <li for="ok_to_send"> it is okay to send my contact information to organizations: </label>
+               <%= f.check_box :ok_to_send %>
+           </li>
+
+           <li class="nolabel">
+               <%= submit_tag "Submit", :alt => "Sign up" %>
+           </li>
+         </ol>
+      <% end %>
+
+      </div>
+    </div> <!-- END right column  -->
+
+</div>
+<!-- END SIGN UP  -->

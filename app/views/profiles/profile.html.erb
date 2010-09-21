@@ -1,0 +1,14 @@
+<div id="my_account" class="bgstyle7">
+		
+	<div class="top_left"><div class="top_right"></div></div>
+	<div class="content">
+		
+		<%= link_to image_tag("/images/sitewide/arrow_previous.gif", :alt => "") + " back to Your Account", {:action => "index"}, :class => "back_link" %>
+		
+		<h1>Your Profile:</h1>
+		<%= render :partial => 'form_profile' %>
+		
+	</div>
+	<div class="bottom_left"><div class="bottom_right"></div></div>
+
+</div>

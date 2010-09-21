@@ -1,0 +1,6 @@
+<% users.each do |auser|%>
+  <input type="radio" name="organization_user[user_id]" value="<%=auser.id%>"/>
+    <span><%=auser.first_name%> <%=auser.last_name%>
+    </span>
+      <%=auser.email%><br/>
+<% end %>

@@ -1,0 +1,83 @@
+<% content_for :head do %>
+  <%= render :partial=>'layouts/text_editor' %>
+<% end %>
+
+<%setup_yield%>
+<h1><%=@campaign.name%></h1>
+
+<p>* = Required field</p>
+
+<% form_for(@campaign,:html=>{:multipart => true } )  do |f| %>
+	<%= f.error_messages %>
+	
+	<table class="generic_form new_campaign_form" style="background:0">
+		
+		<%= form_data_row f, :organization_id, "School/Organization", @organization.name %>
+		
+		<tr id="funds_for_school">
+          <%  if @organization.who_will_choose_fund != "the_donors" && @organization.who_will_choose_fund != "all_gifts_will_be_unrestritced" %>
+            <%= render :partial=>'fund_raisers/campaign_fund_view',:locals=>{:fund_raisers=>@funds} %>
+          <%end%>
+        </tr>
+		
+		<% if @organization.show_class_year? %>
+		<tr>
+			<th><%= f.label :class_year, "Class Year"%></th>
+			<td>
+				<%= f.select(:class_year,
+					(["none", ""] + (@organization.start_class_year..@organization.end_class_year).map {|year| [year, year]}.reverse)) %>
+			</td>
+		</tr>
+		<% end %>
+		
+		<%= form_text_row f, :name, "Title" , true %>
+		<%= form_text_row f, :formatted_goal, "Goal Amount" %>
+		<%= form_text_row f, :donor_goal, "Donor Goal", true%>
+		
+		<% if @is_admin %>
+			<%= form_text_row f, :formatted_base, "Base Donation Amount" %>
+			<%= form_text_row f, :base_donors, "Base Donors Amount" %>
+		<% end %>
+		
+		<tr class="form_divider"></tr>
+		
+		<% fields_for :photo do |photo| %>
+		<tr>
+			<th class="tall_label">
+				<%= photo.label :uploaded_data, 'Your Picture' %>
+				<br><span class="field-subtext" style="font-style:italic;">Photos larger than 1.5 MB may take longer to upload.</span>
+			</th>
+			<td>
+				<%= photo.file_field :uploaded_data %>
+			</td>
+		</tr>
+		<% end %>
+		
+		<tr class="form_divider"></tr>
+		
+		<tr>
+			<th class="tall_label"><%= f.label :main_embeded_video, 'Embed Videos From YouTube' %></th>
+			<td>
+				<%= f.text_area :main_embeded_video, :rows => 3, :cols => 40 %>
+				<br><span class="field-subtext">Copy the ‘embed’ code in the gray box to the right of
+			    your YouTube video and paste it here.</span>
+			</td>
+		</tr>
+		
+		<tr class="form_divider"></tr>
+		
+		<tr>
+			<th class="tall_label"><%= f.label :campaign_text, 'Pitch' %></th>
+			<td><%= f.text_area :campaign_text, :cols=>25, :rows=>20, :title => "Pitch", :class=>"mceEditor" %></td>
+		</tr>
+		
+		<%= form_data_row f, :friendly_url, "Friendly URL", "http://www.alumnifidelity.com/#{@campaign.url}.html" %>
+				
+		<tr class="form_divider"></tr>
+		
+		<%= form_submit f, "Update" %>
+		
+	</table>
+<% end %>
+
+<script> render_specific_editor(); </script>

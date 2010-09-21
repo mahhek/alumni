@@ -1,0 +1,30 @@
+<%setup_yield%>
+
+
+  <% if @campaign_user.status == CampaignUser::REQUESTED then %>
+    <h1>Join Forces</h1>
+  <% else %>
+    <h1>Notify Me</h1>
+  <% end %>
+<% form_for(@campaign_user, :html => {:class => "standard"}) do |f| %>
+  <%= f.error_messages %>
+  <%= f.hidden_field :user_id %>
+  <%= f.hidden_field :campaign_id %>
+  <%= f.hidden_field :status %>
+
+  <% if @campaign_user.status == CampaignUser::REQUESTED %> 
+    <label>Message:</label><br/>
+    <%=f.text_area :message%>
+    <br/>
+  <% end %>
+
+  <p >
+    <label for='ok_to_send'> It is okay to share my contact information with the organization this campaign is associated with: </label>
+    <%= f.check_box :ok_to_send %>
+  <p/>
+
+  <p>
+    <%= f.submit((@campaign_user.status == CampaignUser::REQUESTED) ? "Join" : "Save") %>
+  </p>
+
+<% end %>

@@ -1,0 +1,7 @@
+<h1>Org Registrations</h1>
+<% @registrations.each do |r| %>
+	<div style="margin:0 0 6px 20px; font-size:14px">
+		<a href="/register/show/<%= r.id %>"><strong><%= r.name %></strong></a>
+		on <%= r.created_at.strftime("%A, %B %d %Y") %>
+	</div>
+<% end %>

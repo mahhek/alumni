@@ -1,0 +1,119 @@
+<h1 class="org_name"><!--<%= @organization.name %>--></h1>
+
+<div class="org_element org_image">
+	<%=load_full(@organization)%>
+</div>
+
+
+<div class="org_element org_desc org_highlight">
+	<p><%= simple_format( @organization.description ) %></p>
+	<p class="org_start_fundraising">
+		<a href="/campaigns/new?organization_id=<%= @organization.id %>">Start Fundraising Now</a>
+	</p>
+</div>
+
+<div class="clear"></div>
+
+<% if @organization.show_donor_amount? || @organization.show_raised_amount? %>
+	<div class="org_element org_copy org_stats">
+		<h2>Statistics (since <%= @organization.created_at.year %>)</h2>
+		<p>
+			<% if @organization.show_raised_amount? %>
+			<span class="stat_num"><%= number_to_currency(@organization.sum_payments) %></span>
+			donations
+			<% end %>
+			
+			<% if @organization.show_donor_amount? %>
+			<span class="stat_num"><%= number_with_delimiter(@organization.num_donors) %></span>
+			donors
+			<% end %>
+		</p>
+	</div>
+<% end %>
+
+<div class="org_element org_copy" style="display:none">
+	<h2>A Message From <%= @organization.name %></h2>
+	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+</div>
+
+
+<div class="org_element org_copy">
+	<h2>Hot Fundraising Pages</h2>
+	<h3>View these fundraising pages to see what's going on</h3>
+	<% @campaigns.first(5).each do |campaign| %>
+	<div class="hot_campaign">
+		<a href="/<%= campaign.url %>.html" class="photo_block"><%= load_small(campaign) %></a>
+		
+		<div class="hot_campaign_name">
+			<a href="/<%= campaign.url%>.html"><%= campaign.name %></a>
+		</div>
+		
+		<div class="hot_campaign_owner">
+			by <%= link_to_compose( campaign.creator ) %>
+		</div>
+		
+		<% if campaign.currentAmount.to_i > 0 %>
+		<div class="hot_campaign_raised">
+			<%= number_to_currency(campaign.currentAmount) %> to date
+		</div>
+		<% end %>
+		
+		<div class="clear"></div>
+	</div>
+	<% end %>
+	
+	<% if @campaigns.size > 5 %>
+		<div id="extra_hot_campaigns" style="display:none;">
+			<% @campaigns[5..-1].each do |campaign| %>
+			<div class="hot_campaign">
+				<a href="/<%= campaign.url %>.html" class="photo_block"><%= load_small(campaign) %></a>
+
+				<div class="hot_campaign_name">
+					<a href="/<%= campaign.url%>.html"><%= campaign.name %></a>
+				</div>
+
+				<div class="hot_campaign_owner">
+					by <%= link_to_compose( campaign.creator ) %>
+				</div>
+
+				<% if campaign.currentAmount.to_i > 0 %>
+				<div class="hot_campaign_raised">
+					<%= number_to_currency(campaign.currentAmount) %> to date
+				</div>
+				<% end %>
+
+				<div class="clear"></div>
+			</div>
+			<% end %>
+		</div>
+		<p><a href="#" onclick="$('extra_hot_campaigns').toggle(); return false;">See More...</a></p>
+	<% end %>
+
+</div>
+
+<% if !@class_years.empty? && @organization.show_class_year_leaderboard? %>
+<div class="org_element org_copy org_class_years">
+	<h2>Class Year Competition</h2>
+	<h3>See which class is doing the best</h3>
+	<% @class_years.each_with_index do |data, i| %>
+		<div class="org_class_rank">
+			<div class="org_class_medal">
+				<% if i == 0%>
+					<img src="/images/gold_32.png">
+				<% elsif i == 1 %>
+					<img src="/images/silver_32.png">
+				<% elsif i == 2 %>
+					<img src="/images/bronze_32.png">
+				<% end %>
+			</div>
+		
+			<div class="org_class_year">
+				<%= data.first %> - <%= number_to_currency(data.last)%>
+			</div>
+			<div class="clear"></div>
+		</div>
+	<% end %>
+</div>
+<% end %>
+
+<div class="clear"></div>

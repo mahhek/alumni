@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>AlumniFidelity <%= (@page_title) ? " | #{@page_title.content}" : "" %></title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="/images/AL_favicon.ico"/>
+	<%= stylesheet_link_tag 'main','navigation' %>
+    <%= javascript_include_tag :defaults,'browserdetect_lite', 'textboxlist','test' %>    
+    
+    
+	<%= yield :head %>
+	<!--[if IE 6]>
+	<%= stylesheet_link_tag 'ie6' %>
+	<![endif]-->
+    
+</head>
+
+<body class="interior <%= params[:mode] %>" id="body" onmousedown="whichElement(event);">
+<!--[if lt IE 7]>
+      <%= render :partial =>"layouts/navigator_detection" %>
+    <![endif]-->
+	<%= render :partial => "layouts/dev_tools" if RAILS_ENV != "production" %>
+	<%= render :partial => "layouts/text_editor" if in_edit_mode %>
+	<div id="wrap" class="clear">
+		<%=render :partial => 'layouts/header_main'%>
+		<%=render :partial => 'layouts/main_nav' %>
+		<% flash.each do |k, v| %>
+			<% if [:notice, :error].include? k %>
+				<div id="flash_div" class="flash_<%= k %> flash"><%= v %>
+                
+                <span style="margin-left:25px;"><%= label_tag "close_btn", "X" , :onclick=>"close_flash_div();"%></span>
+                
+                
+                </div>
+			<% end %>
+		<% end%>
+		<div id="content-wrap">
+			<%= yield %>
+		</div>	
+			<%= render :partial => 'layouts/footer_main' %>
+		<%= render :partial => "layouts/dev_tools_activate" if RAILS_ENV != "production" %>
+	</div>
+	<%= render :partial => "layouts/js_event_loader" %>
+	<%= render :partial => "layouts/google_analytics" if RAILS_ENV == "production" %>
+</body>
+</html>
+<script>
+  function close_flash_div(){
+    document.getElementById("flash_div").style.display = 'none';
+  }
+</script>

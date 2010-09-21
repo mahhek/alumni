@@ -1,0 +1,70 @@
+<%= stylesheet_link_tag 'organization_registration' %>
+
+<div class="registration_info_primary">
+	
+	<div class="registration_info">
+		<h2>Org Information</h2>
+		<ul>
+			<li>Name: <strong><%= @registration.name %></strong></li>
+			<li>Address: <strong><%= @registration.address %></strong></li>
+			<li>Address: <strong><%= @registration.city %>, <%= @registration.state %> <%= @registration.zip %></strong></li>
+			<li>Year Established: <strong><%= @registration.year_established %></strong></li>
+			<li>Federal EIN: <strong><%= @registration.federal_ein %></strong></li>
+			<% if @is_admin %>
+			<li>Actions: <a href="/organizations/edit/<%= @registration.organization_id %>">Validate Org</a></li>
+			<% end %>
+		</ul>
+	</div>
+	
+	<!--
+	<div class="registration_info">
+		<h2>Fundraising Information</h2>
+		<ul>
+			<li>Funds: <strong><%# @registration.fundraisers.join(", ") %></strong></li>
+			<li>Description: <%= @registration.description %></li>
+			<li>Fundraiser Text: <%= @registration.fundraiser_text %></li>
+			<li>E-Receipt Text: <%= @registration.reciept_text %></li>
+		</ul>
+	</div>
+	-->
+</div>
+
+<div class="registration_info_secondary">
+	<div class="registration_info">
+		<h2>Contact Information</h2>
+		<ul>
+			<li>Name: <strong><%= @registration.contact_name %></strong></li>
+			<li>Email: <strong><%= @registration.contact_email %></strong></li>
+			<li>Phone: <strong><%= @registration.contact_phone %></strong></li>
+		</ul>
+	</div>
+	
+	<div class="registration_info">
+		<h2>Bank Information</h2>
+		<ul>
+			<li>Name: <strong><%= @registration.bank_name %></strong></li>
+			<li>Type: <strong><%= @registration.bank_type %></strong></li>
+			<li>Account #: <strong><%= @registration.bank_acct_no %></strong></li>
+			<li>Routing #: <strong><%= @registration.bank_routing_no %></strong></li>
+		</ul>
+	</div>
+	
+	<div class="registration_info">
+		<h2>Attachments</h2>
+		<ul>
+			<li>
+				Voided Check: 
+				<% if @registration.voided_check %>
+					<a href="<%= @registration.voided_check.public_filename %>">Download</a>
+				<% else %>n/a<% end %>
+			</li>
+			<li>
+				Tax Exemption: 
+				<% if @registration.tax_proof %>
+					<a href="<%= @registration.tax_proof.public_filename %>">Download</a>
+				<% else %>n/a<% end %>
+			</li>
+		</ul>
+	</div>
+	
+</div>

@@ -1,0 +1,61 @@
+<style>
+h3 {
+	margin:12px 0 6px;
+}
+
+.flagged_campaigns_view th {
+	padding:0;
+}
+
+.flagged_campaigns_view td {
+	padding:0.5em 0;
+}
+
+.flagged_campaigns_view .small_column {
+	width:150px;
+}
+</style>
+
+<h2>Fundraising Pages Administrator</h2>
+
+<h3>Flagged Fundraising Pages</h3>
+All fundraising pages that have been flagged for your organization.
+
+<table class="flagged_campaigns_view">
+	<tr>
+		<th></th>
+		<th>NAME</th>
+		<th>CATEGORY</th>
+		<th>REASON</th>
+		<th class="small_column">DATE</th>
+		<th class="small_column">ACTION</th>
+	</tr>
+	<%  @flagged_campaigns.keys.each_with_index do |c, i|%>
+		<% camps = @flagged_campaigns[c] %>
+		<% camps.each_with_index do |camp, ii| %>
+		<tr>
+			<td class="ordination"><%= "#{i+1}." if ii == 0 %></td>
+			<td>
+				<% if ii == 0 %>
+					<a href="/<%= camp.campaign.url %>.html"><%= camp.campaign.name %></a>
+				<% end %>
+			</td>
+			<td><%= camp.category %></td>
+			<td><%= camp.description %></td>
+			<td><%= camp.created_at.strftime("%a %b %d %I:%M%p") %></td>
+			<td><%= camp.action %></td>
+		</tr>
+		<% end %>
+	<% end %>
+	<tr>
+		<td class="ordination"></td>
+		<td colspan="5">
+			<% if @flagged_campaigns.keys.empty? %>
+			No fundraising pages have been flagged
+			<% end %>
+		</td>
+	</tr>
+</table>
+
+<br>
+<a href="/flagged_campaigns/?organization_id=<%= @organization.id %>">&lt; Back</a>

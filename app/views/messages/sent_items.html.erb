@@ -1,0 +1,27 @@
+<%= cms("message_center_sent", %|<h1>Message Center</h1>|) %>
+<%= render :partial => "/messages/header", :locals => {:current => "Sent"} %>
+
+<ul class="generic_link_list message_actions_list">
+	<li>Actions:</li>
+	<li><a href="#" onclick="mark('all');return false">Select All</a></li>
+	<li><a href="#" onclick="mark('none');return false">Select None</a></li>
+	<li><a href="#" onclick="submit_to('/messages/delete_sent');return false">Delete</a></li>
+</ul>
+
+<div style="clear:both;"></div>
+
+<form action="/none" method="POST" id="messages_form">
+
+	<table class="generic_selectable_list messages_list" cellspacing="0">
+	
+		<% for message in @messages %>
+			<%= render :partial => 'sent_message', :locals => { :message => message, :read=>true  } %>
+		<% end %>
+		
+	</table>
+	
+</form>
+
+<%= render :partial => "controls" %>
+
+<div style="clear:both;"></div>

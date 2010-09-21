@@ -1,0 +1,15 @@
+<% content_for :head do %>
+  <%= render :partial=>'layouts/text_editor' %>
+<% end %>
+
+<style>.yui-editor-container {margin:0;}</style>
+
+<% form_for :donate_whats_this, @donate_whats_this, :url=>{:controller=>"admin", :action=>"donar_what_this_save"} do |f| %>
+  <table><tr><td><%= f.text_area :content, :rows=>30, :class=>"mceEditor" %></td></tr>
+  <tr><td><%= f.submit "Done" %> or <%= link_to 'Cancel', :controller=>"admin", :action=>"index"%></td></tr></table>
+<%end%>
+
+
+<script>
+  render_specific_editor();
+</script>

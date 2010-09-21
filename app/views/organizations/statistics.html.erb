@@ -1,0 +1,30 @@
+<% setup_yield %>
+
+
+<h1><%= @organization.name %> Fundraising Pages</h1>
+
+<%= cms("org_admin_statistics", %||) %>
+
+<%= link_to "Export All", {:id => @organization.id, :format => 'csv'}, :class => "rollover-button" %>
+
+<table>
+  <thead>
+    <tr><th>Fundraising Page</th><th>Owner</th><th class="number_col">Amount Raised</th><th>&nbsp;</th></tr>
+  </thead>
+  <tbody>
+    <% @campaigns.each do |campaign| %>
+      <tr>
+        <td><%= link_to campaign.name, "/#{campaign.url}.html" %></td>
+
+        <td>
+          <%unless campaign.owner.nil?%>
+            <%= link_to campaign.owner.short_name, :controller => "messages", :action => "new_to_campaign_owner", :campaign_id => campaign.id %>
+          <%end%>
+        </td>
+        <td class="number_col"><%= number_to_currency(campaign.currentAmount) %></td>
+        <td>&nbsp;<%= link_to "Export", {:id => @organization, :format => 'csv', :campaign_id => campaign.id } %></td>
+      </tr>
+    <% end %>
+ </tbody>
+</table>
+ 

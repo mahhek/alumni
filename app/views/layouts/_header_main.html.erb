@@ -1,0 +1,71 @@
+<div id="top-header-div" >
+<div id="header">
+	
+	
+    <div id="login-links" style="z-index:0">	
+	    <% if logged_in_user && RAILS_ENV != "test" %>
+	            <a href="/account/logout" >Logout</a>
+	    <%else%>
+	        <%= link_to "Login or Register", :controller=>'users', :action=>'new_org_user'%>
+	    <%end %>
+    </div>
+	
+    <div id="logo">      
+		<% if @branded_org %>          
+          <% if @organization &&  (@organization.branded_logo_directs_to.nil? || @organization.branded_logo_directs_to == "") %>            
+            <a href="/organizations/<%= @branded_org.id %>"><img src="<%= @branded_org.branded_logo.public_filename %>"></a>
+          <%elsif @organization %>          
+            <a href="<%= @organization.branded_logo_directs_to %>" ><img src="<%= @branded_org.branded_logo.public_filename %>"></a>
+          <%elsif @campaign.organization.branded_logo_directs_to.nil? || @campaign.organization.branded_logo_directs_to == ""%>
+            <a href="/organizations/<%= @branded_org.id %>"><img src="<%= @branded_org.branded_logo.public_filename %>"></a>
+          <%else%>
+            <a href="<%= @campaign.organization.branded_logo_directs_to %>" ><img src="<%= @branded_org.branded_logo.public_filename %>"></a>
+          <%end%>
+		<% else %>          
+            <a href="/" onmouseover="$('house_icon').style.display='inline';" onmouseout="$('house_icon').style.display='none';" ><img src="/images/af/logo_af.jpg" alt="logo" /><img id="house_icon" style="display:none;" src="/images/af/home_icon.jpg" height="22" width="22"/></a>
+		<% end %>
+    </div>
+	
+	
+	<% if !@branded_org %>
+		<div id="homepage_tagline">
+			<h1>The most efficient way to support your organization</h1>
+		</div>
+	<% end %>
+	
+    <div id="nav">
+        <ul>
+            <li id="n02"><a href="/organizations" class="expandable">Find</a>
+                <ul>
+                    <li><a href="/organizations" >Organizations</a></li>
+                    <li class="last" ><%=link_to 'Fundraising Pages', campaigns_path%></li>
+                </ul>
+            </li>
+
+            <%#*<li id="n03"><%@policy_statement = PolicyStatement.find_by_type_of_policy("privacy_policy")%>
+            <%#if @policy_statement.nil?%>
+              <%#= link_to 'Privacy', ""%>
+             <%#else%>
+            <%#= link_to 'Privacy', "#{@policy_statement.public_filename}"%>
+            <%#end%>
+            <%#*<li id="n03"><%@policy_statement = PolicyStatement.find_by_type_of_policy("security_statement")%>
+            <%#if @policy_statement.nil?%>
+              <%#= link_to 'Security', ""%>
+             <%#else%>
+            <%#= link_to 'Security', "#{@policy_statement.public_filename}"%>
+            <%#end%>
+<%#*</li>%>
+<li id="n03"><a href="/privacy">Privacy</a></li>
+            <li id="n03"><a href="/security">Security</a></li>
+            
+            <li id="n03"> <a href="/tips"> Tips </a></li>
+            <li id="n06"><a href="/home/about" class="expandable">About Us</a>
+                <ul>
+                    <li><a href="/home/contact">Contact</a></li>
+                    <li class="last"><a href="/home/faq">FAQs</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div><!-- END #nav -->
+</div><!-- END #header -->
+</div>

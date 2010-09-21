@@ -1,0 +1,23 @@
+<%setup_yield%>
+<%= cms("contributors", %|<h1>Contributors</h1>|)%>
+
+<table class="generic_selectable_list contributors_list" cellspacing="0">
+	<tr>
+		<th></th>
+		<th>Contributor</th>
+		<%if @user && @campaign.creator.id == @user.id%>
+		<th>Amount</th>
+		<%end%>
+		<th>Date</th>
+	</tr>
+	<% @payments.each_with_index do |payment, i| %>
+	<tr>
+		<td class="ordination"><%= i+1 %>.</td>
+		<td><%= payment.full_name %></td>
+		<%if @user && @campaign.creator.id == @user.id %>
+		<td> <%= number_to_currency (payment.amount) %> </td>
+		<%end%>
+		<td> <%= payment.created_at.to_date %> </td>
+	</tr>
+	<%end%>
+</table>

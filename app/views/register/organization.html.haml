@@ -1,0 +1,50 @@
+= stylesheet_link_tag 'organization_registration'
+
+#organization_registration
+  %h1 Getting Started
+  .callout.steps
+    .callout_message
+      %h3 What are the steps to apply?
+    .callout_description
+      %ol
+        %li
+          .list_number 1
+          .list_detail
+            %strong Account
+            %p Use your existing account or create a new one
+        %li
+          .list_number 2
+          .list_detail
+            %strong Information
+            %p Organization information, federal tax I.D. number, bank information
+  
+  .callout.know
+    .callout_message
+      %h3 What do I need to know?
+    .callout_description
+      %ol
+        %li
+          .list_number 1
+          .list_detail
+            %strong Approval Process
+            %p We'll review your application and get back to you within 2 business days. You can begin building your fundraising pages prior to approval, but you will not be able to accept donations until you are approved.
+        %li
+          .list_number 2
+          .list_detail
+            %strong Pricing
+            %ul
+              %li No initiation fee
+              %li No monthly fee
+              %li 5% per transaction
+            %p
+              We typically negotiate flat fees without any transaction percentages for large university clients.
+              %a{ :href=>"mailto:sales@alumnifidelity.com" } Contact us
+              to arrange this model.
+  
+  .continue
+    - if logged_in_user
+      %a{ :href=>"/register/info" } Continue &#187;
+    - else
+      %a{ :href=>"/users/new_org_user?other_dest=/register/info" } Continue &#187;
+
+  = render :partial=>'register/help'

@@ -1,0 +1,53 @@
+<div id="dev_tools" style="<%= (session[:dev_tools].nil?) ? "display:none;" : "" %>" class="campaign_manager">
+	<h2>Top Secret Dev Tools</h2>
+	
+	<ul class="campaign_manager_info">
+		<li class="campaign_manager_header">INFORMATION</li>
+		
+		<% if logged_in_user %>
+		
+			<li>You are logged in as: <strong><%= logged_in_user.name %></strong></li>
+			<% if logged_in_user.has_role?('Administrator') %>
+				<li>You are an: <strong>AF Admin</strong></li>
+			<% end %>
+		
+			<% if logged_in_user.has_role?('OrganizationUser') %>
+				<% OrganizationUser.find_all_by_user_id(logged_in_user.id).each do |ou| %>
+				<li>You are an: <strong>Org Admin</strong> for <strong><%= ou.organization.name %></strong></li>
+				<% end %>
+			<% end %>
+		
+		<% else %>
+				<li>No information available</li>
+		<% end %>
+		
+	</ul>
+
+	<ul class="campaign_manager_actions">
+		<li class="campaign_manager_header">ACTIONS</li>
+		<% if logged_in_user %>
+			<% if logged_in_user.has_role?('Administrator') %>
+				<li><a href="/dev_tools/role_change?do=revoke&role=Administrator&goto=<%= request.request_uri %>">Revoke AF Admin rights</a></li>
+			<% else %>
+				<li><a href="/dev_tools/role_change?do=add&role=Administrator&goto=<%= request.request_uri %>">Become an AF Admin</a></li>
+			<% end %>
+			
+			<% if logged_in_user.has_role?('OrganizationUser') %>
+				<% OrganizationUser.find_all_by_user_id(logged_in_user.id).each do |ou| %>
+				<li><a href="/dev_tools/role_change?do=revoke&role=OrganizationUser&org=<%= ou.organization_id %>&goto=<%= request.request_uri %>">Revoke Org Admin rights for <%= ou.organization.name %></a></li>
+				<li><a href="/campaigns/list_all?organization_id=<%= ou.organization_id %>">View Campaign List for <%= ou.organization.name %></a></li>
+				<% end %>
+			<% end %>
+			
+			<% if @organization && OrganizationUser.find_all_by_user_id_and_organization_id(logged_in_user.id, @organization.id).empty? %>
+				<li><a href="/dev_tools/role_change?do=add&role=OrganizationUser&org=<%= @organization.id %>&goto=<%= request.request_uri %>">Become an Org Admin for <%= @organization.name %></a></li>
+			<% end %>
+			
+		<% else %>
+			<li><a href="/dev_tools/log_in?goto=<%= request.request_uri %>">Log in as TJ</a></li>
+		<% end %>
+		<li><a href="/dev_tools/close?goto=<%= request.request_uri %>">Close This Window</a></li>
+	</ul>
+	
+	<div style="clear:both;"></div>
+</div>

@@ -1,0 +1,17 @@
+<div id="sign-in">
+	<% form_for :user, :url => {:controller=>'account', :action=>'authenticate'} do |f| %>
+		<input type="hidden" name="request_url" value="<%=params[:request_url]%>" />
+		
+		<label for="username">Email</label>
+		<%= f.text_field :email,:size=>25%>
+		<div style="clear:both;"></div>
+		
+		<label for="password">Password</label>
+		<%= f.password_field :editable_password,:size=>25%>
+		<div style="clear:both;"></div>
+		
+		<span>Forget your <a href="/account/forgot_password" >password</a>?</span>
+		<input id="sign_in_submit" type="image" src="/images/af/btn_signin_down.png" onmouseover="javascript:this.src='/images/af/btn_signin_over.png';" onmouseout="javascript:this.src='/images/af/btn_signin_down.png';" alt="Log in"/>
+		<div style="clear:both;"></div>
+	<% end %>
+</div>

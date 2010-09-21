@@ -1,0 +1,75 @@
+<style>
+.fieldWithErrors {
+	display:inline;
+}
+</style>
+
+<div id = "signup" class = "center">
+	<!-- right column  -->
+	<div class = "signup-1">
+		<b> Already a member? Log in now. </b>
+		<% form_for :user, :url => { :controller=>'account', :action=>'authenticate' },:html=>{ :class=>"standard" } do |f| %>
+		<label for = "username" >Email: </label>
+		<%= f.text_field :email, :size => 25 %> <br/>
+		<label for = "password" > Password: </label>
+		<%= f.password_field :editable_password, :size=>25 %> <br/>
+		<span class = "fl" > Forget your <a href = "/account/forgot_password">password</a>? </span> <br/>
+		<%= submit_tag 'Sign In' %>
+		<input type = "hidden" name = "request_url" value = "<%=params[:other_dest]%>" />
+		<% end %>
+	</div>
+
+	<div id = "right" class = "signup-2">
+		<b>Sign Up and Continue:</b>
+		<% form_for :user, :url=>users_path, :html=>{:class=>"standard", :multipart => true} do |f| %>
+		<p> * = Required field </p>
+		<%= error_messages_for :user%>
+
+		<label>First Name:</label>
+		<%= f.text_field :first_name, :size=>60, :class=>'medium', :id=>"first_name" %> *
+		<br/>
+
+		<label>Last Name:</label>
+		<%= f.text_field :last_name, :size=>60, :class=>'medium' %> *
+		<br/>
+
+		<label for = "email">Email:</label>
+		<%= f.text_field :email, :size=>60, :class=>'medium' %> *
+		<br/>
+
+		<label for = "email_confirm">Confirm Email:</label>
+		<%= f.text_field :email_confirmation, :size=>60, :class=>'medium' %> *
+		<br/>
+
+		<label for = "password">Password:</label>
+		<%=f.password_field :editable_password, :size=>60, :class=>'medium' %> *
+		<br/>
+
+		<label for = "password_confirm">Confirm password:</label>
+		<%=f.password_field :password_confirmation, :size=>60, :class=>'medium' %> *
+		<br/>
+
+		<% fields_for :photo do |photo| %>
+		<%= photo.label :uploaded_data, "Profile Picture:"%>
+		<%= photo.file_field :uploaded_data %>
+		<br/>
+		<% end %>
+
+		<p> <label class="checkbox"> <%=f.check_box :i_agree %> I agree to the <%= link_to "Terms of Service", "/home/terms", :popup => true, :class => 'show-as-link'%>
+        
+<%#@policy_statement = PolicyStatement.find_by_type_of_policy("terms_of_service")%>
+        <%#if @policy_statement.nil?%>
+              <%#= link_to 'Terms of Service', ""%>
+             <%#else%>
+<%#= link_to 'Terms of Service', "#{@policy_statement.public_filename}" %>
+<%#end%>
+*</label> </p>
+		<p> <%= submit_tag "Sign up" %> </p>
+		<input type = "hidden" name = "other_dest" value = "<%= params[:other_dest]%>" />
+		<% end %>
+	</div>
+	
+	<div class="clear"></div>
+</div>
+<!-- END SIGN UP  -->
+<script>document.getElementById("first_name").focus();</script>

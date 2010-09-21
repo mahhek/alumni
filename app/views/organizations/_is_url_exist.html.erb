@@ -1,0 +1,5 @@
+<%= hidden_field_tag :isUrlExist , @isExist.to_s %>
+<% unless @isExist.nil? %>
+  <%= @isExist.to_s == "true" ? "We regret that the URL you requested is already taken. Please try another one." : "Availabe." %>
+  <%puts "VALUE OF IS EXIST FROM VIEW IS=>#{@isExist}"%>
+<%end%>

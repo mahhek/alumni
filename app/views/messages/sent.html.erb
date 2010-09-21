@@ -1,0 +1,48 @@
+<div class="profile_content">
+  <div>
+    <div id="message">
+
+      <h1>Message Center</h1>
+      <div class="chromemenu2">
+        <ul>
+          <li><a href="/messages.html">Inbox</a></li>
+          <li><a href="/messages/new.html">Compose</a></li>
+          <li><span><a class="current" href="javascript:return false;">Sent</a></span></li>
+          <li><a href="/my_stuff/member_requests.html">Requests</a></li>
+          <li class="last">&nbsp;</li>
+        </ul>
+      </div>
+      <div id="main">
+        <div id="subtabs">
+          &nbsp;
+        </div>
+      </div>
+    </div>
+     <br/>
+     <form>
+        <table  style="width: 500px; table-layout: fixed; border-style: none;">
+          <% for message in @messages %>
+               <%= render :partial => 'message', :locals => { :message => message } %>
+            <!-- <%  first_message = message.get_first_message %>
+            <tbody class="super-row">
+              <tr class="first">
+                <td></td>
+                <td><%=h message.recipient_name(@user) %></td>
+                <td><%=link_to " #{'Re: ' if first_message.id != message.id}  #{message.get_first_message.subject}",message %></td>
+                <td></td>
+              </tr>
+              <tr class="last">
+                <td></td>
+                <td><%=longer_date(message.created_at)%> </td>
+                <td><%=  message.text_summary(40) %></td>
+              </tr>
+            </tbody> -->
+          <%end%>
+        </table>
+     </form>
+  </div>
+
+
+
+<!--  <%= link_to 'New message', new_message_path %> -->
+</div>

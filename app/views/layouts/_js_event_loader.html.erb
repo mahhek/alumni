@@ -1,0 +1,8 @@
+<script>
+	if (window.attachEvent) window.attachEvent("onload", sfHover);
+	<% if RAILS_ENV != "development" %>setGradient('body','#<%= @bg_color %>','#FFFFFF',0);<% end %>
+</script>
+
+<!--[if IE 6]>
+	<script> sfHover(); </script>
+<![endif]-->

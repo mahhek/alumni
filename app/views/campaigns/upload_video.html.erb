@@ -1,0 +1,40 @@
+<%setup_yield%>
+<%= cms("campaign_upload_video", %|
+<h1>Fundraising Page Video</h1>
+
+<p>Copy the ‘embed’ code from your video source (on YouTube, this
+is in the gray box to the right of your video) and paste it in the box. This
+video will appear in the Photo/Video gallery beneath the Donate button.
+</p>|) %>
+
+<% form_for(@campaign) do |f| %>
+  <%= f.error_messages %>
+	<table class="generic_form wide_labels">
+		<% unless @campaign.embeded_video.blank? %>
+		<tr>
+			<th class="tall_label">Current Video</th>
+			<td>				
+				<object width="215" height="200">
+					<param name="movie" value="<%=@campaign.embeded_video%>"></param>
+					<param name="allowscriptaccess" value="always"></param>
+					<embed src="<%=@campaign.embeded_video%>"
+						type="application/x-shockwave-flash"
+						allowscriptaccess="always"
+						allowfullscreen="true"
+						width="270"
+						height="236" >
+					</embed>
+				</object>
+			</td>
+		</tr>
+		<% end %>
+		<tr>
+			<th class="tall_label">Embed Video Code</th>
+			<td><%= f.text_area :embeded_video,:cols=>35,:rows=>3 %></td>
+		</tr>
+	</table>
+	
+
+    
+    <%= f.submit "Save" %> or <a href="/<%= @campaign.url %>.html">cancel</a>
+<% end %>

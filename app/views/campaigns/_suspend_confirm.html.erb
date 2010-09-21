@@ -1,0 +1,17 @@
+<div class="campaign_manager_confirm" style="<%= (params[:suspend] != "1") ? "display:none;" : "" %>" id="suspend_confirm">
+	<strong>Why are you suspending this campaign?</strong><br>
+	This message will be given to the campaign organizer.<br><br>
+	<form method="POST" action="/campaigns/suspend/<%= campaign.id %>">
+		<% if params[:suspend] == "1" %><input type="hidden" name="head_back" value="1"><% end %>
+		<textarea rows="4" cols="50" name="reason"></textarea><br><br>
+		<input type="submit" value="Suspend"> or <a href="#" onclick="$('suspend_confirm').style.display='none'; return false">cancel</a>
+	</form>
+</div>
+
+<div class="campaign_manager_confirm" style="<%= (params[:unsuspend] != "1") ? "display:none;" : "" %>" id="unsuspend_confirm">
+	<strong>Are you sure you want to take this campaign out of suspension?</strong><br><br>
+	<form method="POST" action="/campaigns/unsuspend/<%= campaign.id %>">
+		<% if params[:unsuspend] == "1" %><input type="hidden" name="head_back" value="1"><% end %>
+		<input type="submit" value="Un-suspend"> or <a href="#" onclick="$('unsuspend_confirm').style.display='none'; return false">cancel</a>
+	</form>
+</div>

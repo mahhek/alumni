@@ -1,0 +1,22 @@
+<h1>New featured_campaign</h1>
+
+<% form_for :featured_campaign,@featured_campaign, :url=>{:action=>'',:controller=>'featured_campaigns/create'},:html=>{ :method=>:post } do |f| %>
+  <%= f.error_messages %>
+<br/>
+  <p>
+    <%= f.label :campaign_id %><br />
+	
+	<%=select(:featured_campaign, :campaign_id, @campaigns.collect{|camp| [camp.name, camp.id]} ,{},{ } )%>
+	
+
+  </p>
+  <p>
+    <%= f.label :expiration %><br />
+    <%= f.datetime_select :expiration %>
+  </p>
+  <p>
+    <%= f.submit "Create" %> or <%= link_to 'cancel',:controller=>'featured_campaigns' %>
+  </p>
+<% end %>
+
+

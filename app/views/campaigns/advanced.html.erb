@@ -1,0 +1,62 @@
+<%setup_yield%>
+<%= cms("campaign_advanced_settings", %|<h1>Advanced Settings</h1>|) %>
+
+
+<% form_for @campaign do |f| %>
+	<%= f.error_messages %>
+	<table class="settings campaign_advanced_settings">
+		<tr>
+			<th></th>
+			<th class="choice">On</th>
+			<th class="choice">Off</th>
+		</tr>
+		
+		<tr>
+			<td class="settings-label">
+				<%= f.label :public %>
+				<br>Public fundraising pages appear in the site directory and anyone can access them.  Turning this off will mean only those you invite can view your fundraising page.
+			</td>
+			<td class="choice_on"><%= f.radio_button :public, true %></td>
+			<td class="choice_off"><%= f.radio_button :public, false %></td>
+		</tr>
+		
+		<%# Please note that the true/false values of the next three settings are intentionally flipped %>
+		
+		<tr>
+			<td class="settings-label"><%= f.label :disable_comment_wall, "Comment Wall" %></td>
+			<td class="choice_on"><%= f.radio_button :disable_comment_wall, false %></td>
+			<td class="choice_off"><%= f.radio_button :disable_comment_wall, true %></td>
+		</tr>
+		
+		<tr>
+			<td class="settings-label">
+				<%= f.label :disable_goal_widget, "Dollar Tracker" %>
+				<br>You may want to disable the Dollar Tracker until you reach impressive donation totals.
+			</td>
+			<td class="choice_on"><%= f.radio_button :disable_goal_widget, false %></td>
+			<td class="choice_off"><%= f.radio_button :disable_goal_widget, true %></td>
+		</tr>
+		
+		<tr>
+			<td class="settings-label"><%= f.label :disable_donor_goal_widget, "Donor Tracker" %></td>
+			<td class="choice_on"><%= f.radio_button :disable_donor_goal_widget, false %></td>
+			<td class="choice_off"><%= f.radio_button :disable_donor_goal_widget, true %></td>
+		</tr>
+		
+		<tr>
+			<td class="settings-label"><%= f.label :disable_donor_wall, "Donor Wall" %></td>
+			<td class="choice_on"><%= f.radio_button :disable_donor_wall, false %></td>
+			<td class="choice_off"><%= f.radio_button :disable_donor_wall, true %></td>
+		</tr>
+
+        <%#if @campaign.organization.graphical_display_fund_total == "the_fundraisers"%>
+        <%#*<tr>%>
+			<%#*<td class="settings-label"><%= f.label :disable_fund_total, "Fund Totals" %>
+			<%#*<td class="choice_on"><%= f.radio_button :disable_fund_total, false %>
+			<%#*<td class="choice_off"><%= f.radio_button :disable_fund_total, true %>
+		<%#*</tr>%>
+        <%#end%>
+		
+	</table>
+<%= f.submit "Update" %>
+<% end %>

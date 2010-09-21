@@ -1,0 +1,44 @@
+<%= render :partial => "header" %>
+
+<form action="/promotion/send_shared" method="POST" >
+	<%= render :partial => "promotion/manage_appeals/hidden_form_values" %>
+	<div id="contact_step_1">
+		<p>Your organization has provided these contacts for you to contact</p>
+
+		<table class="generic_selectable_list appeals_list">
+			<%= render :partial => "promotion/manage_appeals/list_header", :locals => {:extra_info_name=>"Name"} %>
+			<% @contacts.each do |c|%>
+				<tr>
+					<td class="select_column">
+						<input type="checkbox" name="contacts[]" value="<%= c.id %>" id="contact_<%= c.id %>"/>
+					</td>
+					<td class="name_column" id="email_<%= c.id %>"><%= c.email %></td>
+					<td><%= c.name %></td>
+				</tr>
+			<%end%>
+			
+			<%= render :partial=>"promotion/manage_appeals/empty_row" if @contacts.empty? %>
+		</table>
+
+		<input type="button" value="Contact" onclick="toggle_to_contact_form('contact_step');" />
+		<br><br>You can edit your message after clicking.
+	</div>
+	
+	<%= render \
+		:partial => "promotion/custom_appeals_form",
+		:locals => {
+		:type=> "contact",
+		:subject=> "A Message From #{@campaign.name}",
+		:body=>
+			%|Dear Friends,<br>
+			<br>
+			Please remember to support #{@campaign.name}!  Every little bit counts.| } %>
+
+</form>
+
+<div class="flash flash_error" style="display:none;" id="contact_error"> You must choose someone to contact. </div>
+
+<script>
+	contact_ids = <%= @contacts.map(&:id).to_json %>
+	render_specific_editor("promotion_body", '450px', '150px');
+</script>

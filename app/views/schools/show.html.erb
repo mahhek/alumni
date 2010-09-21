@@ -1,0 +1,43 @@
+<p>
+  <b>Name:</b>
+  <%=h @school.name %>
+</p>
+
+<p>
+  <b>Street 1:</b>
+  <%=h @school.street_1 %>
+</p>
+
+<p>
+  <b>Street 2:</b>
+  <%=h @school.street_2 %>
+</p>
+
+<p>
+  <b>City:</b>
+  <%=h @school.city %>
+</p>
+
+<p>
+  <b>State:</b>
+  <%=h @school.state %>
+</p>
+
+<p>
+  <b>Zip:</b>
+  <%=h @school.zip %>
+</p>
+
+<p>
+  <b>Longitude:</b>
+  <%=h @school.longitude %>
+</p>
+
+<p>
+  <b>Lattitude:</b>
+  <%=h @school.lattitude %>
+</p>
+
+
+<%= link_to 'Edit', edit_school_path(@school) %> |
+<%= link_to 'Back', schools_path %>

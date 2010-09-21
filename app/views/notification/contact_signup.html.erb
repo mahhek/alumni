@@ -1,0 +1,5 @@
+This <%= (@contact.as_org?) ? "organization" : "individual" %> would like to be contacted with more information.<br>
+<br>
+<% @info_to_display.each do |k, v| %>
+	<%= k %>: <strong><%= @contact.send(v) %></strong><br>
+<% end %>

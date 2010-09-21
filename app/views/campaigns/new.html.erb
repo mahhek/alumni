@@ -1,0 +1,230 @@
+<% content_for :head do %>
+  <%= render :partial=>'layouts/text_editor' %>
+<% end %>
+
+<style>.yui-editor-container {margin:0;}</style>
+
+<img src="/images/step_1.png" style="padding-top:10px">
+
+<%= cms("new_campaign", %|<h1>Create a New campaign</h1>|) %>
+<p>* = Required field</p>
+
+<% form_for(@campaign,:html=>{:multipart => true ,:onsubmit=>"return checkBoxSelection();" }  )  do |f| %>
+	<%= f.error_messages %>
+	
+	<table class="generic_form new_campaign_form">
+		<tr>
+			<th><%= f.label :your_name, 'Your Name:' %></th>
+			<td><%=logged_in_user.name %></td>
+		</tr>
+		
+		<tr>
+			<th class="tall_label"><%= f.label 'big-search-field', 'Type Your School/Organization Name' %></th>
+			<td><%= render :partial => "campaigns/signup/org_autocomplete", :locals => {:f => f} %></td>
+		</tr>
+
+        
+
+		<tr id="funds_for_school">          
+          <%= render :partial=>'fund_raisers/campaign_fund_view',:locals=>{:fund_raisers=>@funds} %>
+        </tr>
+        
+        <tr id="school_class_years">
+          <%= render :partial=>'fund_raisers/school_class_years',:locals=>{:org=>@selected_org} %>
+        </tr>
+
+
+       
+
+
+      <tr>
+			<th><%= f.label :name, 'Title Your Fundraising Page' %></th>
+			<td><%= f.text_field :name, :onkeyup => 
+					remote_function(
+						:url=>{:action=>'suggest_url'},
+						:with=>"'url=' + this.value ",
+						:success => "$('campaign_friendly_url').value = request.responseText;$('campaign_friendly_url').onkeyup();") %>
+			*</td>
+		</tr>
+		
+		<tr>
+			<th>
+				<%= f.label :donor_goal, 'Target Number of Donors' %>
+				<br>(be aggressive!)
+			</th>
+			<td>
+				<%= f.text_field :donor_goal, :value => (@campaign.donor_goal.to_i > 0) ? number_with_delimiter(@campaign.donor_goal.to_i) : "" %>
+			</td>
+		</tr>
+		
+		<tr>
+			<th>
+				<%= f.label :goal, 'How much are you planning to raise?' %>
+				<br>(be aggressive!)
+			</th>
+			<td>$ <%= f.text_field :formatted_goal, :value => @campaign.formatted_goal[1..-1] %> *</td>
+		</tr>
+		
+		<tr class="form_divider"></tr>
+		
+		<% fields_for :photo do |photo| %>
+		<tr>
+			<th class="tall_label">
+				<%= photo.label :uploaded_data, 'Your Picture' %>
+				<br>
+				<span class="field-subtext" style="font-style:italic;">
+					Photos larger than 1.5 MB may take longer to upload.
+				</span>
+			</th>
+			<td>
+				<% if session[:photo] %>
+					<img src="<%= session[:photo].public_filename("small") %>">
+					<input type="hidden" name="photo_id" value="<%= session[:photo] %>" />
+				<% else %>
+					<%= photo.file_field :uploaded_data %>
+					<br>
+					<span class="field-subtext">
+						Upload a picture of yourself. (Personal touch is huge – studies show that people
+				    	are 100 times more likely to donate when they know the person asking.)
+					</span>
+				<% end %>
+			</td>
+		</tr>
+		<% end %>
+		
+		<tr class="form_divider"></tr>
+		
+		<tr>
+			<th class="tall_label"><%= f.label :main_embeded_video, 'Embed Videos From YouTube' %></th>
+			<td>
+				<%= f.text_area :main_embeded_video, :rows => 3, :cols => 40 %>
+				<br>
+				<span class="field-subtext">
+					Copy the ‘embed’ code in the gray box to the right of
+			    	your YouTube video and paste it here.
+				</span>
+			</td>
+		</tr>
+		
+		<tr class="form_divider"></tr>
+		
+		<tr>
+			<th class="tall_label">
+				<%= f.label :campaign_text, 'Pitch' %>
+				<br>
+				<span class="field-subtext">
+					<strong>Explain why this organization deserves contributions now.</strong>
+				</span>
+			</th>
+			<td><%= f.text_area :campaign_text, :rows=>10, :class=>"mceEditor" %></td>
+		</tr>
+		
+		<tr>
+			<th class="tall_label"><%= f.label :friendly_url, 'Choose Your URL' %></th>
+			<td>
+				http://www.alumnifidelity.com/<%= f.text_field :friendly_url,:size=>15,:onkeyup=>"this.value = url_strip( $('campaign_friendly_url').value );" + remote_function(:url=>{:action=>'check_available'},:with=>"'url=' + this.value ")%>.html 
+				
+				<br><span id="available" style="color:green;" >&nbsp;</span>
+				    <span id="unavailable" style="color:red;" >&nbsp;</span>
+				<br><span class="field-subtext">(Note: After setting this you will not be able to change it.)</span>
+			</td>
+		</tr>
+		
+		<tr>
+			<th></th>
+			<td>
+              <%#@policy_statement = PolicyStatement.find_by_type_of_policy("privacy_policy")%>
+              
+				<%= f.check_box :can_contact , :checked => "checked"  %>
+                <%= f.label :can_contact, %|Yes, I want to be contacted occasionally with news or updates from this school or non-profit.  See our <a href="/privacy">privacy policy</a>.| %>
+                <%#if @policy_statement.nil?%>
+				<%#= f.label :can_contact, %|Yes, I want to be contacted occasionally with news or updates from this school or non-profit.  See our #{link_to 'privacy policy'}.|%>
+<%#else%>
+               <%#= f.label :can_contact, %|Yes, I want to be contacted occasionally with news or updates from this school or non-profit.  See our #{link_to 'privacy policy', "#{@policy_statement.public_filename}"}.|%>
+               
+<%#end%>
+
+
+			</td>
+		</tr>
+		
+		<tr class="form_divider"></tr>
+		
+		<tr>
+			<th></th>
+			<td><%= f.submit "Preview Page" %> or <%= link_to 'Cancel', campaigns_path %></td>
+		</tr>
+		
+		<tr class="form_divider"></tr>
+		
+		<tr>
+			<td colspan="2" class="launch">
+				After launching, you can edit the text, photos, and videos on your page by using the Edit tab above your page.
+			</td>
+		</tr>
+		
+	</table>
+<% end %>
+
+
+
+<script>
+	function url_strip ( s ) {
+		// Strip out everything but letters and numbers.
+		return s.replace(/[^a-zA-Z0-9]+/g,'')
+	}
+
+	function setVisibility(id, flag) {
+		if (flag) $(id).show(); else $(id).hide();
+	}
+
+	/* this is used by AJAX */
+	function indicateUnregisteredOrganization(flag, id, name) {
+		setVisibility('unregisteredOrgMessage', flag);
+		if (flag) {
+			$('unregisteredOrgLink').href = "/home/contact_signup?as_org=1&school_id=" + id;
+			$('unregisteredOrgUserLink').href = "/home/contact_signup?as_org=0&school_id=" + id;
+		}
+
+	}
+
+	function selectOrg(name, id, isRegistered, org_color) {
+		var resultsDiv = $('search_results_div');
+		$('big-search-field').value=name;
+		resultsDiv.style.display='none';
+
+		var organizationIdField = $('campaign_organization_id');
+		if (isRegistered) {
+			organizationIdField.value = id.toString();
+			organizationIdField.onchange();
+			indicateUnregisteredOrganization(false);
+			setGradient('body','#'+org_color,'#FFFFFF',0);
+		} else {
+			indicateUnregisteredOrganization(true, id, name);
+		}
+		return false;
+	}
+
+	render_specific_editor();
+
+    function checkBoxSelection(){
+      if($('who_will_choose_fund_option') != null){
+        if($('who_will_choose_fund_option').value.toString() == "the_fundraisers" || $('who_will_choose_fund_option').value.toString() == "both"){
+          elementArray = document.getElementsByName('fund_raiser_ids[]')
+          var check_boxes_length = elementArray.length;
+          var breaked = false;
+          for(var count = 0 ; count < check_boxes_length ; count++){
+            if( $('fund_raiser_' + elementArray[count].value ).checked == true ){              
+              breaked = true;
+              break;
+            }
+          }
+          if(breaked == false){
+            scroll(0,0);
+            alert("You are supposed to select atleast one fund");
+            return false;
+          }
+        }        
+      }
+    }
+</script>

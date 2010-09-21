@@ -1,0 +1,46 @@
+  <% if @new_organizations.total_pages > 1 %>
+    <%= will_paginate(@new_organizations, :params => {:controller=>"admin", :action => 'our_newest_members'}) %>
+  <% end %>
+<div style="clear:both"> </div>
+
+<table width="100%" border="0" cellspacing="0" id="campaigns-top">
+  <%if @new_organizations.size > 0%>
+  <tr>
+    <th colspan="2">Organization Name</th>
+    <th class="ctr">Pages</th>
+    <th class="ctr">Joining Date</th>
+    <th class="ctr">Expiry Date</th>
+  </tr>
+  <%end%>
+  <tbody id="spinner" class="spinner-off">
+    <tr><td colspan="5"><img src="/images/spinner.gif"></td></tr>
+  </tbody>
+  <tbody id="data-rows">
+  <% for organization in @new_organizations %>
+    <%if organization.organization.organization_addresses.first.url_portion.nil? || organization.organization.organization_addresses.first.url_portion == ""%>
+      <tr>
+        <td width="20%"><%= link_to load_small(organization.organization),:controller=>"organizations", :action => "show", :id => organization.organization.id %></td>
+        <td width="24%"><%= link_to organization.organization.full_name,:controller=>"organizations", :action => "show", :id => organization.organization.id %></td>
+        <td class="stats-number ctr" width="10%"><%= link_to organization.organization.campaigns_count, :controller=>"organizations",:action => "show", :id => organization.organization.id %></td>
+        <td style="text-align:center;" width="11%"><%= link_to organization.joining_date.strftime("%m/%d/%Y"), :controller=>"organizations",:action => "show", :id => organization.organization.id %></td>
+        <td style="text-align:center;" width="11%"><%= link_to organization.expiry_date.strftime("%m/%d/%Y"), :controller=>"organizations",:action => "show", :id => organization.organization.id %></td>
+      </tr>
+    <%else%>
+      <tr>
+        <td width="20%"><%= link_to load_small(organization.organization),:controller=>"organizations", :action => "show", :id => organization.organization.organization_addresses.first.url_portion %></td>
+        <td width="24%"><%= link_to organization.organization.full_name,:controller=>"organizations", :action => "show", :id => organization.organization.organization_addresses.first.url_portion %></td>
+        <td class="stats-number ctr" width="10%"><%= link_to organization.organization.campaigns_count,:controller=>"organizations", :action => "show", :id => organization.organization.organization_addresses.first.url_portion %></td>
+        <td style="text-align:center;" width="11%"><%= link_to organization.joining_date.strftime("%m/%d/%Y"), :controller=>"organizations",:action => "show", :id => organization.organization.id %></td>
+        <td style="text-align:center;" width="11%"><%= link_to organization.expiry_date.strftime("%m/%d/%Y"), :controller=>"organizations",:action => "show", :id => organization.organization.id %></td>
+      </tr>
+    <%end%>
+  <% end %>
+  </tbody>
+</table>
+
+
+  <% if @new_organizations.total_pages > 1 %>
+    <%= will_paginate(@new_organizations, :params => {:controller=>"admin", :action => 'our_newest_members'}) %>
+  <% end %>
+<div style="clear:both"> </div>
+

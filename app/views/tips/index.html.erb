@@ -1,0 +1,25 @@
+<%= cms("tips", %|<h1>Tips</h1>|) %>
+
+<table>
+
+<% for tip in @tips %>
+<tr>
+	<td class="tip-show"><%= tip.text %></td>
+	<%if is_administrator? %>
+
+	<td><%= link_to 'Edit', edit_tip_path(tip) %></td>
+	<td><%= link_to 'Delete', tip, :confirm => 'Are you sure?', :method => :delete %></td>
+
+	<% end %>
+
+</tr>
+
+<tr><td class="tip-author">by <%= tip.creator.name %></td></tr>
+<% end %>
+</table>
+
+<br />
+
+<%if logged_in_user %>
+<%= link_to 'Add your own tip here for others to see!', new_tip_path %>
+<% end %>

@@ -1,0 +1,49 @@
+<table class="generic_form donate_form">
+
+<tr>
+	<th class="tall_label"><%= pay.label :user_entered_amount, "Amount:" %></th>
+	
+	<td>
+      
+	<% if !@donation_options.categories_switch %>
+    
+		$<%= pay.text_field :user_entered_amount, :size => 4, :maxlength => 7 %> USD *
+	<% else %>
+    
+		<% if !@donation_options.named_categories %>          
+			<% @donation_options.categories.each do |c| %>
+				<div class="donation_pay_category">
+					<%= pay.radio_button :user_entered_amount, c, :class=>"input_radio" %>
+					<label for="payment_user_entered_amount_<%= c %>"><%= number_to_currency c %></label>
+				</div>
+			<% end %>
+		<% else %>        
+			<% @donation_options.sorted_categories.each do |k| %>
+				<div class="donation_pay_category">
+					<%= pay.radio_button :user_entered_amount, k, :class=>"input_radio" %>
+					<label for="payment_user_entered_amount_<%= k %>">
+						<strong><%= @donation_options.categories[k] %></strong> <%= number_to_currency k %>
+					</label>
+				</div>
+			<% end %>
+			
+		<% end %>
+		<div class="donation_pay_category">
+			<input 
+				type="radio"
+				name="payment[user_entered_amount]"
+				id="custom_amount"
+				class="input_radio"
+				value="-1"
+				<%= (@payment && @payment.custom_amount.to_i > 0) ? "checked='checked'" : "" %>
+				onfocus="$('payment_custom_amount').focus();"
+				>
+			<label for="custom_amount">
+				$ <%= pay.text_field :custom_amount, :size => 6, :maxlength => 10 %> Other
+			</label>
+		</div>
+	<% end %>
+	</td>
+</tr>
+
+</table>

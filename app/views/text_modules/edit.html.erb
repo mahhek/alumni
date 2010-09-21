@@ -1,0 +1,17 @@
+<h1>Editing text_module</h1>
+
+<% form_for(@text_module) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :text_content %>
+    <%= f.text_area :text_content %>
+  </p>
+  <p>
+    <%= f.submit "Update" %>
+	<input type="hidden" name="back_to" value="<%=request.referer %>"  />
+  </p>
+<% end %>
+
+<%= link_to 'Show', @text_module %> |
+<%= link_to 'Back', text_modules_path %>

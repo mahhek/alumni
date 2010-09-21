@@ -1,0 +1,32 @@
+<div id="gallery">
+	<p>Photo/Video Gallery</p>
+	<ul class="generic_link_list message_center_tabs gallery_tabs">
+		<div id="gallery_images_tabs">
+			<li class="current">Images</li>
+			<li class="last"><a href="#" onclick="video_gallery(); return false">Video</a></li>
+		</div>
+		<div id="gallery_video_tabs" style="display:none;">
+			<li><a href="#" onclick="photo_gallery(); return false">Images</a></li>
+			<li class="current last">Video</li>
+		</div>
+	</ul>
+	
+	<%= render :partial => "campaigns/profile/photo_gallery" %>
+	<%= render :partial => "campaigns/profile/video_gallery" %>
+</div>
+
+<script>
+	var video_gallery = function() {
+		$('gallery_images').style.display = "none";
+		$('gallery_images_tabs').style.display = "none";
+		$('gallery_video').style.display = "block";
+		$('gallery_video_tabs').style.display = "block";
+	}
+	
+	var photo_gallery = function() {
+		$('gallery_images').style.display = "block";
+		$('gallery_images_tabs').style.display = "block";
+		$('gallery_video').style.display = "none";
+		$('gallery_video_tabs').style.display = "none";
+	}
+</script>

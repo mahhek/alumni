@@ -1,0 +1,101 @@
+<div class = "comment_wall" style="position: relative">
+	<h1>Comment Wall</h1>
+	<!-- Add Comment -->
+	<% if @campaign.status != Campaign::CLOSED %>
+	<div style="position: absolute; top:10px; right:0px; width:550px" >
+
+		<% if is_logged_in? %>
+		<% form_for(@comment) do |f| %>
+		<%= f.hidden_field :campaign_id, :value => @campaign.id %>
+		<%= f.error_messages %>
+		<!-- <a href="<%#= new_comment_path %>"> <img src="/images/af/add_comment.png" /> </a> -->
+		<label for="comment_text"> Enter a comment here: </label> <br />
+		<textarea style="font-size: 11px; overflow:auto;" cols="45" rows="2" id="comment_text" name="comment[text]" onkeyup="textLimit(this, 200);"></textarea>
+		<input type="image" src="/images/af/add_comment_greybg.png" value="Submit" alt="Submit" onmouseover="javascript:this.src='/images/af/add_comment_greybg_over.png';" onmouseout="javascript:this.src='/images/af/add_comment_greybg.png';">
+		<% end %>
+		<% else %>
+		<%= link_to "Login ", :controller=>'users', :action=>'new_org_user' %>to post new comments!
+		<% end %>
+	</div>
+	<% end %>
+
+	<div class="pagination" id="comment_list_paginate"></div>
+	
+	<% @comment_lists.each_with_index do |comments, i| %>
+		<div id="comment_list_<%= i+1 %>" style="<%= (i > 0) ? "display:none" : "" %>">
+			<% comments.each do |comment| %>
+				<div class = "comment" >
+					<%= load_small(comment.creator) %>
+					<div class="comment-content">
+						<b> <%= link_to_compose ( comment.creator ) %> </b>
+						<span style="font-size: smaller;"><%= comment.created_at.to_s(:db) %></span>
+						<div class="comment-text">
+							<%= comment.text[0..200] %>
+							<% if comment.text.length > 200 %>
+							<a class="comment-complete-float"> [...] <span> <%= comment.text[0..comment.text.length] %> </span> </a>
+							<% end %>
+						</div>
+
+						<!-- Delete function -->
+						<% if can_delete_comment(comment) %>
+						<%= link_to 'Delete', comment, :confirm => 'Are you sure?', :method => :delete, :class => 'link-action' %>
+						<% end %>
+					</div>
+				</div>
+			<% end %>
+		</div>
+	<% end %>
+	<div class="clear"> </div>
+
+</div>
+
+<script>
+	var current_comment_list = 1;
+	var total_comment_lists = <%= @comment_lists.size %>;
+	var comment_list_id = "comment_list_"
+	
+	var next_comment_list = function() {
+		goto_comment_list(current_comment_list + 1);
+	};
+	
+	var prev_comment_list = function() {
+		goto_comment_list(current_comment_list - 1);
+	};
+	
+	var goto_comment_list = function(list) {
+		$(comment_list_id + current_comment_list).style.display = "none";
+		$(comment_list_id + list).style.display = "block";
+		current_comment_list = list;
+		draw_comment_paginate();
+	};
+	
+	var draw_comment_paginate = function() {
+		if(total_comment_lists <= 1) { return; }
+		
+		html = [];
+		if(current_comment_list == 1) {
+			html.push("<span class='prev_page'>Prev</span>")
+		} else {
+			html.push("<a href='#' onclick='prev_comment_list(); return false' class='prev_page'>Prev</a>")
+		}
+		
+		for(var i=1; i<=total_comment_lists; i++) {
+			if(current_comment_list == i) {
+				html.push("<span>"+i+"</span>")
+			} else {
+				html.push("<a href='#' onclick='goto_comment_list("+i+"); return false'>"+i+"</a>")
+			}
+		}
+		
+		if(current_comment_list == total_comment_lists) {
+			html.push("<span class='next_page'>Next</span>")
+		} else {
+			html.push("<a href='#' onclick='next_comment_list(); return false' class='next_page'>Next</a>")
+		}
+		html.push("<div style='clear:both;'></div>")
+		
+		$('comment_list_paginate').innerHTML = html.join(" ")
+	};
+	
+	draw_comment_paginate();
+</script>

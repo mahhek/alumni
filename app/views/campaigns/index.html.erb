@@ -1,0 +1,72 @@
+<% search_prompt = "Type Name of Fundraising Page or Organization" %>
+<div class="container clear">
+  <%= cms("campaign_search", %|<h2>Find Existing Campaigns</h2>|) %>
+  <div class="fl-lg-list">
+
+    <div class="searchbox">
+      <form action="/campaigns" >
+        <fieldset id="search">
+          <input id="search-field" name="search_text" type="text" class="large-autosearch"
+              autocomplete="off" value="<%= @search_text.blank? ? search_prompt : @search_text %>" />
+        </fieldset>
+      </form>
+    </div>
+    <div id="search_results">
+      <%= render :partial => "search_results" %>
+    </div>
+  </div>
+
+  <div class="fr-xxsm "> </div>
+
+	<div class="org-campaign-callout">
+		<a class="rollover-button campaign-callout" style="margin:0 0 0 auto;font-size:11px !important;" href="/campaigns/new">Create a New Fundraising Page</a>
+	</div>
+	
+  <div class="clear"></div>
+
+</div>
+
+<script>
+  Event.observe($('search-field'), "focus", function(event) {
+    if (this.value == '<%= search_prompt %>') {
+      this.value='';
+      $(this).setStyle({ color: "#000000"} );
+    };
+  });
+  Event.observe($('search-field'), "keyup", function(event) {
+    if (this.value.length > 2) {
+      $("spinner").removeClassName("spinner-off");
+      $("spinner").addClassName("spinner-on");
+      $("data-rows").hide();
+      <%= remote_function :update=>'search_results',
+        :url=>{:action => :search_with_sort, :sort => @sort},
+        :with=>"'search_text=' + this.value"%>
+    }
+  });
+
+
+  Event.observe($('search-field'), "keyup", function(event) {
+    if (this.value.length > 2) {
+      $("spinner").removeClassName("spinner-off");
+      $("spinner").addClassName("spinner-on");
+      $("data-rows").hide();
+      <%= remote_function :update=>'search_results',
+        :url=>{:action => :search_with_sort, :sort => @sort},
+        :with=>"'search_text=' + this.value"%>
+    }
+  });
+
+  function resort(sort) {
+        var search_text = $('search-field').value
+        if (search_text == '<%= search_prompt %>') {
+          search_text = '';
+        }
+
+        $("spinner").removeClassName("spinner-off");
+        $("spinner").addClassName("spinner-on");
+        $("data-rows").hide();
+        <%= remote_function :update=>'search_results',
+             :url => {:action => :search_with_sort },
+             :with=>"'search_text=' + search_text + '&sort=' + sort"%>
+  }
+</script>

@@ -1,0 +1,47 @@
+<style>
+.bumper_sticker_template_header {
+	margin:0.8em 0 0.2em;
+}
+
+.bumper_sticker_template_explanation {
+	font-size:0.8em;
+}
+</style>
+
+
+<%= cms("bumper_sticker_template_cms", %|
+<h2 class="bumper_sticker_template_header">AlumniFidelity e-Bumper Sticker Builder</h2>
+<span class="bumper_sticker_template_explanation">
+	Use e-Bumper Stickers to link to your fundraising page using Facebook and other venues:<br><br>
+	1. Design your e-Bumper Sticker and save.<br>
+	2. After you save, you can upload to Facebook, etc.
+	<br>
+	<em style="color:#aaa;">Your fundraising page statistics will appear after you design and save your Bumper Sticker.</em>
+</span>
+|) %>
+
+<br><br>
+
+<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+	id="BumperstickerBuilder" width="568" height="482"
+	codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
+	<param name="movie" value="/BumperstickerBuilder.swf?x=3&domain=<%= LocalURL %>&sticker_attribute_id=<%=@sticker_attribute.id%>&campaign_id=<%= @campaign.id %>" />
+	<param name="quality" value="high" />
+	<param name="bgcolor" value="#869ca7" />
+	<param name="allowScriptAccess" value="always" />
+	<param name="wmode" value="transparent" />
+	<embed src="/BumperstickerBuilder.swf?x=3&domain=<%= LocalURL %>&sticker_attribute_id=<%=@sticker_attribute.id%>&campaign_id=<%= @campaign.id %>" 
+		quality="high" bgcolor="#869ca7"
+		width="568" height="482" name="BumperstickerBuilder" align="middle"
+		play="true"
+		loop="false"
+		allowScriptAccess="always"
+		type="application/x-shockwave-flash"
+		wmode="transparent"
+		pluginspage="http://www.adobe.com/go/getflashplayer">
+	</embed>
+</object>
+
+<br><br>
+
+<a href="/campaigns/campaign_stickers?campaign_id=<%= @campaign.id %>"> &lt; Back to all e-Bumper Stickers</a>

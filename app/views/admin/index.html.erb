@@ -1,0 +1,44 @@
+<div class="administrative_tools">
+
+	<h1>Administrative Tools</h1>
+
+	<h3>Miscellaneous</h3>
+	<ul>
+		<% if RAILS_ENV != "test" %><li><a href='/schools'>Schools List</a></li><% end %>
+	</ul>
+
+	<h3>Organization Management</h3>
+	<ul>
+		<li><a href='/organizations/new'>Add Org</a></li>
+		<li><a href='/organizations/list_all'>Org List</a></li>
+		<li><a href='/organization_users'>Org Users</a></li>
+		<li><a href='/register/all'>New Org Registrations</a></li>
+        <li><a href='/admin/our_newest_members'>Our Newest Members</a></li>
+	</ul>
+
+	<h3>Campaign Management</h3>
+	<ul>
+		<li><a href='/campaigns/list_all'>Campaign List</a></li>
+		<li><a href='/organizations/statistics/all.csv'>Export Campaign Statistics</a></li>
+		<li><a href='/featured_campaigns'>Hottest Campaigns</a></li>
+	</ul>
+
+	<h3>User Management</h3>
+	<ul>
+		<li><a href='/users/list_all'>Email Members</a></li>
+	</ul>
+	
+	<h3>Site Settings</h3>
+	<ul>
+		<% if Admin.get("homepage_statistics").on? %>
+			<li><a href='/admin/setting?k=homepage_statistics&v=off'>Turn home page Statistics off</a></li>
+		<% else %>
+			<li><a href='/admin/setting?k=homepage_statistics&v=on'>Turn home page Statistics on</a></li>
+		<% end %>
+       <li><a href='/admin/edit_donate_what_this'>Edit Donar's Whats this</a></li>
+       <li><a href='/admin/policy_statements'>Policy Statements</a></li>
+       
+	</ul>
+
+
+</div>

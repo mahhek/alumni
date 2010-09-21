@@ -1,0 +1,7 @@
+<h1><%=@campaign.name%> has been flagged on AlumniFidelity</h1>
+<p>Please check the following link for problems with this fundraising page</p>
+<p><label>Category: </label> <%=@status%></p>
+<p><label>Message: </label> <%=@message%></p>
+<p><label>Action Taken: </label> <%=@action%></p>
+<p><label>Contact about his flag: </label> <%=@contact_who%></p>
+<a href="<%=LocalURL%>/<%=@campaign.url%>.html"><%=@campaign.name%></a>

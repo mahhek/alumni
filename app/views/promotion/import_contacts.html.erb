@@ -1,0 +1,82 @@
+<!-- INVITE FRIENDS -->
+
+<!-- header  -->
+<%setup_yield%>
+<script>
+function onABCommComplete() {
+	//recipient_list
+  //$('').innerHTML += <span></span>
+}
+
+</script>
+<h1>Step 1: Import your contacts</h1>
+<div id="invite_friends" class="center">
+    
+	<!-- left column  -->
+    <div id="left" class="floatl">
+      
+      <!-- tips  -->
+	  
+      <div class="pad">
+      	<a href="#" onclick="showPlaxoABChooser('recipient_list', '/plaxo_cb.html'); return false" class="lg">Import email addresses</a>
+        <br />
+        Select from your Yahoo, Gmail, or AOL address books!
+        Your email login or password will <b>not</b> be stored.
+        <br />
+		<script type="text/javascript" src="http://www.plaxo.com/css/m/js/util.js"></script>
+        <script type="text/javascript" src="http://www.plaxo.com/css/m/js/basic.js"></script>
+        <script type="text/javascript" src="http://www.plaxo.com/css/m/js/abc_launcher.js"></script>
+        <a href="#" onclick="showPlaxoABChooser('recipient_list', '/plaxo_cb.html'); return false"><img src="/images/import_arrow.jpg" alt="Various supported logos" /></a>
+      </div>
+    
+    </div> <!-- END left column  -->
+    
+    <!-- right column  -->
+    <div id="right" class="floatl">
+
+      <div>
+
+      
+      
+	  <% form_tag :action=>:create_contacts, :method => :post do %>
+	  
+      <ul>
+        <li>
+        	<label for="from" >From:</label>
+				<select name="source_campaign">
+					<option value=""></option>
+					<option value="All">All</option>
+					<% @campaign_list.each do |camp|%>
+						<option value="<%=camp.id%>"><%=camp.name[0..17]%></option>
+					<%end%>
+			</select>
+        </li>
+		<br/>
+        <li>
+
+        	<label for="to" >
+            	Or enter new: <br />
+                Tip: Enter multiple email addresses separated by commas
+            </label>
+            <div class="sm">
+                <textarea id="recipient_list" name="to" class="txt_short"><%=params[:to]%></textarea><br />
+				<div id="result_area"></div>
+            </div>
+
+        </li>
+        <li class="nolabel">
+			<br/>
+        	<input id="invite_button" type="submit" value="Import" />
+        </li>
+      </ul>
+	  <input type="hidden" name="campaign_id" value="<%=params[:campaign_id]%>" />
+      <% end -%>
+      </div>
+
+
+    </div> <!-- END right column  -->
+
+</div>
+<!-- INVITE FRIENDS -->
+<div class="clear"></div>
+

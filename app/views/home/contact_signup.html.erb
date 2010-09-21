@@ -1,0 +1,19 @@
+<style>
+	.field {
+		margin-top:8px;
+	}
+	.fieldWithErrors {
+		display:inline;
+	}
+	#errorExplanation {
+		margin:8px 0;
+	}
+</style>
+
+<div class="container">
+    <%if @contact_alert.as_org == "1" %>
+        <%= render :partial=>'as_organization' %>
+    <%else%>
+        <%= render :partial=>'as_individual' %>
+    <%end%>
+</div>

@@ -1,0 +1,9 @@
+<tr>
+	<td class="select_column">
+		<% if extra_info != "Unsubscribed" %>
+		<input type="checkbox" name="contacts[]" value="<%= c.id %>" id="contact_<%= c.id %>"/>
+		<% end %>
+	</td>
+	<td class="name_column" id="email_<%= c.id %>"><%= c.contact.email_address%></td>
+	<td><%= extra_info %></td>
+</tr>

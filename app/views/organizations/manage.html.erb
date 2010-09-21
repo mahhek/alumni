@@ -1,0 +1,456 @@
+
+<div id="manage_org">
+
+	<ul id="manage_org_categories">
+		<%= link_to_category(:basic, "Basic", true) %>
+		<%= link_to_category(:address, "Address") %>
+		<%= link_to_category(:fundraising, "Fundraising Pages") %>
+		<%= link_to_category(:fundraisers, "Funds") %>
+		<%= link_to_category(:donations, "Donations") %>
+		<%= link_to_category(:settings, "Settings") %>
+		<%= link_to_category(:paypal, "PayPal") %>
+		<li><span class="manage_org_category_header">Premium Features</span></li>
+		<%= link_to_category(:branding, "Branding", false, "star") %>
+		<%= link_to_category(:class_year, "Class Years", false, "star") %>
+		<%= link_to_category(:authorize, "Authorize.net", false, "star") %>
+	</ul>
+
+	<div id="manage_org_basic" class="managed_org_form" style="display:block;">
+		<% form_for @organization do |f| %>
+			<table class="managed_form">
+				<%= managed_section_header %|Organization Details| %>
+				<%= managed_form_select_row f, :school_id, "School", [["",""]] + School.find(:all).map{|i| [i.name,i.id]} %>
+				<%= managed_form_text_row f, :name, "501(c) Organization Name" %>
+				<%= managed_form_text_row f, :tax_status, "Tax Status" %>
+				<%= managed_form_submit f, "Save Changes" %>
+			</table>
+		<% end %>
+	</div>
+	
+	<div id="manage_org_address" class="managed_org_form">
+		<% form_for @organization , :html=>{:id=>"organization_address_form" , :onsubmit=>"return check_url_available();"} do %>
+
+		<% fields_for @organization_address do |f| %>
+			<table class="managed_form">
+				<%= managed_section_header %|Organization Address| %>
+				<%= managed_form_text_row f, :street, "Street" %>
+				<%= managed_form_text_row f, :city, "City" %>
+				<%= managed_form_text_row f, :state, "State" %>
+				<%= managed_form_text_row f, :zip, "Zip" %>
+                <tr>
+                  <th>
+                    <label for="organization_address_url_portion">Set your URL:	</label>
+                  </th>
+                  <td class="form_content">
+                    <%= f.label :url_portion , "#{LocalURL}/organizations/"%>
+                    <%= f.text_field :url_portion %>&nbsp;&nbsp;
+                    <td/>
+                                  
+                </tr>
+                 <tr>
+                  <th>
+
+                  </th>
+                  <td class="form_content">
+                    <span id="msg_div" style="color:#555555">
+                      <%= render :partial=>"is_url_exist"%>
+                    </span>
+                    <td/>
+                    <td>
+                   
+                  
+                  
+                  </td>
+                </tr>
+                
+                               
+				<%= managed_form_submit f, "Save Changes" %>
+			</table>
+		<% end %>
+		<% end %>
+	</div>
+	
+	<div id="manage_org_fundraising" class="managed_org_form">
+		<% form_for @organization do |f| %>
+			<table class="managed_form">
+				<%= managed_section_header %|Fundraising Information| %>
+				
+				<%= managed_form_text_block_row f, :description, "Message to Fundraisers", "Your organization page will serve as springboard for supporters to create their own personal fundraising pages.  Write text for your organization page to inspire your supporters to create fundraising pages!" %>
+				
+				<%= managed_form_text_block_row f, :campaign_pitch, "Pitch", "Suggest text that your fundraisers may want to use on their personal fundraising pages to generate support for your organization." %>
+				
+				<%= managed_form_text_block_row f, :thank_you_email, "Donation Thank You Email" %>
+				
+				<%= managed_form_text_block_row f, :introduction_text, "Introduction Text" %>
+				
+				<%= managed_form_text_block_row_no_rte f, :introduction_video, "Introduction Video", "Copy the 'embed' code in the gray box to the right of your YouTube video and paste it here." %>
+				
+				<%= managed_form_submit f, "Save Changes" %>
+			</table>
+		<% end %>
+	</div>
+	
+	<div id="manage_org_donations" class="managed_org_form">
+		<% form_for @organization do %>
+          
+			<% fields_for :donation_options do |f| %>
+              
+			<table class="managed_form">
+				<%= managed_section_header %|Donations| %>
+				<%= managed_form_radio_row f,
+					:categories_switch, 
+					"Donation Categories",
+					[[true, "On"], [false, "Off"]] %>
+				<%= managed_form_radio_row f,
+					:named_categories, 
+					"Named Categories",
+					[[true, "On"], [false, "Off"]] %>
+				<tr id="donation_categories" style="<%= @donation_options.categories_switch ? "" : "display:none;" %>">
+					<th><label>Categories</label></th>
+					<td class="form_content">
+						<div class="donation_category_items">
+							<div class="donation_category_item">
+								<div class="header" style="width:75px;">Amount</div>
+								<div class="header" style="<%= !@donation_options.categories_switch ? "" : "display:none;" %>width:150px;" id="cat_header">Category</div>
+								<div style="clear:both;"></div>
+							</div>
+							<div id="items">
+							</div>
+							<a href="#" onclick="donation_options.add(); return false">
+								<img src="/images/add.png" style="margin-bottom:-3px"> Add Category
+							</a>
+						</div>
+						
+					</td>
+					<td class="form_description">
+					</td>
+				</tr>
+				
+				<tr>
+					<th><label>Payment Processor</label></th>
+					<td class="form_content"><%= @organization.payment_processor %></td>
+					<td class="form_description"/>
+				</tr>
+				<%= managed_form_submit f, "Save Changes" %>
+			</table>
+			<% end %>
+		<% end %>
+	</div>
+	
+	<div id="manage_org_settings" class="managed_org_form">
+		<% form_for @organization do |f| %>
+			<table class="managed_form">
+				<%= managed_section_header %|Settings| %>
+				
+				<%= managed_form_radio_row f,
+					:show_raised_amount, 
+					"Aggregate Donation Total",
+					[[true, "Public"], [false, "Private"]],
+					"The amount raised across all fundraising pages" %>
+
+                <%= managed_form_radio_row f,
+					:show_funds_total_amount,
+					"Aggregate Fund Total",
+					[[true, "Public"], [false, "Private"]],
+					"The amount raised across all fund/funds" %>
+				
+				<%= managed_form_radio_row f,
+					:show_donor_amount, 
+					"Aggregate Donor Total",
+					[[true, "Public"], [false, "Private"]],
+					"The number of donors across all fundraising pages" %>
+				
+				<%= managed_form_radio_row f,
+					:blind_copy_on_appeals, 
+					"Fundraising Appeal Copy",
+					[[true, "Enable"], [false, "Disable"]] %>
+				
+				<%= managed_form_text_row f, :appeal_bcc_email, "New Appeal BCC Email", "Receive a blind copy of all fundraising appeals to this email address" %>
+				
+				<%= managed_form_radio_row f,
+					:blind_copy_on_donation_receipt, 
+					"Donation Receipt Copy",
+					[[true, "Enable"], [false, "Disable"]] %>
+				
+				<%= managed_form_text_row f, :blind_copy_email, "BCC Email Address", "AlumniFidelity can send a copy of donation receipts to this email address" %>
+				
+				<%= managed_form_radio_row f,
+					:show_intro_text,
+					"Optional Introduction Text",
+					[[true, "On"], [false, "Off"]] %>
+				
+				<%= managed_form_radio_row(f,
+					:show_intro_video,
+					"Optional Introduction Video",
+					([[true, "On"], [false, "Off"]]))%>
+				
+				<%= managed_form_submit f, "Save Changes" %>
+			</table>
+		<% end %>
+	</div>
+	
+	<div id="manage_org_paypal" class="managed_org_form">
+		<% form_for @organization do %>
+		<% fields_for :paypal_credential do |f| %>
+			<table class="managed_form">
+				<%= managed_section_header %|PayPal Payment Processing <a href="#" onclick="enable_paypal();return false">(edit)</a>| %>
+				<%= managed_form_data_row f, :org_name, "Organization Name", f.text_field(:org_name), "This is your organizations name as it appears in PayPal." %>
+				<%= managed_form_data_row f, :un_user, "Username", f.text_field(:un_user, :disabled=>true) %>
+				<%= managed_form_data_row f, :un_password, "Password", f.text_field(:un_password, :disabled=>true) %>
+				<%= managed_form_data_row f, :un_signature, "Signature", f.text_field(:un_signature, :disabled=>true) %>
+				<%= managed_form_data_row f, :un_server, "Server", f.text_field(:un_server, :disabled=>true) %>
+				<%= managed_form_data_row f, :un_service, "Service", f.text_field(:un_service, :disabled=>true) %>
+				<%= managed_form_submit f, "Save Changes" %>
+			</table>
+		<% end %>
+		<% end %>
+	</div>
+	
+	<div id="manage_org_authorize" class="managed_org_form">
+		<% form_for @organization do %>
+		<% fields_for :authorize_credential do |f| %>
+			<table class="managed_form">
+				<%= managed_section_header %|Authorize.net Payment Processing <a href="#" onclick="enable_authorize();return false">(edit)</a>| %>
+				<%= managed_form_data_row f, :api_login_id, "API Login ID", f.text_field(:api_login_id, :disabled=>true) %>
+				<%= managed_form_data_row f, :transaction_key, "Transaction Key", f.text_field(:transaction_key, :disabled=>true) %>
+				<%= managed_form_submit f, "Save Changes" %>
+			</table>
+		<% end %>
+		<% end %>
+	</div>
+	
+	<div id="manage_org_branding" class="managed_org_form">
+		<% form_for @organization, :html=>{:multipart => true} do |f| %>
+          <%= f.error_messages%>
+			<table class="managed_form">
+				<%= managed_section_header %|Customized Branding| %>
+				<%= render :partial => "organizations/manage/branding", :locals => {:f=>f} %>
+                <th>
+                  <label for="organization_branded_logo_directs_to">Branded Logo Directs To:</label>
+                </th>
+                <td>
+                  <%= f.text_field(:branded_logo_directs_to,{ :disabled=>"true" , :style=>"background-color: #eeeeee; border:0px;font-size :16px;height:20px;width:250px;"}) %>
+                  <%= f.hidden_field :branded_logo_directs_to , {:id=>"branded_logo_directs_to_hidden_field"} %>
+                  
+                  
+                    <%= link_to "Edit" ,"" ,{:onclick=>"show_branded_logo();return false;"}%>
+                  
+                  <br/>
+                  <br/>
+                </td>
+                <div id="background_transparent_div" style="display:none">                  
+                </div>
+                <div class="popupholder" id="pop_up_div" style="display: none; position: absolute; z-index: 999; background-color:#ECEFF5;" >
+                  <div class="headingholder_popup">
+                      <span style="margin: 0px 10px; float: right;">
+                          <a href="javascript:void(0)" onclick="hide_addresses()">X</a>
+                      </span>
+                      <span style="margin-left:10px;">
+                          <b>Branded Logo Redirects to</b>
+                      </span>
+                  </div>
+
+                
+                  <div class="section_header" style="margin-left: 10px;"><b>Please enter the
+URL (Web address) to which your branded logo will direct users.
+                                              </b>
+                  </div>
+                  
+                  <br>
+
+                  <div style="margin-left: 10px;">
+                    <b>Examples of proper addresses are:</b>                   
+                  </div>
+
+                  <br>
+
+                  <div style="margin-left: 10px;">
+                    www.myorgsite.org<br>
+                    www.myorgsite.org/myDepartment<br>
+                    http://www.myorgsite.org<br>
+                    https://www.myorgsite.org<br>
+                  </div>
+
+                  <br>               
+
+                  <div style="margin-left: 10px;">
+                    <%= text_field_tag "pop_branded_logo_directs_to" ,"", {:onkeypress=>"return closeOnEnterButton(event);" , :style=>"font-size :16px;height:25px;width:600px;" }%>
+                  </div>
+                  
+                  <div id="submit_button" style="margin: 10px 20px 0px 0px; float: right;">
+                      <%= link_to "Submit" ,"" ,{:onclick=>"close_branded_logo();return false;" }%>
+                  </div>
+                </div>
+
+				<%= managed_form_submit f, "Save Changes" %>
+			</table>
+		<% end %>
+	</div>
+	
+	<div id="manage_org_fundraisers" class="managed_org_form">
+		<h2>Funds for <%=@organization.school.name if @organization.school%></h2> 
+		<div id="fund_raisers_div">
+			<%=render :partial=>"fund_raisers/fund_list",:locals=>{:fund_raisers=>@fund_raisers}%>
+		</div>
+		<% remote_form_for @fund_raiser, :update=>"fund_raisers_div",:url => fund_raisers_path, :html => { :method => :post} do |f| %>
+			<%= f.text_field :name %>
+			<%= f.hidden_field :organization_id, :value=>@organization.id %>
+			<input type="submit"  value="Add Fund" />
+            <br>
+              <br>
+		<% end %>
+        
+        <% form_for @organization do |f| %>
+            Who will choose which fund/s a gift goes to?
+            <br>
+            <% check_box_value = @organization.who_will_choose_fund %>
+              <%= f.radio_button :who_will_choose_fund , 'the_fundraisers',  :checked=> (check_box_value == "the_fundraisers" ? true :false) %>The fundraisers
+            <br>
+            <%= f.radio_button :who_will_choose_fund , 'the_donors',  :checked=> (check_box_value == "the_donors" ? true :false) %>The donors
+            <br>
+            <%= f.radio_button :who_will_choose_fund , 'both',  :checked=> (check_box_value == "both" ? true :false)%>Both
+            <br>
+            <%= f.radio_button :who_will_choose_fund , 'all_gifts_will_be_unrestritced',  :checked=> (check_box_value == "all_gifts_will_be_unrestritced" ? true :false)%>All gifts will be unrestricted
+            <br>
+            <br>
+            <%#*Display Fund Totals on Individual Fundraising Pages?%>
+            <%#*<br>%>
+            <%# check_box_value = @organization.graphical_display_fund_total %>
+              <%#= f.radio_button :graphical_display_fund_total , 'the_fundraisers',  :checked=> (check_box_value == "the_fundraisers" ? true :false) %>
+              <%#*Individual Fundraiser's Option%>
+            <%#*<br>%>
+            <%#= f.radio_button :graphical_display_fund_total , 'on',  :checked=> (check_box_value == "on" ? true :false) %>
+            <%#*On%>
+            <%#*<br>%>
+            <%#= f.radio_button :graphical_display_fund_total , 'off',  :checked=> (check_box_value == "off" ? true :false)%>
+            <%#*Off%>
+            <%#*<br>%>
+            <%#*<br>%>
+          <%= managed_form_submit f, "Save Changes" %>
+        <%end%>
+
+
+
+	</div>
+	
+	<div id="manage_org_class_year" class="managed_org_form">
+		<% form_for @organization do |f| %>
+			<table class="managed_form">
+				<%= managed_section_header %|Class Year Tracking| %>
+				<% if @is_admin %>
+					<%= managed_form_radio_row f,
+						:show_class_year, 
+						"Class Years",
+						[[true, "Enable"], [false, "Disable"]] %>
+				<% end %>
+				<%= managed_form_data_row f, :start_class_year, "Year Range", f.text_field(:start_class_year, 
+					:value => (@organization.start_class_year || 1950),
+					:disabled => @show_class_year_disabled,
+					:size => 5) + " - " + f.text_field(:end_class_year, 
+					:value => (@organization.end_class_year || Time.now.year),
+					:disabled => @show_class_year_disabled,
+					:size => 5) %>
+					
+				<%= managed_form_data_row f, :class_year_dollar_min, "Statistics Visibility", 
+					"$ " + f.text_field(:class_year_dollar_min, 
+						:disabled => @show_class_year_disabled,
+						:size => 8),
+					"Fundraising Pages won't show Class Year statistics unless the class has raised at least this amount." %>
+					
+				<%= managed_form_radio_row f,
+					:show_class_year_leaderboard, 
+					"Class Year Leaderboard",
+					[[true, "On"], [false, "Off"]] %>
+				
+				<%= managed_form_submit f, "Save Changes" %>
+			</table>
+		<% end %>
+	</div>
+	
+	<div style="clear:both"></div>
+
+</div>
+
+
+
+
+<!-- ORG MANAGEMENT END -->
+
+
+
+
+
+<% content_for :head do %>
+	<%= render :partial=>'layouts/text_editor' %>
+<% end %>
+
+<%= javascript_include_tag 'organization_management' %>
+
+<script>
+	var color_picker_enabled = <%= (!@show_bg_disabled).to_s %>;
+	donation_options.build(<%= @donation_options.json_categories %>, <%= @donation_options.size %>, <%= @donation_options.named_categories.to_s %>);
+
+    function show_branded_logo(){
+      
+        $('pop_up_div').style.display = "block";
+        $('background_transparent_div').style.display = "block";
+        center($('pop_up_div'),100,100);
+        $('pop_branded_logo_directs_to').value = $('organization_branded_logo_directs_to').value;     
+      
+    }
+    
+
+    function closeOnEnterButton(e){
+      if (e.keyCode == 13) {
+        close_branded_logo();
+        return false;
+      }
+    }
+    
+    function close_branded_logo(){      
+      var RegExp = /^(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,4}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?$/;      
+      if(RegExp.test($('pop_branded_logo_directs_to').value)){        
+        $('pop_up_div').style.display = "none";
+        $('background_transparent_div').style.display = "none";
+        $('branded_logo_directs_to_hidden_field').value = $('organization_branded_logo_directs_to').value = $('pop_branded_logo_directs_to').value;
+      }else{
+        alert("Please enter some valid URL");
+        //return false;
+      }      
+    }
+    function hide_addresses(){      
+      $('background_transparent_div').style.display = "none";
+      $('pop_up_div').style.display = "none";
+    }
+
+    Event.observe($('organization_address_url_portion'), "keyup", function(event) {     
+     if ( event.keyCode != 13 && this.value.length > 2) {
+        <%= remote_function :url=>{:action => "is_url_exist" , :organization_id=>@organization.id},
+                            :with=>"'url_portion=' + this.value"%>
+        $('msg_div').style.color = "#555555";
+    }    
+  });
+
+  function check_url_available(){    
+    if($('isUrlExist').value == "true"){      
+       $('msg_div').style.color = "orange";
+      return false;
+    }else if ($('isUrlExist').value == ""){
+      alert("You didn't update the URL; please type an updated URL.");
+      return false;
+    }
+  }
+  
+</script>
+
+<% if !@show_bg_disabled %>
+
+<!-- Dependencies -->  
+<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/utilities/utilities.js" ></script> 
+<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/slider/slider-min.js" ></script> 
+
+<!-- Color Picker source files for CSS and JavaScript --> 
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.6.0/build/colorpicker/assets/skins/sam/colorpicker.css"> 
+<script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/colorpicker/colorpicker-min.js" ></script>
+
+<% end %>

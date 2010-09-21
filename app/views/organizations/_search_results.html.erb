@@ -1,0 +1,41 @@
+  <% if @organizations.total_pages > 1 %> 
+    <%= will_paginate(@organizations, :params => { :action => 'index', :sort => @sort, :search_text => @search_text }) %>
+  <% end %>
+<div style="clear:both"> </div>
+
+<table width="100%" border="0" cellspacing="0" id="campaigns-top">
+  <tr>
+    <th colspan="2"><%= sortable_column "Organization Name", "organizations.name" %></th>
+    <th></th>
+    <th class="ctr"><%= sortable_column "# of Fundraising Pages", "organizations.campaigns_count", :action => "index", :default_dir => 'desc' %></th>
+  </tr>
+  <tbody id="spinner" class="spinner-off">
+    <tr><td colspan="4"><img src="/images/spinner.gif"></td></tr>
+  </tbody>
+  <tbody id="data-rows">
+  <% for organization in @organizations %>
+    <%if organization.organization_addresses.first.url_portion.nil? || organization.organization_addresses.first.url_portion == ""%>
+      <tr>
+        <td width="40%"><%= link_to load_small_branded_logo(organization), :action => "show", :id => organization.id %></td>
+        <td width="3%"></td>
+        <td width="28%"><%= link_to organization.full_name, :action => "show", :id => organization.id %></td>
+        <td class="stats-number ctr" width="29%"><%= link_to organization.campaigns_count, :action => "show", :id => organization.id %></td>
+      </tr>
+    <%else%>
+      <tr>
+        <td width="40%"><%= link_to load_small_branded_logo(organization), :action => "show", :id => organization.organization_addresses.first.url_portion %></td>
+        <td width="3%"></td>
+        <td width="28%"><%= link_to organization.full_name, :action => "show", :id => organization.organization_addresses.first.url_portion %></td>
+        <td class="stats-number ctr" width="29%"><%= link_to organization.campaigns_count, :action => "show", :id => organization.organization_addresses.first.url_portion %></td>
+      </tr>
+    <%end%>
+  <% end %>
+  </tbody>
+</table>
+
+
+  <% if @organizations.total_pages > 1 %> 
+    <%= will_paginate(@organizations, :params => { :action => 'index', :sort => @sort, :search_text => @search_text }) %>
+  <% end %>
+<div style="clear:both"> </div>
+

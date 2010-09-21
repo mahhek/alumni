@@ -1,0 +1,15 @@
+<div class="campaign_manager_confirm" style="<%= (params[:delete] != "1") ? "display:none;" : "" %>" id="delete_confirm">
+	<strong>Are you sure you want to delete this campaign?</strong><br>
+	<form method="POST" action="/campaigns/destroy/<%= campaign.id %>">
+		<% if params[:delete] == "1" %><input type="hidden" name="head_back" value="1"><% end %>
+		<input type="submit" value="Delete"> or <a href="#" onclick="$('delete_confirm').style.display='none'; return false">cancel</a>
+	</form>
+</div>
+
+<div class="campaign_manager_confirm" style="<%= (params[:undelete] != "1") ? "display:none;" : "" %>" id="undelete_confirm">
+	<strong>Are you sure you want to take this campaign out of deletion?</strong><br><br>
+	<form method="POST" action="/campaigns/undelete/<%= campaign.id %>">
+		<% if params[:undelete] == "1" %><input type="hidden" name="head_back" value="1"><% end %>
+		<input type="submit" value="Un-delete"> or <a href="#" onclick="$('undelete_confirm').style.display='none'; return false">cancel</a>
+	</form>
+</div>

@@ -1,0 +1,44 @@
+var school_results = {
+	fetcher: null,
+	default_value: "",
+	search_path: "",
+	
+	node: function() {
+		return $('search_results_div');
+	},
+	
+	show: function() {
+          this.node().style.display="block";
+	},
+	
+	hide: function() {
+		this.node().style.display="none";
+	},
+	
+	focus: function(elm) {
+    
+		var input_value = elm.value;
+		if (input_value == this.default_value) {
+			elm.value = "";
+		}
+        //else if (input_value.length >0 ) {
+		//	this.show();
+	//	}
+	},
+	
+	fetch: function(elm) {
+
+		if(elm.value.length > 0) {
+			if (this.fetcher) clearTimeout(this.fetcher);
+			this.fetcher = setTimeout(function(){school_results.run_query()}, 150);
+		} else {
+			this.hide();
+		}
+	},
+	
+	run_query: function() {
+		new Ajax.Updater('search_results_div', this.search_path, {asynchronous:true, evalScripts:true, parameters:'search_term=' + $('big-search-field').value});
+		this.fetcher = null;
+	}
+}
+

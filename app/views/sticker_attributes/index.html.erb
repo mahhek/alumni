@@ -1,0 +1,43 @@
+<% if @organization %>
+
+<h2 class="bumper_sticker_template_header">e-Bumper Sticker templates for <%= @organization.full_name %></h2>
+<%= cms("org_admin_ebs", %|
+<span class="bumper_sticker_template_explanation">
+	Create e-Bumper Sticker templates to help your supporters promote your organization.
+</span>
+|) %>
+<table id="campaigns-top" class="bumper_sticker_list bumper_sticker_admin_list">
+	<tr>
+		<th></th>
+		<th>NAME</th>
+		<th>COLORS</th>
+		<th>ACTIONS</th>
+	</tr>
+	<% @sticker_attributes.each_with_index do |a_setup, i| %>
+	<tr>
+		<td class="ordination"><%= i + 1 %>.</td>
+		<td class="bumper_sticker_name"><%= link_to a_setup.name, a_setup %></td>
+		<td>
+			<% a_setup.primary_colors.each do |pc| %>
+				<div class="bumper_sticker_color" style="background-color:#<%= pc.attribute_value %>"></div>
+			<% end %>
+				<div class="spacer"></div>
+			<% a_setup.secondary_colors.each do |sc| %>
+				<div class="bumper_sticker_color" style="background-color:#<%= sc.attribute_value %>"></div>
+			<% end %>
+			<div style="clear:both;" />
+		</td>
+		<td><%= link_to 'Edit', edit_sticker_attribute_path(a_setup) %> | <%= link_to 'Destroy', a_setup, :confirm => 'Are you sure?', :method => :delete %></td>
+	</tr>
+	<%end%>
+	<tr>
+		<td></td>
+		<td colspan="3"><%= link_to 'Add a new e-Bumper Sticker template &gt;', new_sticker_attribute_path(:organization_id=>params[:organization_id]) %></td>
+	</tr>
+</table>
+
+<% end %>
+
+
+
+<br><br>

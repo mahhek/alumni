@@ -1,0 +1,5 @@
+<% @info_to_display.each do |k, v| %>
+	<%= k %>: <strong><%= @registration.send(v) %></strong><br>
+<% end %>
+
+You can get all the information <a href="<%= LocalURL %>/register/show/<%= @registration.id %>">here</a>.

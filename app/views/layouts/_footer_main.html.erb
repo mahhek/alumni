@@ -1,0 +1,25 @@
+<br/>
+<div class="clear"></div>
+<div style="border-bottom: 1px dotted silver;" ></div>
+<div id="footer">
+  
+<div id="site-info" class="clear">
+  <div>
+    <% if @branded_org %>
+		<a href="/"><img src="/images/powered_by.png" id="powered_by"></a>
+    <% end %>
+  </div>
+  <div>
+    <span id="copyright">&copy;2008 AlumniFidelity, Inc.</span>
+    <span id="address">1915 <a class="dev_tools_link" onclick="open_dev_tools();return false" href="#">N.</a> Wayne St., Ste #4  Arlington, VA 22201</span>
+    <%#*<span id="site-docs"><%@policy_statement = PolicyStatement.find_by_type_of_policy("terms_of_service")%>
+<%#if @policy_statement.nil?%>
+              <%#= link_to 'Terms of Service', ""%>
+             <%#else%>
+<%#= link_to 'Terms of Service', "#{@policy_statement.public_filename}" %>
+<%#end%>
+<span id="site-docs"><%= link_to "Terms of Service.", "/home/terms", :popup => true, :class => 'show-as-link' %></span>
+
+  </div>
+</div><!-- END #site-info -->
+</div><!-- END #footer -->

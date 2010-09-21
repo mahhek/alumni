@@ -1,0 +1,7 @@
+<td class="choice_on">
+	<input type="radio" name="settings[<%= setting_name %>][<%= cid %>]" value="on" <%="checked='true'" if checked %>>
+</td>
+
+<td class="choice_off">
+	<input name="settings[<%= setting_name %>][<%= cid %>]" type="radio" <%="checked='true'" if !checked %> value="off">
+</td>

@@ -1,0 +1,41 @@
+<%
+  selected = []
+  selected_for_js = []
+
+  unless @campaign.organization.who_will_choose_fund == "the_donors" || @campaign.organization.who_will_choose_fund == "all_gifts_will_be_unrestritced"
+    @campaign.fund_raisers.each do |fund_raiser|
+      selected << fund_raiser.id
+      selected_for_js << fund_raiser.id.to_s + ','
+    end
+  else
+    @campaign.fund_raisers.each do |fund_raiser|
+      if fund_raiser.name.to_s == "Default"
+        selected << fund_raiser.id
+        selected_for_js << fund_raiser.id.to_s + ','
+      end
+    end
+  end
+%>
+
+<%= hidden_field_tag "selected_funds" , selected_for_js  %>
+
+<%unless funds.blank? %>
+  <table cellpadding="0" cellspacing="0">
+    <% funds.each do |campaign_fund_raiser| %>      
+      <tr style="padding:0px;margin:0px;">
+        <td style="padding:0px;margin:0px;">
+          <%= check_box_tag "campaign_fund_raiser_ids[]" , campaign_fund_raiser.id , selected.include?(campaign_fund_raiser.id) ? true : false , { :id=> "id_of_fund_is_#{campaign_fund_raiser.id}" }%><%=  campaign_fund_raiser.name %>
+        </td>
+        <td id="text_box_coloumn_<%= campaign_fund_raiser.id %>" style="padding:0px;margin:0px;float:right;margin-right:200px;">
+            <% if campaign_fund_raiser.name.to_s == "Default" && ( campaign_fund_raiser.organization.who_will_choose_fund == "the_donors" || campaign_fund_raiser.organization.who_will_choose_fund == "all_gifts_will_be_unrestritced" ) %>
+              <%= text_field_tag "displayed_fund_text_box[]","100" ,{:id=>"fund_for_campaign_#{campaign_fund_raiser.id}",:onkeyup=>"allow_numeric(this);" , :onblur=>"calculateAllocationTotal(this);"}%> %          
+            <%else%>
+              <%= text_field_tag "displayed_fund_text_box[]","" ,{:id=>"fund_for_campaign_#{campaign_fund_raiser.id}",:onkeyup=>"allow_numeric(this);" , :onblur=>"calculateAllocationTotal(this);"}%> %
+            <%end%>
+
+        </td>
+      </tr>
+      <tr><td><td></td></td></tr>      
+    <%end%>
+  </table>
+<%end%>

@@ -1,0 +1,17 @@
+<% campaigns.each do |campaign| %>
+<div class="profile-campaign-item">
+    <div class="profile-campaign-item-name"><%= campaign.name[0..32] %> </div>
+	<div class="profile-campaign-item-actions">
+		<a href="/<%=campaign.url%>.html">visit</a> |
+	    <% if campaign.status == Campaign::CLOSED %>
+			closed |
+		<% else %>	
+			<%= link_to "close", { :action => "close_campaign", :id => campaign.id }, :confirm => "Are you sure you want to close this campaign?" %> |
+		<% end %>
+	    <%= link_to "delete", "/campaigns/destroy/#{campaign.id}", :confirm => "Are you sure you want to delete this campaign?" %>
+		<% if campaign.status == Campaign::CLOSED %>
+		| <%= link_to "re-open", { :action => "reopen_campaign", :id => campaign.id } %>
+		<% end %>
+	</div>
+</div>
+<% end %>

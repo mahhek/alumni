@@ -1,0 +1,16 @@
+<br /><br />
+<div id="left" class="bgstyle3 center">
+  <div class="top_left"><div class="top_right"></div></div>
+  <div class="content lg green">
+
+	<br /><br />
+	<%= flash[:message] %>
+	<br /><br />
+	<ul class="links">
+		<li><%= link_to "return to the page you were viewing", "javascript:history.go(-2);" %></li>
+		<li><%= link_to "return to the Guide", :controller => :guide %></li>
+	</ul>
+
+  </div>
+  <div class="bottom_left"><div class="bottom_right"></div></div>
+</div>

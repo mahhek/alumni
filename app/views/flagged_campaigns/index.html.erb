@@ -1,0 +1,95 @@
+<style>
+h3 {
+	margin:12px 0 6px;
+}
+
+.flagged_campaigns_view th {
+	padding:0;
+}
+
+.flagged_campaigns_view td {
+	padding:0.5em 0;
+}
+
+.flagged_campaigns_view .small_column {
+	width:150px;
+}
+</style>
+
+<%= cms("flagged_campaigns", %|<h2>Fundraising Page Administrator</h2>|) %>
+
+<h3>Flagged Fundraising Pages</h3>
+These fundraising pages have recently been reported with issues. <a href="/flagged_campaigns/all?organization_id=<%= @organization.id %>">See all flagged fundraising pages &gt;</a>
+
+<table class="flagged_campaigns_view">
+	<tr>
+		<th></th>
+		<th>NAME</th>
+		<th>CATEGORY</th>
+		<th>REASON</th>
+		<th class="small_column">DATE</th>
+		<th class="small_column">ACTIONS</th>
+	</tr>
+	<%  @flagged_campaigns.keys.each_with_index do |c, i|%>
+		<% camps = @flagged_campaigns[c] %>
+		<% camps.each_with_index do |camp, ii| %>
+		<tr>
+			<td class="ordination"><%= "#{i+1}." if ii == 0 %></td>
+			<td>
+				<% if ii == 0 %>
+					<a href="/<%= camp.campaign.url %>.html"><%= camp.campaign.name %></a>
+				<% end %>
+			</td>
+			<td><%= camp.category %></td>
+			<td><%= camp.description %></td>
+			<td><%= camp.created_at.strftime("%a %b %d %I:%M%p") %></td>
+			<td>
+				<% if ii == 0 %>
+					<a href="/flagged_campaigns/take_action?organization_id=<%= @organization.id %>&campaign_id=<%= camp.campaign.id %>&admin_action=none">Ignore</a>
+					| <a href="/flagged_campaigns/take_action?organization_id=<%= @organization.id %>&campaign_id=<%= camp.campaign.id %>&admin_action=warned">Warn</a>
+					<% if !camp.campaign.is_suspended? %>| <a href="/<%= camp.campaign.url %>.html?suspend=1">Suspend</a><% end %>
+				<% end %>
+			</td>
+		</tr>
+		<% end %>
+	<% end %>
+	<tr>
+		<td class="ordination"></td>
+		<td colspan="5">
+			<% if @flagged_campaigns.keys.empty? %>
+			No fundraising pages have been flagged recently
+			<% end %>
+		</td>
+	</tr>
+</table>
+
+<br>
+
+<h3>Suspended Fundraising Pages</h3>
+These fundraising pages have been suspended for bad behavior.
+<table class="flagged_campaigns_view">
+	<tr>
+		<th></th>
+		<th>NAME</th>
+		<th>REASON</th>
+		<th class="small_column">DATE</th>
+		<th class="small_column">ACTIONS</th>
+	</tr>
+	<% @suspended_campaigns.each_with_index do |camp, i|%>
+	<tr>
+		<td class="ordination"><%= i + 1 %>.</td>
+		<td><a href="/<%= camp.campaign.url %>.html"><%= camp.campaign.name %></a></td>
+		<td><%= camp.message %></td>
+		<td><%= camp.created_at.strftime("%a %b %d %I:%M%p") %></td>
+		<td><a href="/<%= camp.campaign.url %>.html?unsuspend=1">Un-suspend</a></td>
+	</tr>
+	<% end %>
+	<tr>
+		<td class="ordination"></td>
+		<td colspan="5">
+			<% if @suspended_campaigns.empty? %>
+			No fundraising pages have been suspended
+			<% end %>
+		</td>
+	</tr>
+</table>

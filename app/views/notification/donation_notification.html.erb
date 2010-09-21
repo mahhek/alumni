@@ -1,0 +1,4 @@
+<p><%= @payment.full_name %> has donated <%= number_to_currency(@payment.amount) %> to the <%= @campaign.fund_raiser.name %> fund of <%= @campaign.organization.name %>.</p>
+
+<%= render :partial => "opt_out" %>
+

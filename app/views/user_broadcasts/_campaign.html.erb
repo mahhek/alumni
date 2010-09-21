@@ -1,0 +1,46 @@
+<input type="hidden" name="settings[campaigns][]" value="<%= campaign.id %>" />
+<table class="settings" cellspacing="0">
+	<tr>
+		<th><strong><%=campaign.name%></strong>: Send me an email...</th>
+		<th class="choice">On</th>
+		<th class="choice">Off</th>
+	</tr>
+	
+	<tr>
+		<td class="settings-label">...when a donation is made</td>
+		<%= render :partial => "choice_for", :locals=>{ :setting_name => "any_donation", :cid => campaign.id, :checked => @broadcasts_options[:any_donation][campaign.id] == 'on' } %>
+	</tr>
+	
+	<tr>
+		<td class="settings-label">...when a donation of of
+			<select id="settings_donation_of_<%=campaign.id%>" name="settings[donation_of][<%=campaign.id%>]">
+				<option value="0">choose amount</option>
+				<option value="50" >50</option>
+				<option value="100">100</option>
+				<option value="200">200</option>
+				<option value="300">300</option>
+				<option value="400">400</option>
+				<option value="500">500</option>
+				<option value="600">600</option>
+				<option value="700">700</option>
+				<option value="800">800</option>
+				<option value="900">900</option>
+				<option value="1000">1000</option>
+				<option value="10000">10000</option>
+				<option value="100000">100000</option>
+			</select>
+			<script>$('settings_donation_of_<%=campaign.id%>').value='<%=@broadcasts_options[:donation_of][campaign.id].to_i%>';</script>
+               or greater is made</td>
+		<%= render :partial => "choice_for", :locals=>{ :setting_name => "donation_of_amount", :cid => campaign.id, :checked => @broadcasts_options[:donation_of][campaign.id].to_i > 0 } %>
+	</tr>
+	
+	<tr>
+		<td class="settings-label">...with a daily account of donation activity</td>
+		<%= render :partial => "choice_for", :locals=>{ :setting_name => "daily_account", :cid => campaign.id, :checked => @broadcasts_options[:daily_account][campaign.id] == 'on' } %>
+	</tr>
+	
+	<tr>
+		<td class="settings-label">...with a weekly account of donation activity</td>
+		<%= render :partial => "choice_for", :locals=>{ :setting_name => "weekly_account", :cid => campaign.id, :checked => @broadcasts_options[:weekly_account][campaign.id] == 'on' } %>
+	</tr>
+</table>

@@ -1,0 +1,2 @@
+class OrganizationPhotosController < ApplicationController
+end

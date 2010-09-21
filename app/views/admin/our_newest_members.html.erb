@@ -1,0 +1,36 @@
+<h1>Our Newest Members</h1>
+<%= error_messages_for :new_organization %>
+        <% form_for :new_organization, :url=>{:controller=>"admin" , :action=>"create_new_organization"}, :html => { :multipart => true } do |f| -%>
+<div id="add_new">
+
+  	<h3>Add new</h3>
+	 <div>
+     Organization: <%= select_tag(:organization_id, "<option>Select an Organization</option>" + options_from_collection_for_select(@organizations, :id, :name),:style=>"width:300px;") %>
+    </div>
+    <div>
+Joining Date:
+      <script src="/javascripts/html-form-input-mask.js?1242926290" type="text/javascript"></script>
+      <%= calendar_date_select_includes "silver"%>
+      <%= calendar_date_select_tag "new_organization[joining_date]"%>
+      </div>
+      <div>
+Expiry Date :
+      <script src="/javascripts/html-form-input-mask.js?1242926290" type="text/javascript"></script>
+      <%= calendar_date_select_includes "silver"%>
+      <%= calendar_date_select_tag "new_organization[expiry_date]"%>
+      </div>
+      <div>
+
+            <span><%= submit_tag "Add"%>
+            </span>
+<br/>
+          </div>
+    
+</div>
+<%end -%>
+<div id="homepage_hottest">
+	<h3>Our Newest Members List!</h3>
+	 <div id="search_results">
+      <%= render :partial => "new_members" %>
+    </div>
+</div>

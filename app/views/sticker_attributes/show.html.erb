@@ -1,0 +1,48 @@
+<h2 class="bumper_sticker_template_header"><%=h @organization.full_name %> e-Bumper Sticker template</h2>
+
+<table id="campaigns-top" class="bumper_sticker_list bumper_sticker_admin_show" cellspacing="2">
+	<tr>
+		<th>NAME</th>
+		<td><%= @sticker_attribute.name %></td>
+	</tr>
+	<tr>
+		<th>PRIMARY</th>
+		<td>			
+			<% @sticker_attribute.primary_colors.each do |color| %>
+					<div class='bumper_sticker_color' style='background-color:#<%=color.attribute_value%>' >&nbsp;</div>
+			<%end%>
+		</td>
+	</tr>
+	<tr>
+		<th>SECONDARY</th>
+		<td>
+			<% @sticker_attribute.secondary_colors.each do |color| %>
+					<div class='bumper_sticker_color' style='background-color:#<%=color.attribute_value%>' >&nbsp;</div>
+			<%end%>
+		</td>
+	</tr>
+	<tr>
+		<th class="images_header">IMAGES</th>
+		<td>
+			<% @sticker_attribute.sticker_attribute_photos.each do |photo| %>
+					<%=image_tag(photo.public_filename('small') , :class=>"thumb",  :title=>"#{photo.title}")%>
+			<%end%>
+		</td>
+	</tr>
+	<tr>
+		<th>ACTIONS</th>
+		<td><%= link_to 'Edit', edit_sticker_attribute_path(@sticker_attribute) %> | <%= link_to 'Destroy', @sticker_attribute, :confirm => 'Are you sure?', :method => :delete %></td>
+	</tr>
+</table>
+
+
+
+
+<!--
+<a href="/sticker_attributes/upload_image/<%= @sticker_attribute.id%>">Edit Images &gt;</a>
+-->
+<br/>
+<br/>
+<a href="/sticker_attributes?organization_id=<%= @organization.id %>">&lt; Back to all e-Bumper Sticker templates</a>
+
+

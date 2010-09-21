@@ -1,0 +1,12 @@
+<% content_for :head do %>
+  <%= render :partial=>'layouts/text_editor' %>
+<% end %>
+
+<h1>Editing tip</h1>
+
+<%= render :partial => "edit_form", :locals => { :tip => @tip, :submit_name => "Update" } %>
+
+<%= link_to 'Show', @tip %> |
+<%= link_to 'Back', tips_path %>
+
+<script> render_editor(); </script>

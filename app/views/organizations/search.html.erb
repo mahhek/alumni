@@ -1,0 +1,15 @@
+<% @orgs_and_schools.each do |org| %>
+	<div class="a_school_result" >
+		<a href="#"
+			onmousedown="selectOrg('<%=  escape_js_string(org.name) %>', 
+				<%= org.id %>, 
+				<%= org.respond_to?(:school_id) ? 'true' : 'false' %>, 
+				'<%= org.respond_to?(:background_color) ? org.background_color : "" %>' 
+				); return false">
+          <%= highlight(org.name, params[:search_term]) %>
+        </a>
+	</div>
+<%end%>
+<script>
+    school_results.show();
+</script>

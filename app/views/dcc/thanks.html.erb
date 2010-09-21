@@ -1,0 +1,46 @@
+<div id="page">
+	</br>
+	<h3 style="margin-top: 10px;">Thank you for your donation.</h3>
+	<h3 style="margin-top: 18px;font-style:italic">You will receive an e-receipt shortly with a message from your organization, but please also print this page for your records:</h3>
+    
+    <%session[:authorize_response].each do |transaction|%>
+	<table style="border-bottom:1px solid #E1E1E1;">
+		<tr>
+			<td><label for="transactionId">Transaction ID:</label></td>
+			<td> <%= transaction["id"] %> </td>
+		</tr>
+		<tr>
+			<td><label for="Amount">Amount:</label></td>
+			<td><%= number_to_currency transaction["amount"] %> </td>
+		</tr>
+		<tr>
+			<td><label>Recipient:</label></td>
+			<td><%= @campaign.organization.name %></td>
+		</tr>
+		<tr>
+          <td><label>Fund Designated:</label></td>
+          <% unless @campaign.fund_raiser_id.nil? %>			
+			<td><%= @campaign.fund_raiser.name %></td>
+          <%else%>
+            <td><%= transaction["fund_raiser_name"] %></td>
+          <%end%>
+		</tr>
+	</table>
+
+	<%end%>
+	<h3 style="margin-top: 18px;font-style:italic">
+		This charge will appear on your credit card as <%= @campaign.organization.paypal_name %>
+	</h3>
+
+
+
+	<p style="text-align:center;margin: 15px 0 0 0;font-size:18px;font-weight:bold;">
+		Return to <%= link_to @campaign.name, (@campaign) %> Fundraising Page
+		<br>or
+	</p>
+	<div class="org-campaign-callout" style="text-align:center;">
+		<a style="font-size:18px" href="/campaigns/new?organization_id=<%= @campaign.organization_id %>">Create a New Fundraising Page</a>
+	</div>
+</div>
+
+<%# session[:authorize_response] = nil %>

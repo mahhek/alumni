@@ -1,0 +1,56 @@
+<% search_prompt = "Type Your School or Organization Name" %>
+<div class="container clear">
+  <div class="fl-lg-list">
+    <%= cms("org_search_page", %|<h2>Find your organization and start fundraising</h2>|)%>
+    <div class="searchbox">
+      <form action="/home/go_to_school_new" method="POST">
+        <input id="search-field" class="large-autosearch internal-prompt" name="school_name"
+            autocomplete="off"
+            type="text" value="<%= search_prompt %>"
+            />
+      </form>
+    </div>
+
+    <div id="search_results">
+      <%= render :partial => "search_results" %>
+    </div>
+
+  </div>
+
+  <div class="fr-xxsm">
+  </div>
+  <div class="clear"></div>
+</div>
+
+
+  <script>
+    Event.observe($('search-field'), "focus", function(event) {
+      if (this.value == '<%= search_prompt %>') {
+        this.value='';
+        $(this).setStyle({ color: "#000000"} );
+      };
+    });
+    Event.observe($('search-field'), "keyup", function(event) {
+      if (this.value.length > 2) {
+        $("spinner").removeClassName("spinner-off");
+        $("spinner").addClassName("spinner-on");
+        $("data-rows").hide();
+        <%= remote_function :update=>'search_results',
+             :url=>{:action => :search_with_sort, :sort => @sort},
+             :with=>"'search_text=' + this.value"%>
+      }
+    });
+
+  function resort(sort) {
+        var search_text = $('search-field').value
+        if (search_text == '<%= search_prompt %>') {
+          search_text = '';
+        }
+        $("spinner").removeClassName("spinner-off");
+        $("spinner").addClassName("spinner-on");
+        $("data-rows").hide();
+        <%= remote_function :update=>'search_results',
+             :url => {:action => :search_with_sort },
+             :with=>"'search_text=' + search_text + '&sort=' + sort"%>
+  }
+</script>

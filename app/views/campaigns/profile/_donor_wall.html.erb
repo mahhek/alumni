@@ -1,0 +1,74 @@
+<div id="statistics3-big">
+	<p>Donor Wall</p>
+	
+	<div class="pagination" id="member_list_paginate"></div>
+	
+	<% @donor_wall_list.each_with_index do |members, i| %>
+		<div id="member_list_<%= i+1 %>" style="<%= (i > 0) ? "display:none" : "" %>">
+			<% members.each do |member| %>
+				<div class="campaign_donor_data">
+					<% if member.is_a? User %>
+						<a href="/messages/new_to_user?user_id=<%=member.id%>"><%= member.short_name %></a>
+						<br/>
+						<%= number_to_currency member.amount_total %>
+					<% elsif member.is_a? Payment %>
+						<%= member.donor_wall_name %>
+						<br/>
+						<%= (!member.hide_amount?) ? number_to_currency(member.amount_total) : "<br/>" %>
+					<% end %>
+				</div>
+			<% end %>
+		</div>
+	<% end %>
+</div>
+
+<script>
+	var current_member_list = 1;
+	var total_member_lists = <%= @donor_wall_list.size %>;
+	var member_list_id = "member_list_"
+	
+	var next_member_list = function() {
+		goto_member_list(current_member_list + 1);
+	};
+	
+	var prev_member_list = function() {
+		goto_member_list(current_member_list - 1);
+	};
+	
+	var goto_member_list = function(list) {
+		$(member_list_id + current_member_list).style.display = "none";
+		$(member_list_id + list).style.display = "block";
+		current_member_list = list;
+		draw_member_paginate();
+	};
+	
+	var draw_member_paginate = function() {
+		if(total_member_lists <= 1) { return; }
+		
+		html = [];
+		if(current_member_list == 1) {
+			html.push("<span class='prev_page'>Prev</span>")
+		} else {
+			html.push("<a href='#' onclick='prev_member_list(); return false' class='prev_page'>Prev</a>")
+		}
+		
+		for(var i=1; i<=total_member_lists; i++) {
+			if(current_member_list == i) {
+				html.push("<span>"+i+"</span>")
+			} else {
+				html.push("<a href='#' onclick='goto_member_list("+i+"); return false'>"+i+"</a>")
+			}
+		}
+		
+		if(current_member_list == total_member_lists) {
+			html.push("<span class='next_page'>Next</span>")
+		} else {
+			html.push("<a href='#' onclick='next_member_list(); return false' class='next_page'>Next</a>")
+		}
+		html.push("<div style='clear:both;'></div>")
+		
+		$('member_list_paginate').innerHTML = html.join(" ")
+	};
+	
+	draw_member_paginate();
+</script>

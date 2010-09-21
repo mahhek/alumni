@@ -1,0 +1,71 @@
+<div class="profile_content">
+<%= cms("message_center_requests", %|<h1>Message Center</h1>|) %>
+
+<%= render :partial => "/messages/header", :locals => {:current => "Requests"} %>
+
+<br/>
+<br/>
+
+<h2> Fundraising Page Join Requests </h2>
+
+<% unless logged_in_user.has_requests? %>
+     <h3>No Requests</h3>
+<% end %>
+
+<% @campaigns.each do |campaign| %>
+     <% unless campaign.requested_campaign_users.empty? %>
+          <div class="member-request">
+          <% campaign.requested_campaign_users.each do |campaign_user| %>
+               <strong><%= link_to_compose(campaign_user.user) %> </strong> has requested to join your fundraising page,
+               <strong><%=campaign.name%></strong>.
+               <%=link_to 'Approve',:action=>'approve_member_request',:campaign_user_id=>campaign_user.id%> | <%=link_to 'Ignore',:action=>'remove_member',:campaign_user_id=>campaign_user.id,:status=>CampaignUser::DENIED %><br/>
+          <%end%>
+          </div>
+     <%end%>
+<% end %>
+
+<br/>
+
+<style>
+	.campaign_member_list {
+		margin-left:10px;
+	}
+	
+	.no_members {
+		font-style: italic;
+		color: #666;
+	}
+	
+	.campaign_member a {
+		font-size:0.8em;
+	}
+	
+	.campaign_member strong a{
+		font-size:1em;
+	}
+</style>
+
+<h2>All Members of your <%= pluralize(@campaigns.size, "Fundraising Page") %> </h2>
+<div class="campaign_member_list">
+	<% @campaigns.each do |campaign| %>
+		
+		<h3><%= campaign.name %></h3>
+		<% campaign.members.each do |member| %>
+			<div class="campaign_member">
+				<strong><%= link_to_compose(member) %></strong>
+				<%= link_to 'Remove',:action=>'remove_member_by_user',:user_id=>member.id,:campaign_id=>campaign.id, :status=>CampaignUser::DELETED %>
+			</div>
+		<% end %>
+		
+		<% if campaign.members.empty? %>
+			<span class="no_members">No one has joined forces with this fundraising page yet.</span>
+		<% end %>
+		
+		<br>
+		<br>
+	<% end %>
+</div>
+
+
+
+</div>

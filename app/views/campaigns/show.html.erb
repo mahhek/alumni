@@ -1,0 +1,220 @@
+<% setup_yield %>
+
+<%= render :partial => "campaigns/admin_panel" if @is_admin && RAILS_ENV != "test" %>
+
+<%= render :partial => "campaigns/profile/suspended_explanation" if @show_why_suspended_message%>
+
+<%# Initiation callouts %>
+<% if @campaign.is_owner?(logged_in_user) %>
+  <%= render :partial => "campaigns/profile/promote_callout" if @campaign.creation_step == Campaign::Initiation::Created %>
+  <%= render :partial => "campaigns/profile/donate_callout" if @campaign.creation_step == Campaign::Initiation::Promoted %>
+  <%= render :partial => "campaigns/profile/finished_initiation" if @campaign.creation_step == Campaign::Initiation::Donated %>
+<% end %>
+<div style="clear:both;"></div>
+
+<div class="campaign-wrapper">
+  <h1><%= @campaign.name%></h1>
+
+  <div class="campaign-profile-info">
+    <a onmouseover="$('co_profile').style.display='block';"  onmouseout="$('co_profile').style.display='none';"><%= load_full(@campaign) %></a>
+    <p>
+      Fundraising Page Creator:<br/>
+      <a href="/messages/new_to_campaign_owner?campaign_id=<%= @campaign.id%>"> <%= @campaign.creator.short_name%></a>
+    </p>
+    <%= render :partial => "campaigns/profile/main_photo_hover" %>
+
+    <% if !@campaign.disable_goal_widget? %>
+      <%= render :partial => "campaigns/profile/statistics" %>
+    <% end %>
+  </div>
+
+  <div class="campaign-profile-copy" >
+
+    <% if @organization.show_intro_text || @organization.show_intro_video %>
+      <div id="campaign-profile-org-copy">
+        <h2>A message from <%= @organization.name %>:</h2>
+
+        <% if @organization.show_intro_text %>
+          <%= @organization.introduction_text %>
+        <% end %>
+
+        <% if @organization.show_intro_video %>
+          <div class="campaign-profile-main-video">
+            <%= @organization.introduction_video %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div id="campaign-profile-user-copy">
+      <%= h @campaign.campaign_text.gsub(%r{</?[^>]+?>}, '') %>
+    </div>
+    <%= js_write("campaign-profile-user-copy", @campaign.campaign_text) %>
+
+    <div class="campaign-profile-main-video">
+      <%= @campaign.main_embeded_video %>
+    </div>
+  </div>
+
+  <!-- Alerts code added 09-09-09 acuanote points 245,249 -->
+
+  <div class="campaign-profile-org-info" >
+    <%if @organization.organization_addresses.first.url_portion.nil? || @organization.organization_addresses.first.url_portion == ""%>
+      <a href="/organizations/<%= @organization.id %>"><%=load_full(@organization)%></a>
+    <%else%>
+      <a href="/organizations/<%= @organization.organization_addresses.first.url_portion %>"><%=load_full(@organization)%></a>
+    <%end%>
+    <p>
+      <strong>
+
+        <%if @organization.organization_addresses.first.url_portion.nil? || @organization.organization_addresses.first.url_portion == ""%>
+          <a href="/organizations/<%= @organization.id%>"><%= @organization.name%></a>
+        <%else%>
+          <a href="/organizations/<%= @organization.organization_addresses.first.url_portion %>"><%= @organization.name%></a>
+        <%end%>
+
+
+      </strong>
+
+      <% if @campaign.fund_raiser && @campaign.fund_raiser.name != "Default" %>
+        <br/><span class="active1">Fund: <%=@campaign.fund_raiser.name%></span>
+      <%else%>
+        <br>
+        <%if @campaign.fund_raisers.size > 0 && (@campaign.organization.who_will_choose_fund == "the_fundraisers" || @campaign.organization.who_will_choose_fund == "both") %>
+          <b>Fund/s:</b>
+          <%counter = 0%>
+          <% @campaign.fund_raisers.each do |fund_raiser|%>
+            <span class="active1"><%= fund_raiser.name %>
+              <%if counter < @campaign.fund_raisers.size-1 %>
+                ,
+              <%end%>
+            </span>
+            <%counter = counter+1%>
+          <%end%>
+        <%end%>
+      <% end %>
+
+
+      <% if @campaign.class_year %>
+        <br />Class of <%= @campaign.class_year%>
+      <% end %>
+    </p>
+
+    <% if @campaign.status != Campaign::CLOSED && @campaign.is_spread.to_s == "true" %>
+      <a href="/promotion/new?campaign_id=<%= @campaign.id%>" class="rollover-button"> Spread the Word &raquo;</a>
+    <% end %>
+
+    <% if @campaign.is_start.to_s == "true" %>
+      <a href="/campaigns/new?organization_id=<%= @organization.id%>" class="rollover-button" style="font-size:10px !important;">Start a New Fundraising Page &raquo;</a>
+    <%end%>
+
+
+    <% if @campaign.status != Campaign::CLOSED && @campaign.is_donate.to_s == "true" %>
+      <%= link_to "<strong>Donate &raquo</strong>", {:controller => 'dcc', :action => 'pay' , :campaign_id=>@campaign.id}, :id => 'donate-link' %>
+    <% end %>
+  </div>
+
+  <div class="clear"></div>
+
+  <% if !@campaign.disable_donor_goal_widget? %>
+    <%= render :partial => "campaigns/profile/tracker",
+      :locals => {:start => "0", :goal =>"#{@campaign.donor_goal} Donors",
+      :progress =>(@campaign.active_donors.to_f / (@campaign.donor_goal.to_i+1)),
+      :color=>"blue",
+      :status=>@campaign.active_donors} %>
+  <% end %>
+  <%#*<br>%>
+  <% if !@campaign.disable_goal_widget? %>
+    <%#*Raised to-date for <%= @campaign.name %>
+    <%= render :partial => "campaigns/profile/tracker",
+      :locals => {:start => "$0", :goal =>@campaign.formatted_goal,
+      :progress => @campaign.currentPercent,
+      :color=>"green",
+      :status=>@campaign.current_amount} %>
+  <% end %>
+
+
+  <%# if @campaign.organization.who_will_choose_fund == "the_fundraisers" || @campaign.organization.who_will_choose_fund == "both"%>
+  <%#if @organization.graphical_display_fund_total == "on"%>
+    <%#if @campaign.fund_raiser.nil?%>
+      <%# unless get_sum_payments_against_same_funds(@campaign).blank?%>
+        <%# get_sum_payments_against_same_funds(@campaign).each do |payment_against_fund_raiser| %>
+              <%#*<div>%>
+                <%#*<br>%>
+                <%#*Raised to-date for <%= payment_against_fund_raiser.fund_raiser.name %>
+                <%#= render :partial => "campaigns/profile/tracker",
+                  :locals => {:start => "$0", :goal =>@campaign.formatted_goal,
+                  :progress => (payment_against_fund_raiser.amount.to_f  / (@campaign.goal.to_f || 1.0 )  ).to_s,
+                  :color=>"green",
+                  :status=>@campaign.current_amount} %>
+              <%#*</div>%>
+            <%#end%>
+          <%#else%>
+            <%#  @campaign.fund_raisers.each do |fund_raiser_against_current_campaign|%>
+              <%#= fund_raiser_against_current_campaign.name %>
+              <%#= render :partial => "campaigns/profile/tracker",
+                :locals => {:start => "$0", :goal =>@campaign.formatted_goal,
+                :progress => ( 0.to_f  ).to_s,
+                :color=>"green",
+                :status=>@campaign.current_amount} %>
+            <%#*</div>%>
+          <%#end%>
+        <%#end%>
+      <%#else%>
+        <%#= render :partial => "campaigns/profile/tracker",
+          :locals => {:start => "$0", :goal =>@campaign.formatted_goal,
+          :progress => @campaign.currentPercent,
+          :color=>"green",
+          :status=>@campaign.current_amount} %>
+      <%#end%>
+    <%#elsif @organization.graphical_display_fund_total == "the_fundraisers"%>
+      <%#if @campaign.disable_fund_total == false%>
+        <%#if @campaign.fund_raiser.nil?%>
+          <%# get_sum_payments_against_same_funds(@campaign).each do |payment_against_fund_raiser| %>
+            <%#*<div>%>
+              <%#*<br>%>
+              <%#= payment_against_fund_raiser.fund_raiser.name %>
+              <%#= render :partial => "campaigns/profile/tracker",
+                :locals => {:start => "$0", :goal =>@campaign.formatted_goal,
+                :progress => (payment_against_fund_raiser.amount.to_f  / (@campaign.goal.to_f || 1.0 )  ).to_s,
+                :color=>"green",
+                :status=>@campaign.current_amount} %>
+            <%#*</div>%>
+          <%#end%>
+        <%#else%>
+          <%#= render :partial => "campaigns/profile/tracker",
+            :locals => {:start => "$0", :goal =>@campaign.formatted_goal,
+            :progress => @campaign.currentPercent,
+            :color=>"green",
+            :status=>@campaign.current_amount} %>
+        <%#end%>
+      <%#end%>
+    <%#end%>
+  <%#end%>
+
+<%= render :partial => "campaigns/profile/gallery" %>
+
+<% if !@campaign.disable_donor_wall? && !@is_bot %>
+  <%= render :partial => "campaigns/profile/donor_wall" %>
+<% end %>
+<div style="clear:both;"></div>
+
+<% if !@campaign.disable_comment_wall? %>
+  <%= render :partial => "campaigns/profile/comment_wall" %>
+<% end %>
+
+<div style="text-align:right;">
+  <a href="/flagged_campaigns/new?campaign_id=<%=@campaign.id%>">Report This Page</a>
+</div>
+
+</div>
+
+<script>
+
+  function textLimit(field, maxlen) {
+    if (field.value.length > maxlen + 1)
+      alert('Sorry, but comments may not be more than ' + maxlen + ' characters long.' );
+    if (field.value.length > maxlen)
+      field.value = field.value.substring(0, maxlen);
+  }
+</script>

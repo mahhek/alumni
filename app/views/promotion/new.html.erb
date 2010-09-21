@@ -1,0 +1,132 @@
+<% content_for :head do %>
+  <%= render :partial=>'layouts/text_editor' %>
+<% end %>
+
+<%setup_yield%>
+
+<% if (@campaign.creation_step == Campaign::Initiation::Launched) && @campaign.is_owner?(logged_in_user) %>
+	<div id="campaign_donate_callout">
+		<img src="/images/step_3.png">
+		<a href="/campaigns/skip_promote?campaign_id=<%= @campaign.id %>" class="skip"><img src="/images/step_4_skip.png"></a>
+	</div>
+<% end %>
+
+<%= cms("new_promo", %|<h1>Email your friends, family and colleagues.</h1>|) %>
+
+<form action="/promotion/send_promotion" method="post">
+	<input type="hidden" name="campaign_id" value="<%=params[:campaign_id]%>" />
+
+	<table class="generic_form send_promotion_form">
+
+		<%if !logged_in_user%>
+		
+		<tr>
+			<th></th>
+			<td>* = Required field</td>
+		<tr>
+		
+		<tr>
+			<th>Your Email Address:</th>
+			<td><input type="text" name="message[from_email]"> *</td>
+		</tr>
+		
+		<tr>
+			<th>Your Name:</th>
+			<td><input type="text" name="message[from_name]"> *</td>
+		</tr>
+		
+		<%else%>
+		
+		<input type="hidden" name="message[from_email]" value="<%=logged_in_user.email%>">
+		<input type="hidden" name="message[from_name]" value="<%=logged_in_user.name%>">
+		
+		<%end%>
+
+
+		<tr>
+			<th class="tall_label">To:</th>
+			<td>
+				<textarea id="recipient_list_vals" name="to" class="recipients"><%=params[:to]%></textarea>
+				<div class="plaxo_explanation">Type email addresses, using commas or semicolons to separate, <em>or</em></div>
+				<div class="plaxo_callout">
+					<a href="#" onclick="open_plaxo();return false">
+						<img src="/images/plaxo_arrow.png" alt="Import Contacts"/>
+					</a>
+					<a href="#" onclick="open_plaxo();return false" style="margin:9px;">
+						Import Your Contacts
+					</a>
+				</div>
+			</td>
+		</tr>
+		
+		<tr>
+			<th>Subject:</th>
+			<td>
+				<input type="text" name="promotion[subject]" value="Please join my fundraising page: <%= @campaign.name %>" class="subject" />
+			</td>
+		</tr>
+
+		<tr>
+			<th class="tall_label">Message:</th>
+			<td style="padding-left: 0px;">
+				<div class="email_body">
+				<textarea name="promotion[body]" rows="15" cols="30" id="promotion_body" class="promotion_body"><%= %|Please join me in supporting #{@campaign.name}!| %></textarea>
+				<%= render :partial => "notification/campaign_email_footer", :locals => { :campaign => @campaign } %>
+				</div>
+			</td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td>
+				<input type="submit" value="Send" /> or 
+				<a <%= %|href="/#{@campaign.url}.html"| %>>cancel</a>
+			</td>
+		</tr>
+	</table>
+
+</form>
+
+<script>
+	Event.observe(window, "load", function() {
+		$('recipient_list_vals').focus();
+	});
+
+	render_specific_editor("promotion_body", '450px', '150px');
+
+	function select_all(){
+		var all_checks = $('recipient_list').getElementsByTagName('input');
+		$A(all_checks).each(function(elem){
+			if ($('check_all').checked == true){
+				elem.checked = true;
+			}else{
+				elem.checked = false;
+			}
+
+		});
+	}
+	
+	function addNewAddress(element, address){
+		var alist = $('recipient_list_vals').value.split(",");
+
+		if(element.checked == false){
+			for(var i = 0; i < alist.length; i++){
+				if(alist[i].replace(" ", "") == address ){
+					alist[i] = null;
+				}
+			}
+			$('recipient_list_vals').value = $A(alist).compact().toString();
+		}else{
+			$('recipient_list_vals').value += address + ', ';
+		}
+	}
+	
+	function open_plaxo() {
+		showPlaxoABChooser('recipient_list_vals', '/plaxo_cb.html');
+	}
+	
+</script>
+
+<script type="text/javascript" src="http://www.plaxo.com/css/m/js/util.js"></script>
+<script type="text/javascript" src="http://www.plaxo.com/css/m/js/basic.js"></script>
+<script type="text/javascript" src="http://www.plaxo.com/css/m/js/abc_launcher.js"></script>

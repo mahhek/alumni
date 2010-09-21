@@ -1,0 +1,31 @@
+<div id="gallery_video" style="display:none;">
+
+	<% if @campaign.embeded_video.blank? %>
+		No videos have been embedded yet.
+	<% else %>
+	<!--[if ! IE 6]> -->	
+	<object width="215" height="200">
+		<param name="movie" value="<%= @campaign.embeded_video %>"></param>
+		<param name="allowscriptaccess" value="always"></param>
+		<embed src="<%= @campaign.embeded_video %>"
+			type="application/x-shockwave-flash"
+			allowscriptaccess="always"
+			allowfullscreen="true"
+			width="270"
+			height="236" >
+		</embed>
+	</object>
+	<!-- <![endif]-->
+	
+	<!--[if IE 6]>	
+		<embed src="<%= @campaign.embeded_video %>"
+			type="application/x-shockwave-flash"
+			allowscriptaccess="always"
+			allowfullscreen="true"
+			width="270"
+			height="236" >
+		</embed>
+	<![endif]-->
+	<%end%>
+
+</div>

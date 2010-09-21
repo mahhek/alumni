@@ -1,0 +1,49 @@
+<%= cms("message_center_index", %|<h1>Message Center</h1>|) %>
+<%= render :partial => "/messages/header", :locals => {:current => "Inbox"} %>
+
+<style>
+#mark_as_read {
+	display:none;
+}
+
+#mark_as_read_disabled {
+	color:#ccc;
+}
+
+#mark_as_unread {
+	display:none;
+}
+
+#mark_as_unread_disabled {
+	color:#ccc;
+}
+</style>
+
+<ul class="generic_link_list message_actions_list">
+	<li>Actions:</li>
+	<li><a href="#" onclick="mark('all');return false">Select All</a></li>
+	<li><a href="#" onclick="mark('none');return false">Select None</a></li>
+	<li id="mark_as_read"><a href="#" onclick="submit_to('/messages/mark_as_read')">Mark as Read</a></li>
+	<li id="mark_as_read_disabled">Mark as Read</li>
+	<li id="mark_as_unread"><a href="#" onclick="submit_to('/messages/mark_as_unread')">Mark as Unread</a></li>
+	<li id="mark_as_unread_disabled">Mark as Unread</li>
+	<li><a href="#" onclick="submit_to('/messages/delete');return false">Delete</a></li>
+</ul>
+
+<div style="clear:both;"></div>
+
+<form action="/none" method="POST" id="messages_form">
+
+	<table class="generic_selectable_list messages_list" cellspacing="0" onclick="redraw_actions();">
+	
+		<% for message in @all_messages %>
+			<%= render :partial => 'message', :locals => { :message => message.first.get_current_message, :read => !message.last.nil?  } %>
+		<%end%>
+		
+	</table>
+	
+</form>
+
+<%= render :partial => "controls" %>
+
+<div style="clear:both;"></div>

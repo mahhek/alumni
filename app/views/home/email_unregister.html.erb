@@ -1,0 +1,27 @@
+<h1>Unsubscribe From:</h1>
+<form action="/home/remove_from_location" method="POST">
+
+<p>
+  <input type="radio" name="unregister" value="campaign" checked="true" />
+  Unsubscribe from appeals from this fundraising page
+</p>
+
+<p>
+  <input type="radio" name="unregister" value="organization"/>
+  Unsubscribe from appeals from any fundraising pages created by
+  <strong><%= @organization.name %></strong> alumni using this AlumniFidelity Web 2.0 fundraising platform.
+</p>
+
+<!--<p>
+  <input type="radio" name="unregister" value="all"/>
+  All emails from AlumniFidelity.com
+</p>-->
+
+<input type="hidden" name="campaign_id" value="<%=  params[:campaign_id] %>" />
+<input type="hidden" name="email" value="<%= params[:to]%>" />
+
+<p>
+  <input type="submit"  value="Submit"/>
+</p>
+
+</form>

@@ -1,0 +1,11 @@
+<% if @campaign %>
+  <%setup_yield%>
+<% end %>
+<%= cms("notifications", %|<h1>Choose Your Notification Settings</h1>|) %>
+<% form_tag('/user_broadcasts/update',:method=>'PUT') do %>
+
+	<%= render :partial => 'campaign', :collection => @campaigns %>
+  
+  <p>
+    <%= submit_tag "Update" %> or <a href="/profiles/show/">back to Dashboard</a> </p>
+<% end %>

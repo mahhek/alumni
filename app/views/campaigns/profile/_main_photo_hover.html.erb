@@ -1,0 +1,12 @@
+<div id="co_profile" class="profile_hover" onMouseOver = "$('co_profile').style.display = '';" onmouseout="$('co_profile').style.display='none';" style="display:none;">
+	<div class="campaign_profile_left"><%= load_small(@campaign.creator) %></div>
+	<div class="campaign_profile_right">
+		<span><strong>Fundraising Page Creator: </strong><%= @campaign.creator.name %> </span><br/>
+		<% @questions.each do |attribute|%>
+			<%if attribute.value != ''%>
+			<span > <strong><%= attribute.user_attribute.text%></strong>  <%= attribute.value %></span><br/>
+			<%end%>
+			<%end%>
+	</div>
+	<div style="clear:both"></div>
+</div>

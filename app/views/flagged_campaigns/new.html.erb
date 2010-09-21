@@ -1,0 +1,34 @@
+<h1>Report this Fundraising Page</h1>
+<br/>
+<p>You are about to report a violation of our <%= link_to "Terms of Service.", "/home/terms", :popup => true, :class => 'show-as-link' %> All reports are strictly confidential.</p>
+<p>Please give a reason for reporting this page.</p>
+
+<style>
+
+.campaign_report_form label {
+     display:block;
+     float:left;
+     width:100px;
+}
+
+</style>
+
+
+<% form_for(:flagged_campaign, :url => { :action => "create" }, :html=>{ :class => 'standard'}) do |f| %>
+  <%= f.error_messages %>
+  <p>
+    <%= f.label :category, "Reason" %>
+    <%= f.select :category,[[],["Profanity","Profanity"],["Illicit Images","Illicit Images"],["Offensive Statements","Offensive Statements"],["Rude Interaction","Rude Interaction"]] %>
+  </p>
+  <p>
+    <%= f.label :description, "Additional comments"%>
+    <%= f.text_area :description,:rows=>10, :cols=>35 %>
+  </p>
+    <%= f.hidden_field :campaign_id,:value=>@campaign.id %>
+    <%= f.hidden_field :organization_id,:value=>@campaign.organization_id %>
+  <p>
+    <%= f.submit "Submit" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', "/#{@campaign.friendly_url}.html" %>

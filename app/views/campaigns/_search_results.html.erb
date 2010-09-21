@@ -1,0 +1,35 @@
+  <% if @campaigns.total_pages > 1 %>
+    <%= will_paginate(@campaigns, :params => { :action => 'index', :sort => @sort, :search_text => @search_text }) %>
+  <% end %>
+<div style="clear:both;"></div>
+
+<table width="100%" border="0" cellspacing="0" id="campaigns-top">
+  <tr>
+    <th colspan="2"><%= sortable_column "Fundraising Page Name", "name" %></th>
+    <th><%= sortable_column "Owner's Name", "users.last_name" %></th>
+    <th> <%= sortable_column "Organization Name", "organizations.name" %></th>
+  </tr>
+  <tbody id="spinner" class="spinner-off">
+    <tr><td colspan="4"><img src="/images/spinner.gif"></td></tr>
+  </tbody>
+  <tbody id="data-rows">
+  <% for campaign in @campaigns %>
+    <tr>
+      <td width="15%"><a href="<%=campaign.url%>.html"><%= load_small(campaign) %></a></td>
+      <td width="24%"><a href="<%=campaign.url%>.html"><%=h campaign.name %></a></td>
+      <td width="37%"><%=  link_to campaign.owner.short_name, :controller => 'messages', :action => 'new_to_user', :user_id => campaign.owner.id %></td>
+      <td width="24%"><a href="/organizations/<%=campaign.organization.id%>"><%=h campaign.organization.name %></a></td>
+    </tr>
+  <% end %>
+  <% if @campaigns.empty? %>
+    <tr><td colspan="4">No campaigns found</td></tr>
+  <% end %>
+  </tbody>
+</table>
+
+
+  <% if @campaigns.total_pages > 1 %>
+    <%= will_paginate(@campaigns, :params => { :action => 'index', :sort => @sort, :search_text => @search_text }) %>
+  <% end %>
+<div style="clear:both;"></div>
+

@@ -1,0 +1,22 @@
+<% content_for :head do %>
+	<%= render :partial=>'layouts/text_editor' %>
+<% end %>
+
+<%setup_yield%>
+<%= cms("edit_org", %|<h1>Editing organization</h1>|) %>
+
+<% form_for @organization, :html=>{:multipart => true} do |f| %>
+	<%= render :partial => "organizations/form", :locals=>{ :f=>f }%>
+<% end %>
+
+<br><br>
+
+<h2>Funraisers for <%=@organization.school.name if @organization.school%></h2> 
+<div id="fund_raisers_div">
+	<%=render :partial=>"fund_raisers/fund_list",:locals=>{:fund_raisers=>@fund_raisers}%>
+</div>
+<% remote_form_for :fund_raiser, @fund_raiser, :update=>"fund_raisers_div",:url => fund_raisers_path, :html => { :method => :post} do |g| %>
+<%=g.text_field :name%>
+<input type="hidden" id="fund_raisers_organization_id" name="fund_raiser[organization_id]"  value="<%= @organization.id%>"/>
+<input type="submit"  value="Add Fund" />
+<% end %>

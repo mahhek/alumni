@@ -1,0 +1,50 @@
+<style>
+
+.full_campaign_list td { padding: 6px 4px; }
+
+.full_campaign_list .status { text-align:right; }
+
+.full_campaign_list .actions { width:185px; }
+
+h2 { margin: 15px 0 0; }
+</style>
+
+<%= cms("all_campaigns", %|<h2>All Fundraising Pages</h2>|) %>
+
+Displaying all <%= (@listed_organization) ? "for #{@listed_organization.name}" : "fundraising pages" %>.
+
+<%= render :partial => "layouts/manual_paginate", :locals => {:for_params => [:organization_id]} %>
+
+<table class="generic_selectable_list full_campaign_list">
+	<tr>
+		<th><%= link_to_sort("Status", [:organization_id]) %></th>
+		<th><%= link_to_sort("Name", [:organization_id]) %></th>
+		<th><%= link_to_sort("Owner", [:organization_id]) %></th>
+		<th><%= link_to_sort("Organization", [:organization_id]) %></th>
+		<th class="actions">Actions</th>
+	</tr>
+	<% @campaign_list.each do |c| %>
+	<tr>
+		<td class="status <%= c.status_text.downcase %>"><%= c.status_text %></td>
+		<td><a href="/<%= c.url %>.html"><%= c.name %></a></td>
+		<td><%= (c.owner) ? c.owner.name : "" %></td>
+		<td><%= c.organization.name %></td>
+		<td>
+			<a href="/campaigns/edit/<%= c.id %>">Edit</a> |
+			
+			<% if !c.is_deleted? %>
+			
+				<% if c.is_suspended? %>
+					<a href="/<%= c.url %>.html?unsuspend=1">Unsuspend...</a> |
+				<% else %>
+					<a href="/<%= c.url %>.html?suspend=1">Suspend...</a> |
+				<% end %>
+			
+				<a href="/<%= c.url %>.html?delete=1">Delete...</a>
+			<% else %>
+				<a href="/<%= c.url %>.html?undelete=1">Undelete...</a>
+			<% end %>
+		</td>
+	</tr>
+	<% end %>
+</table>

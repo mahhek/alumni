@@ -1,0 +1,11 @@
+<% content_for :head do %>
+  <%= render :partial=>'layouts/text_editor' %>
+<% end %>
+
+<h1>New organization</h1>
+
+<% form_for @organization, :html=>{:multipart => true} do |f| %>
+  <%= render :partial => "organizations/form", :locals=>{ :f=>f }%>
+<% end %>
+
+<%= link_to 'Back', organizations_path %>

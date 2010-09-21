@@ -1,0 +1,14 @@
+<h1>Editing fund_raiser</h1>
+
+<% form_for(@fund_raiser) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.submit "Update" %> or <a href="/organizations/manage/<%= @fund_raiser.organization_id %>">Back</a>
+  </p>
+<% end %>
+

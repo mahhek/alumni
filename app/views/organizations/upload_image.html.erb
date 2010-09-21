@@ -1,0 +1,67 @@
+<%setup_yield%>
+
+<style>
+	#form_photo {
+		float:none;
+	}
+</style>
+   <%#*<div id="background_transparent_div" style="display:none">%>
+              <%#*</div>%>
+                <%#*<div class="popupholder" id="pop_up_div" style="display: none; position: absolute; z-index: 999; background-color:#ECEFF5;" >%>
+                  <%#*<div class="headingholder_popup">%>
+                      <%#*<span style="margin: 0px 10px; float: right;">%>
+                          <%#*<a href="javascript:void(0)" onclick="hide_addresses()">X</a>%>
+                      <%#*</span>%>
+                      <%#*<span style="margin-left:10px; float:left;">%>
+                          <%#*<b>Logo</b>%>
+                      <%#*</span>%>
+                  <%#*</div>%>
+
+                  <%#*<br>%>
+
+                 <%#*<div id="pic_div" style="margin: 5px 5px 5px 5px;" align="center">%>
+                   <%#*You logo will appear like below on the organization search page:%>
+                   <%#*<br/>%>
+                   <%#*<br/>%>
+
+                     <%#= load_small(@organization) %>
+
+<%#*<br/>%>
+<%#*<br/>%>
+<%#*Please change your logo's dimension according to our system's standards if you are not satisfy with the current look of the logo.%>
+        <%#*</div>%>
+
+                  <%#*<br>%>
+                <%#*</div>%>
+<%= cms("org_admin_photo", %||) %>
+
+
+	<% form_for(:photo, :url => {:action => :create_org_photo},:html=>{:multipart => true,:method => :post, :class=>"standard" } ) do |f| %>
+		<%= error_messages_for :photo %>
+		<%= load_full(@organization) %><br /><br />
+         &nbsp;
+ 
+        <div id="form_photo">
+          
+		<%= f.file_field 'uploaded_data' %><br /><br />
+		<%= hidden_field_tag "id", @photo.id unless !@photo %>
+		<%= hidden_field_tag "organization_id", @organization.id unless !@organization %>
+        <%#= link_to "Check logo as it will appear on the site search" ,"" ,{:onclick=>"show_pic();return false;"}%><br/><br/>
+		<%= submit_tag "Upload Photo" %> 
+		<% if @photo %>or <%= link_to "remove picture", "/organizations/remove_image/1?organization_id=#{@organization.id}", :confirm => "Are you sure you want to remove your profile picture? The picture will be permanently deleted." %><% end %>
+	<% end %>
+	
+</div>
+
+<script>
+
+  function show_pic(){
+    $('pop_up_div').style.display = "block";
+    $('background_transparent_div').style.display = "block";
+    center($('pop_up_div'),100,100);
+  }
+  function hide_addresses(){
+      $('background_transparent_div').style.display = "none";
+      $('pop_up_div').style.display = "none";
+  }
+  </script>

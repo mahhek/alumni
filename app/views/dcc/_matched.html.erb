@@ -1,0 +1,52 @@
+<table class="generic_form donate_form" id ="matched_form" style="<%= if (@payment) then @payment.matched? ? "" : "display:none" else "display:none" end %>">
+
+<tr class="form_header">
+	<th>Company Information</th>
+	<td></td>
+</tr>
+
+<tr>
+	<th><%= pay.label :matched_name, "Company Name:" %></th>
+	<td><%= pay.text_field :matched_name, :size => 30, :maxlength => 100 %></td>
+</tr>
+
+<tr>
+	<th><%= pay.label :matched_addr1, "Address 1:" %></th>
+	<td><%= pay.text_field :matched_addr1, :size => 30, :maxlength => 100 %></td>
+</tr>
+
+<tr>
+	<th><%= pay.label :matched_addr2, "Address 2:" %></th>
+	<td><%= pay.text_field :matched_addr2, :size => 30, :maxlength => 100 %></td>
+</tr>
+
+<tr>
+	<th><%= pay.label :matched_city, "City:" %></th>
+	<td><%= pay.text_field :matched_city, :size => 20, :maxlength => 100 %></td>
+</tr>
+
+<tr>
+	<th><%= pay.label :matched_state, "State:" %></th>
+	<td><%= state_select_for :payment, :matched_state %></td>
+</tr>
+
+<tr>
+	<th><%= pay.label :matched_zip, "Zip Code:" %></th>
+	<td><%= pay.text_field :matched_zip, :size => 6, :maxlength => 10 %></td>
+</tr>
+
+<tr>
+	<th><%= pay.label :matched_phone, "Phone:" %></th>
+	<td><%= pay.text_field :matched_phone, :size => 30, :maxlength => 32 %></td>
+</tr>
+</table>
+
+<script>
+function toggle_matching_fields() {
+	if ($('matched_form').style.display == "") {
+		$('matched_form').style.display = "none";
+	} else {
+		$('matched_form').style.display = "";
+	}
+}
+</script>

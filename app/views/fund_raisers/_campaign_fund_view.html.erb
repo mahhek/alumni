@@ -1,0 +1,40 @@
+
+
+<%
+  selected = []
+  unless @campaign.nil?
+    @campaign.fund_raisers.each do |fund_raiser|
+      selected << fund_raiser.id
+    end
+  end
+%>
+
+<% unless fund_raisers.blank? %>
+  
+  <%= hidden_field_tag "who_will_choose_fund_option" , fund_raisers.first.organization.who_will_choose_fund %>
+  
+    <th valign="top"><label for="campaign_fund_raiser_id">Choose a Fund</label></th>
+    <td>
+      <table style="width:50%;" cellpadding="0" cellspacing="0">
+          <% all_fund_raisers_ids = [] %>
+          <% fund_raisers.each do |fund_raiser| %>
+            <% all_fund_raisers_ids << fund_raiser.id.to_s + ";" %>
+            <tr style="padding:0px;margin:0px;">
+              <td style="padding:0px;margin:0px;">                
+                <% if fund_raiser.name.to_s == "Default" && (fund_raiser.organization.who_will_choose_fund == "the_donors" || fund_raiser.organization.who_will_choose_fund == "all_gifts_will_be_unrestritced" ) %>
+                  <%= check_box_tag "fund_raiser_ids[]" , fund_raiser.id ,true,
+                    { :id=> "fund_raiser_#{fund_raiser.id}" }%>
+                  <%=  fund_raiser.name %>
+                <%else%>
+                  <%= check_box_tag "fund_raiser_ids[]" , fund_raiser.id ,selected.include?(fund_raiser.id) ? true : false,
+                    { :id=> "fund_raiser_#{fund_raiser.id}" }%>
+                  <%=  fund_raiser.name %>
+                <%end%>
+              </td>
+            </tr>
+          <%end%>
+          <%= hidden_field_tag "all_fund_raisers_ids" , all_fund_raisers_ids %>
+        </table>
+          </td>
+  
+<%end%>

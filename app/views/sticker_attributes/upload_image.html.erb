@@ -1,0 +1,59 @@
+<h2 class="bumper_sticker_template_header"><%=h @organization.full_name %> e-Bumper Sticker template</h2>
+
+<ul class="generic_link_list bumper_sticker_template_actions_list">
+	<li>Edit:</li>
+	<li><a href="/sticker_attributes/<%= @sticker_attribute.id %>/edit" style="text-decoration:underline">colors</a></li>
+	<li>images</li>
+</ul>
+
+<table id="campaigns-top" class="bumper_sticker_list bumper_sticker_admin_show edit_sticker_attribute" cellspacing="2">
+	<tr>
+		<th>NAME</th>
+		<td><%= @sticker_attribute.name %></td>
+	</tr>
+	<tr>
+		<th>PRIMARY</th>
+		<td>			
+			<% @sticker_attribute.primary_colors.each do |color| %>
+					<div class='bumper_sticker_color' style='background-color:#<%=color.attribute_value%>' >&nbsp;</div>
+			<%end%>
+		</td>
+	</tr>
+	<tr>
+		<th>SECONDARY</th>
+		<td>
+			<% @sticker_attribute.secondary_colors.each do |color| %>
+				<div class='bumper_sticker_color' style='background-color:#<%=color.attribute_value%>' >&nbsp;</div>
+			<%end%>
+		</td>
+	</tr>
+	<tr>
+		<th class="images_header">
+			IMAGES
+		</th>
+		<td>
+			<% @sticker_attribute.sticker_attribute_photos.each do |photo| %>
+				<%=image_tag(photo.public_filename('small') , :class=>"thumb",  :title=>"#{photo.title}")%>
+				<%= link_to "remove", {:action=>:destroy_photo, :id=>photo.id, :sticker_attribute_id=>@sticker_attribute.id}, {:style=>"font-size:0.8em;", :confirm => "Are you sure?"} %>
+				<div style="clear:both;"></div>
+			<%end%>
+		</td>
+	</tr>
+</table>
+
+<div id="form_photo">
+	Add a Photo<br>
+	<% form_for(:photo, :url => {:action => :create_sa_photo},:html=>{:multipart => true,:method => :post, :class=>"standard" } ) do |f| %>
+		<%= error_messages_for :photo %>
+		<%= f.file_field 'uploaded_data' %><br /><br />
+		<%= hidden_field_tag "id", @photo.id unless !@photo %>
+		<%= hidden_field_tag "sticker_attribute_id", @sticker_attribute.id unless !@sticker_attribute %>
+		<input type="submit" value="Upload File">
+	<% end %>
+	<p style="margin:10px;font-size:0.8em">Your image must have the .png, .jpg, .gif format.  Most images already use this format, but if you need help converting a file, you can contact <a href="mailto:support@alumnifidelity.com">AlumniFidelity Support</a>.</p>
+</div>
+
+
+
+<div style="clear:both;"></div>
+<input type="button" onclick="window.location = '/sticker_attributes?organization_id=<%= @organization.id %>';" value="Finish" /> or <%= link_to 'cancel',  @sticker_attribute %>

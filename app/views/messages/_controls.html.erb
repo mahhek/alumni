@@ -1,0 +1,47 @@
+<script>
+	var submit_to = function(loc) {
+		$('messages_form').action = loc;
+		$('messages_form').submit();
+	}
+	
+	var mark = function(which) {
+		for(var i=0; i<message_ids.size(); i++) {
+			$('message_' + message_ids[i]).checked = (which == "all");
+		}
+	}
+	
+	var redraw_actions = function() {
+		var any_read = false;
+		var any_unread = false;
+		for(var i=0; i<message_ids.size(); i++) {
+			if ($('message_' + message_ids[i]).checked) {
+				if (message_statuses[message_ids[i]])
+					any_read = true;
+				else
+					any_unread = true;
+			}
+		}
+		
+		if (any_read) activate('mark_as_unread');
+		else deactivate('mark_as_unread');
+		
+		if (any_unread) activate('mark_as_read');
+		else deactivate('mark_as_read');
+		
+	}
+	
+	var activate = function(id) {
+		$(id).style.display = "block";
+		$(id + "_disabled").style.display = "none";
+	}
+	
+	var deactivate = function(id) {
+		$(id).style.display = "none";
+		$(id + "_disabled").style.display = "block";
+	}
+	
+	var message_ids = <%= @all_message_ids.to_json %>;
+	<% if @marked_messages %>
+	var message_statuses = <%= @marked_messages.to_json %>;
+	<% end %>
+</script>

@@ -1,0 +1,41 @@
+<style>
+
+.full_org_list td { padding: 6px 4px; }
+
+.full_org_list .status { text-align:right; }
+
+.full_org_list .actions { width:135px; }
+
+.full_org_list {
+	width:500px;
+}
+
+h2 { margin: 15px 0 0; }
+</style>
+
+<%= cms("all_orgs", %|<h2>All Organizations</h2>|) %>
+
+Displaying all organizations.
+
+<%= render :partial => "layouts/manual_paginate", :locals => {:for_params => []} %>
+
+<table class="generic_selectable_list full_org_list">
+	<tr>
+		<th><%= link_to_sort("Status") %></th>
+		<th><%= link_to_sort("Name") %></th>
+		<th class="actions">Actions</th>
+	</tr>
+	<% @org_list.each do |c| %>
+	<tr>
+		<td class="status <%= c.status_text.downcase %>"><%= c.status_text %></td>
+		<td><%= c.name %></td>
+		<td>
+			<a href="/organizations/<%= c.id %>">View</a> | 
+			<a href="/organizations/manage/<%= c.id %>">Edit</a>
+			<% if c.status == 0 %>
+				| <a href="/organizations/activate/<%= c.id %>">Activate</a>
+			<% end %>
+		</td>
+	</tr>
+	<% end %>
+</table>

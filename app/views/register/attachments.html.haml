@@ -1,0 +1,28 @@
+= stylesheet_link_tag 'organization_registration'
+
+#organization_registration
+  %h1 Attach Required Documentation
+  %table.generic_form.edit_org_form
+    %tr
+      %th
+      %td
+    - if @registration.voided_check
+      = form_row "<strong>Voided Check</strong>", "Uploaded."
+    - else
+      - form_for :org_reg_attachment, :url => "/register/add_attachment", :html => { :multipart => true } do |f|
+        = f.hidden_field :attachment_type, :value => "voided_check"
+        = form_file_row f, :uploaded_data, "Voided Check", "From the account into which you want contributions to be deposited (if easier, please fax to 202.204.5191)"
+        = form_submit f, "Upload"
+    
+    = form_section_header ""
+    - if @registration.tax_proof
+      = form_row "<strong>Proof of Tax Exempt Status</strong>", "Uploaded."
+    - else
+      - form_for :org_reg_attachment, :url => "/register/add_attachment", :html => { :multipart => true } do |f|
+        = f.hidden_field :attachment_type, :value => "tax_proof"
+        = form_file_row f, :uploaded_data, "Proof of Tax Exempt Status", "i.e. IRS determination letter (if easier, please fax to 202.204.5191)"
+        = form_submit f, "Upload"
+    
+  .continue
+    %a{ :href=>"/register/finish" } Continue &#187;
+  = render :partial=>'register/help'

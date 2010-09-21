@@ -1,0 +1,44 @@
+<h1>Upload Colors</h1>
+<%content_for :head do %>
+<script src="/javascript/yui/build/colorpicker/colorpicker.js"></script>
+<%end%>
+<% form_for(@sticker_attribute) do |f| %>
+  	<p>Step 1: Pick Your Colors</p>
+	<br/>
+	<div class="left_of_picker">
+		<div id="color_container" class="yui-skin-sam"></div>
+	</div>
+	<div class="left_of_picker">
+		<input type="button" value="Add As Primary"  onclick="addPrimaryColor();"/> &nbsp; <input type="button" value="Add As Secondary"  onclick="addSecondaryColor();"/>
+		<div id="picked_primary_colors" >
+		<h2>Primary</h2>
+		</div>
+		 <div class="clear" ></div>
+		<div id="picked_secondary_colors" >
+		<h2>Secondary</h2>
+		</div>
+	</div>
+	<div class="clear" ></div>
+
+
+	<br/>
+<script>
+	var picker = new YAHOO.widget.ColorPicker("color_container", {
+	    showhsvcontrols: false,
+	    showhexcontrols: true,
+	    images: {
+	        PICKER_THUMB: "/javascripts/yui/build/colorpicker/assets/picker_thumb.png",
+	        HUE_THUMB: "/javascripts/yui/build/colorpicker/assets/hue_thumb.png"
+	    }
+	});
+	function addPrimaryColor(){
+		$('picked_primary_colors').innerHTML += "<span><input type='hidden'  name='sticker_attributes[primary_colors][]'  value='" + $('yui-picker-hex').value + "'/><div class='a_color' style='background-color:#"+ $('yui-picker-hex').value + "' >&nbsp;</div>&nbsp;&nbsp;" + $('yui-picker-hex').value  + " <a href='#' onclick='this.parentNode.innerHTML=\"\";return false;'>delete</a><br/></span>";
+	}
+	function addSecondaryColor(){
+		$('picked_secondary_colors').innerHTML += "<span><input type='hidden'  name='sticker_attributes[secondary_colors][]'  value='" + $('yui-picker-hex').value + "'/><div class='a_color' style='background-color:#"+ $('yui-picker-hex').value + "' >&nbsp;</div>&nbsp;&nbsp;" + $('yui-picker-hex').value  + " <a href='#' onclick='this.parentNode.innerHTML=\"\";return false;'>delete</a><br/></span> ";
+	}
+</script>
+  <p>
+    <input type="Submit" value="Submit" />
+  </p>
+</form>

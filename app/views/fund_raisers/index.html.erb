@@ -1,0 +1,21 @@
+<h1>Listing fund_raisers</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+  </tr>
+<% for fund_raiser in @fund_raisers %>
+  <tr>
+    <td><%=h fund_raiser.name %></td>
+    <td><%=h fund_raiser.description %></td>
+    <td><%= link_to 'Show', fund_raiser %></td>
+    <td><%= link_to 'Edit', edit_fund_raiser_path(fund_raiser) %></td>
+    <td><%= link_to 'Destroy', fund_raiser, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New fund_raiser', new_fund_raiser_path %>

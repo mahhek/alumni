@@ -1,0 +1,925 @@
+<% setup_yield %>
+<% if @campaign.is_owner?(logged_in_user) %>
+  <%= render :partial => "campaigns/profile/donate_callout" if @campaign.creation_step == Campaign::Initiation::Promoted %>
+<% end %>
+<%= cms("donation", %|<h1>Process Donation</h1>|) %>
+
+<style>
+  .field-subtext {
+    font-size:10px;
+  }
+
+  .form_header th {
+    padding: 20px 20px 0 0;
+  }
+</style>
+
+<% if !@is_configured %>
+  <div id="errorExplanation" class="flash flash_notice">
+    <h2>Donation is currently unavailable for <%= @campaign.organization.name %></h2>
+    <p>Please try again later.</p>
+  </div>
+<% end %>
+
+
+<% form_for :dcc, :html => {:id => 'DoDirectPaymentForm', :name => 'DoDirectPaymentForm', :class=>'standard, donation', :onsubmit=>"return checkFundsAndSubmitForm();"}, :url => {:controller => 'dcc', :action => 'do_DCC'} do |f|  %>
+  <% fields_for :payment do |pay| %>
+
+    <%#= error_messages_for :payment,
+    :class=>"flash donate_notice",
+    :header_message => "There was a problem:",
+    :message=>"With questions, please contact us at support@alumnifidelity.com or call (202) 577-3350."%>
+    <%unless @payment.nil? || @payment.errors.blank?%>
+      <div id="error_div" class="flash donate_notice">
+
+        <h2 style="margin:0 0 0em;">There was a problem:</h2>
+        <br>
+        <div>
+          <%@payment.errors.each do |error|%>
+            <div>
+              <b><%=h error[0].capitalize %>&nbsp;<%=h error[1] %></b>
+            </div>
+          <%end%>
+        </div>
+        <br>
+        <div>
+          <h3>With questions, please contact us at support@alumnifidelity.com or call (202) 577-3350.</h3>
+        </div>
+
+      </div>
+    <%end%>
+    * = Required field
+
+
+    <input type="hidden" name="campaign_id" value="<%=params[:campaign_id]%>" />
+
+
+    <%= render :partial => "amount", :locals => {:pay => pay} %>
+    <table class="generic_form donate_form">
+
+      <%= hidden_field_tag "who_will_choose_fund_option" , @campaign.organization.who_will_choose_fund %>
+
+      <%unless @campaign.organization.who_will_choose_fund == "the_fundraisers"%>
+
+        <%if @campaign.organization.who_will_choose_fund == "the_donors" || @campaign.organization.who_will_choose_fund == "both"%>
+
+          <tr>
+
+            <th valign="top">
+            To which fund/s are you directing your gift?
+            &nbsp;
+            <div id="background_transparent_div" style="display:none">
+            </div>
+            <div class="popupholder" id="pop_up_div" style="display: none; position: absolute; z-index: 999; background-color:#ECEFF5;" >
+              <div class="headingholder_popup">
+                <span style="margin: 0px 10px; float: right;">
+                  <a href="javascript:void(0)" onclick="hide_addresses()">X</a>
+                </span>
+                <span style="margin-left:10px; float:left;">
+                  <b>Fund Allocation</b>
+                </span>
+              </div>
+
+              <br>
+
+              <div id="whats_div" style="float:left;margin: 5px 5px 5px 5px;">
+                <%= @whats_this%>
+              </div>
+
+              <br>
+            </div>
+            <%= link_to "What's This?" ,"" ,{:onclick=>"show_whats_this();return false;"}%>
+            <td valign="top" style="padding:0px;margin:0px;">
+              <div id="optional_heading_div" style="color:#00476E;font-family:Georgia,'Times New Roman',Times,serif;font-size:1.2em;font-weight:normal;">
+                <i>Optional Field</i>
+              </div>
+              <div id="funds_div">
+                <%=  render :partial=>"/campaigns/funds_against_campaign" , :locals=>{ :funds=>@funds }%>
+              </div>
+              <div id="optional_div" style="display:none;">
+              </div>
+              <div>
+                <b>Total Allocated&nbsp;</b><%= text_field_tag(:total_allocation_left,0,{ :style=>"font-size:14px;font-weight:bolder;width:30px;"}) %>&nbsp;%
+              </div><br>
+              <div>
+                If total allocated does not equal 100, an error will occur later.
+              </div>
+
+
+
+            </td>
+          </tr>
+        <%else%>
+          <tr>
+            <td valign="top" style="padding:0px;margin:0px;">
+              <div id="funds_div_hidden" style="display:none;">
+                <%=  render :partial=>"/campaigns/funds_against_campaign" , :locals=>{ :funds=>@funds }%>
+              </div>
+              <div id="total_allocation_fund_div" style="display:none;">
+                <%= text_field_tag(:total_allocation_left,"",{ :style=>"font-size:14px;font-weight:bolder;width:30px;"}) %>
+              </div>
+
+            </td>
+          </tr>
+        <%end%>
+      <%else%>
+        <tr>
+
+          <td valign="top" style="padding:0px;margin:0px;">
+            <div id="funds_div_hidden" style="display:none;">
+              <%=  render :partial=>"/campaigns/funds_against_campaign" , :locals=>{ :funds=>@funds }%>
+            </div>
+            <div id="total_allocation_fund_div" style="display:none;">
+              <%= text_field_tag(:total_allocation_left,"",{ :style=>"font-size:14px;font-weight:bolder;width:30px;"}) %>
+            </div>
+
+          </td>
+        </tr>
+      <%end%>
+
+      <tr class="form_header">
+        <th>Personal Information</th>
+        <td></td>
+      </tr>
+
+      <tr>
+        <th></th>
+        <td>Please enter your name as it appears on your credit card.</td>
+      </tr>
+
+      <tr>
+        <th><%= pay.label :first_name, 'First Name:' %></th>
+        <td>
+          <div style="float:left">
+            <%= pay.text_field :first_name, :size => 30, :maxlength => 32, :value => (logged_in_user) ? logged_in_user.first_name : "" %> *
+          </div>
+          <div style="float:left">
+            <img src="/images/smallarrow.jpg" style="display:none" id="first_name_img" />
+          </div>
+          <div style="float:left">
+            &nbsp;<label id="first_name_e" style="font-weight:bold"></label>
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <th><%= pay.label :middle_initial, "Middle Initial:" %></th>
+        <td><%= pay.text_field :middle_initial, :size => 2, :maxlength => 3 %></td>
+      </tr>
+
+      <tr>
+        <th><%= pay.label :last_name, "Last Name:" %></th>
+        <td>
+          <div style="float:left">
+            <%= pay.text_field :last_name, :size => 30, :maxlength => 32, :value => (logged_in_user) ? logged_in_user.last_name : "" %> *
+          </div>
+          <div style="float:left">
+            <img src="/images/smallarrow.jpg" style="display:none" id="last_name_img" />
+          </div>
+          <div style="float:left">
+            &nbsp;<label id="last_name_e" style="font-weight:bold"></label>
+          </div>
+        </td>
+      </tr>
+
+
+      <tr class="form_divider"></tr>
+
+      <tr>
+        <th><%= pay.label :email, "Email Address:" %></th>
+        <td>
+          <% if !logged_in_user %>
+            <%=  pay.text_field :email, :size => 30 %> * <label id="email_e" style="font-weight:bold"></label>
+          <% elsif @show_offline_option %>
+            <div style="float:left">
+              <%=  pay.text_field :email, :size => 30, :value => logged_in_user.email %> *
+            </div>
+            <div style="float:left">
+              <img src="/images/smallarrow.jpg" style="display:none" id="email_img" />
+            </div>
+            <div style="float:left">
+              &nbsp;<label id="email_e" style="font-weight:bold"></label>
+            </div>
+
+          <% else %>
+            <%= logged_in_user.email %>
+            <%= pay.hidden_field :email, :value => logged_in_user.email %>
+          <% end %>
+        </td>
+      </tr>
+
+
+      <%if @campaign.organization.name == 'The University of Oklahoma'  && @is_configured %>
+        <tr>
+          <th><%= pay.label :OU_alum, "Are you an OU alum?" %></th>
+          <td>
+            <div>
+              <div style="float:left">
+                <select id="payment_ou_alum" name="payment[ou_alum]" onchange="oualumchange();">
+                  <option value="No">No</option>
+                  <option value="Yes">Yes</option>
+                </select>
+
+              </div>
+              <div id="div_degree" style="float:left;display:none"> &nbsp;&nbsp; Degree: <%= pay.text_field :degree, :size => 20, :maxlength => 100 %> Graduation year: <%= pay.text_field :graduation_year, :size => 2, :maxlength => 4 %></div>
+            </div>
+          </td>
+        </tr>
+      <%else%>
+        <div id="div_1" style="float:left;display:none">Graduation year: <%= pay.text_field :graduation_year, :value=>"0", :size => 2, :maxlength => 4 %></div>
+      <%end%>
+      <tr class="form_header">
+        <th>Donor Wall</th>
+        <td></td>
+      </tr>
+
+      <tr>
+        <th></th>
+        <td>Have your contribution displayed on the fundraising page for <%= @campaign.name %></td>
+      </tr>
+
+      <tr>
+        <th><%= pay.radio_button :displayed_name_option, "cc_name", :checked=>"checked" %></th>
+        <td>
+          <%= pay.label :displayed_name_option_cc_name, 'Show the name on my credit card: ' %>
+          <b><%= (logged_in_user) ? logged_in_user.name : "" %></b>
+        </td>
+      </tr>
+
+      <tr>
+        <th><%= pay.radio_button :displayed_name_option, "hide" %></th>
+        <td><%= pay.label :displayed_name_option_hide, 'Hide my name' %></td>
+      </tr>
+
+      <tr>
+        <th><%= pay.radio_button :displayed_name_option, "custom" %></th>
+        <td>
+          <%= pay.label :displayed_name_option_custom, 'Show the following name: ' %>
+          <%= pay.text_field :user_entered_display_name %>
+        </td>
+      </tr>
+
+      <tr>
+        <th></th>
+        <td></td>
+      </tr>
+
+      <tr>
+        <th><%= pay.check_box :hide_amount %></th>
+        <td><%= pay.label :hide_amount, 'Hide the donation amount' %></td>
+      </tr>
+
+      <tr class="form_header">
+        <th>Billing Address</th>
+        <td></td>
+      </tr>
+
+      <tr>
+        <th><%= pay.label :address1, "Address 1:" %></th>
+        <td>
+          <div style="float:left;">
+            <%= pay.text_field :address1, :size => 30, :maxlength => 100 %> *
+          </div>
+          <div style="float:left;">
+            <img src="/images/smallarrow.jpg" style="display:none" id="address1_img" />
+          </div>
+          <div style="float:left;">
+            &nbsp; <label id="address1_e" style="font-weight:bold"></label>
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <th><%= pay.label :address2, "Address 2:" %></th>
+        <td><%= pay.text_field :address2, :size => 30, :maxlength => 100 %></td>
+      </tr>
+
+      <tr>
+        <th><%= pay.label :city, "City:" %></th>
+        <td>
+          <div style="float:left;">
+            <%= pay.text_field :city, :size => 20, :maxlength => 100 %> *
+          </div>
+          <div style="float:left;">
+            <img src="/images/smallarrow.jpg" style="display:none" id="city_img" />
+          </div>
+          <div style="float:left;">
+            &nbsp;<label id="city_e" style="font-weight:bold"></label>
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <th><%= pay.label :state, "State:" %></th>
+        <td><%= state_select_for(:payment, :state) %> *</td>
+      </tr>
+
+      <tr>
+        <th><%= pay.label :zip, "Zip Code:" %></th>
+        <td>
+          <div style="float:left;">
+            <%= pay.text_field :zip, :size => 6, :maxlength => 10 %> *
+          </div>
+          <div style="float:left;">
+            <img src="/images/smallarrow.jpg" style="display:none" id="zip_img" />
+          </div>
+          <div style="float:left;">
+            &nbsp;<label id="zip_e" style="font-weight:bold"></label>
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <th>Country:</th>
+        <td>US</td>
+      </tr>
+
+      <tr>
+        <th><%= pay.label :phone, "Phone Number:" %></th>
+        <td>
+          <div style="float:left">
+            <%= pay.text_field :phone, :size => 30, :maxlength => 32 %>
+          </div>
+          <div style="float:left">
+            <img src="/images/smallarrow.jpg" style="display:none" id="phone_img" />
+          </div>
+          <div style="float:left">
+            &nbsp;<label id="phone_e" style="font-weight:bold"></label>
+          </div>
+        </td>
+      </tr>
+
+      <tr class="form_header">
+        <th>Payment Information</th>
+        <td></td>
+      </tr>
+      <tr>
+        <th><%= pay.label :creditcard_type, "Card Type:" %></th>
+        <td>
+          <div>
+            <div style="float:left">
+
+              <select id="payment_creditcard_type" name="payment[creditcard_type]" onchange="creditcardtypechange();">
+                <option value="Visa">Visa</option>
+                <option value="MasterCard">MasterCard</option>
+                <option value="Amex">Amex</option>
+                <option value="Discover">Discover</option>
+              </select>
+
+            </div>
+            <div id="div_foramat" style="float:left">&nbsp;* &nbsp;&nbsp; </div>
+          </div>
+
+        </td>
+
+      </tr>
+      <tr>
+        <th><%= pay.label :user_entered_acct, "Card Number:" %></th>
+
+        <td>
+          <div style="float:left">
+            <%= pay.text_field(:user_entered_acct , {:size => 21, :maxlength => 23, :autocomplete=>"off", :onKeyPress=>"return checkIt(event)"}) %> *
+          </div>
+          <div style="float:left">
+            <img src="/images/smallarrow.jpg" style="display:none" id="user_entered_acct_img" />
+          </div>
+          <div style="float:left">
+            &nbsp;<label id="user_entered_acct_e" style="font-weight:bold"></label>
+          </div>
+          <div id="div_format" style="float:left">&nbsp;
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <th>Expiration Date:</th>
+        <td>
+          <%= month_select_for(:payment, :expire_month) %>
+          <%= year_select_for(:payment, :expire_year) %> *
+        </td>
+      </tr>
+
+      <tr>
+        <th><%= pay.label :cvv, "Card Verification Number:" %></th>
+        <td>
+          <div style="float:left">
+            <%= pay.text_field :cvv, {:size => 4, :maxlength => 4, :autocomplete=>"off"} %> *
+          </div>
+          <div style="float:left">
+            <img src="/images/smallarrow.jpg" style="display:none" id="cvv_img" />
+          </div>
+          <div style="float:left">
+            &nbsp;<label id="cvv_e" style="font-weight:bold"></label>
+          </div>
+
+          <span class="field-subtext">This is the three or four-digit code on the back of your credit card.</span>
+        </td>
+      </tr>
+      <tr>
+        <th class="tall_label"><%= pay.label :comment, "Additional Comments:" %></th>
+        <td><%= pay.text_area :comment, :rows => 8 %></td>
+      </tr>
+      <tr class="form_divider"></tr>
+
+      <tr>
+        <th><%= pay.check_box :matched, :onclick=>"toggle_matching_fields();" %></th>
+        <td><%= pay.label :matched, 'My Company will match this contribution' %></td>
+      </tr>
+    </table>
+    <%= render :partial => "matched", :locals => {:pay => pay} %>
+    <table class="generic_form donate_form">
+
+
+      <tr>
+        <th><%= pay.check_box( :i_agree , :checked=>"checked" ) %></th>
+        <td>
+          <%= pay.label :i_agree, %|I agree to the #{link_to "Terms of Service", "/home/terms", :popup => true, :class => 'show-as-link'}. *| %>
+          <%#@policy_statement = PolicyStatement.find_by_type_of_policy("terms_of_service")%>
+          <%#if @policy_statement.nil?%>
+          <%#= link_to 'Terms of Service', ""%>
+          <%#else%>
+          <%#= pay.label :i_agree, %|I agree to the #{link_to 'Terms of Service', "#{@policy_statement.public_filename}"}. *| %>
+          <%#end%>
+        </td>
+      </tr>
+
+      <tr>
+        <th><%= pay.check_box( :ok_to_send , :checked => "checked" ) %></th>
+        <td>
+          <label for="payment_ok_to_send">Yes, I want to be contacted occasionally with news or updates from this school or non-profit.  See our <a href="/privacy">privacy policy</a>.</label>
+          <%#*<label for="payment_ok_to_send">Yes, I want to be contacted occasionally with news or updates from this school or non-profit.  See our <%@policy_statement = PolicyStatement.find_by_type_of_policy("privacy_policy")%>
+          <%#if @policy_statement.nil?%>
+          <%#= link_to 'Privacy Policy', ""%>
+          <%#else%>
+          <%#= link_to 'Privacy Policy', "#{@policy_statement.public_filename}"%>
+        </td>
+
+      </tr>
+
+      <%# if RAILS_ENV == "development" %>
+      <tr>
+        <th><%= check_box_tag( :fake_paypal_call, "1", :checked => "checked" ) %></th>
+        <td>
+          <label for="fake_paypal_call">Fake PayPal call.</label>
+        </td>
+
+      </tr>
+      <%# end %>
+
+      <% if @show_offline_option %>
+        <tr>
+          <th><%= pay.check_box :offline %></th>
+          <td>
+            <%= pay.label :offline, "Offline Donation." %>
+          </td>
+
+        </tr>
+      <% end %>
+
+      <tr class="form_divider"></tr>
+
+      <tr>
+        <th></th>
+        <td>
+          <div id="submit_div">
+            <input type="image" id="submit_btn"  style="height: 45px; width: 200px;" value="" src="/images/spacer.gif" />
+
+
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <th></th>
+        <td>
+          <div>
+          <span class="field-subtext"></span>
+            <%unless @payment.nil?
+              field_to_focus = []
+              label_to_focus = []
+              error_to_focus = []
+              img_to_focus = []
+
+              unless @payment.errors["first_name"].nil?
+                field_to_focus << "payment_first_name"
+                label_to_focus << "first_name_e";
+                error_to_focus << @payment.errors["first_name"]
+                img_to_focus << "first_name_img"
+              end
+
+              unless @payment.errors["last_name"].nil?
+                 field_to_focus << "payment_last_name"
+                 label_to_focus << "last_name_e";
+                 error_to_focus << @payment.errors["last_name"]
+                 img_to_focus << "last_name_img"
+              end
+
+               unless @payment.errors["email"].nil?
+                 field_to_focus << "payment_email"
+                 label_to_focus << "email_e";
+                 error_to_focus << @payment.errors["email"]
+                 img_to_focus << "email_img"
+               end
+
+               unless @payment.errors["address1"].nil?
+                 field_to_focus << "payment_address1"
+                 label_to_focus << "address1_e";
+                 error_to_focus << @payment.errors["address1"]
+                 img_to_focus << "address1_img"
+               end
+
+               unless @payment.errors["city"].nil?
+                 field_to_focus << "payment_city"
+                 label_to_focus << "city_e";
+                 error_to_focus << @payment.errors["city"]
+                 img_to_focus << "city_img"
+               end
+               unless @payment.errors["zip"].nil?
+                 field_to_focus << "payment_zip"
+                 label_to_focus << "zip_e";
+                 error_to_focus << @payment.errors["zip"]
+                 img_to_focus << "zip_img"
+               end
+               unless @payment.errors["phone"].nil?
+                 field_to_focus << "payment_phone"
+                 label_to_focus << "phone_e";
+                 error_to_focus << @payment.errors["phone"]
+                 img_to_focus << "phone_img"
+               end
+               unless @payment.errors["user_entered_acct"].nil?
+                field_to_focus << "payment_user_entered_acct"
+                label_to_focus << "user_entered_acct_e";
+                error_to_focus << @payment.errors["user_entered_acct"]
+                img_to_focus << "user_entered_acct_img"
+               end
+
+               unless @payment.errors["cvv"].nil?
+                field_to_focus << "payment_cvv"
+                label_to_focus << "cvv_e";
+                error_to_focus << @payment.errors["cvv"]
+                img_to_focus << "cvv_img"
+               end
+
+
+            end%>
+<%i = 0%>
+<%unless field_to_focus.nil?%>
+<%field_to_focus.each do|field|%>
+
+              <script>
+
+                $('<%=field_to_focus[0]%>').focus();
+                $('<%=label_to_focus[i]%>').innerHTML = "<%=error_to_focus[i]%>"
+                $('<%=label_to_focus[i]%>').style.color = "red";
+                $('<%=label_to_focus[i]%>').style.weight = "bold";
+                $('<%=img_to_focus[i]%>').style.display = "block"
+
+              </script>
+              <%i = i + 1%>
+                <%end%>
+              <%end%>
+            <%end%>
+          </div>
+        </td>
+      </tr>
+
+
+    </table>
+
+  <% end %>
+
+If you are having difficulty making a donation, email us at support@alumnifidelity.com or call (202) 577-3350.
+
+
+
+
+<script>
+
+  function creditcardtypechange()
+  {
+
+    val = $('payment_creditcard_type').value
+
+    if( val == 'Amex')
+    {
+
+
+      $('lbl_format').value = "format: xxxx-xxxx-xxxx-xxx"
+
+    }
+    else
+    {
+
+      $('lbl_format').value = "format: xxxx-xxxx-xxxx-xxxx"
+
+    }
+
+
+  }
+  function oualumchange()
+  {
+    val = $('payment_ou_alum').value;
+
+    if( val == 'Yes')
+    {
+
+      $('div_degree').style.display = "block"
+    }
+    else
+    {
+      $('div_degree').style.display = "none"
+      $('payment_degree').value = ""
+      $('payment_graduation_year').value = ""
+    }
+
+  }
+  function show_whats_this(){
+    $('pop_up_div').style.display = "block";
+    $('background_transparent_div').style.display = "block";
+    center($('pop_up_div'),100,100);
+  }
+  function hide_addresses(){
+    $('background_transparent_div').style.display = "none";
+    $('pop_up_div').style.display = "none";
+  }
+
+  function showTextFieldForFund(elem){
+    if(elem.checked == true)
+    {
+      $("text_box_coloumn_" + elem.id.substr(14)).style.display = "block";
+    }else
+    {
+      $("fund_for_campaign_" + elem.id.substr(14)).value = "";
+      calculateAllocationTotal();
+      $("text_box_coloumn_" + elem.id.substr(14)).style.display = "none";
+    }
+  }
+  function allow_numeric(obj){
+    if (!/^\d+(\d*)?$/.test(obj.value)){
+      obj.value= theVal = obj.value.replace(/[^0-9.]/g,'');
+      if(theVal>""){
+        obj.value=parseFloat("0"+theVal);
+        obj.focus()
+      }
+    }
+  }
+
+  onload = function(){
+
+
+
+    if($('who_will_choose_fund_option').value.toString() == "all_gifts_will_be_unrestritced"){
+      var selectedFunds = $('selected_funds').value.split(',');
+      percentageForHiddenTextFields = (100/(selectedFunds.size()-1)).toFixed(1);
+      for(var iterator = 0; iterator < selectedFunds.size()-1;iterator++){
+        $('fund_for_campaign_'+selectedFunds[iterator]).value = percentageForHiddenTextFields;
+      }
+      $("total_allocation_left").value = "100";
+    }
+
+    if($('who_will_choose_fund_option').value.toString() == "the_fundraisers"){
+      var selectedFunds = $('selected_funds').value.split(',');
+      percentageForHiddenTextFields = (100/(selectedFunds.size()-1)).toFixed(1);
+      for(var iterator = 0; iterator < selectedFunds.size()-1;iterator++){
+        $('fund_for_campaign_'+selectedFunds[iterator]).value = percentageForHiddenTextFields;
+      }
+      $("total_allocation_left").value = "100";
+    }
+
+    if($('who_will_choose_fund_option').value.toString() == "the_donors"){
+      $("total_allocation_left").value = "100";
+      $("total_allocation_left").style.color = "green";
+    }
+    if( $('who_will_choose_fund_option').value.toString() == "both"){
+      var selectedFunds = $('selected_funds').value.split(',');
+      percentageForTextFields = parseInt(100/(selectedFunds.size()-1));
+      for(var iterator = 0; iterator < selectedFunds.size()-1;iterator++){
+        if(parseInt(100%(selectedFunds.size()-1)) == 0 ){
+          $('fund_for_campaign_'+selectedFunds[iterator]).value = percentageForTextFields;
+        }
+      }
+      if(parseInt(100%(selectedFunds.size()-1)) == 0 ){
+        $("total_allocation_left").value = "100";
+        $("total_allocation_left").style.color = "green";
+      }else{
+        $("total_allocation_left").value = "0";
+        $("total_allocation_left").style.color = "black";
+      }
+
+
+    }
+
+  }
+
+  function checkFundsAndSubmitForm(){
+    return checkFundOnly();
+  }
+
+  function isnumber(num)
+  {
+    return (!isNaN(num)) && ((num % 1)==0)
+  }
+  function checkFundOnly(){
+
+    elementArray = document.getElementsByName('displayed_fund_text_box[]')
+    var text_boxes_length = elementArray.length;
+    var total_percentage = 0 ;
+    var breaked = false;
+    for(var count = 0 ; count < text_boxes_length ; count++){
+
+
+      if( elementArray[count].value != "" ){
+        total_percentage = parseFloat(total_percentage) + parseFloat(elementArray[count].value);
+      }
+
+      if( $('id_of_fund_is_'+elementArray[count].id.substr(18)).checked == true && elementArray[count].value == "" ){
+        alert("You have selected a fund but didn't assigned some percentage against it");
+        scroll(0,0);
+        breaked = true;
+        break;
+      }
+      if( $('id_of_fund_is_'+elementArray[count].id.substr(18)).checked == false && elementArray[count].value != "" ){
+        alert("You have assigned a percentage but didn't select any fund");
+        scroll(0,0);
+        breaked = true;
+        break;
+      }
+    }
+    if(breaked == true){
+      return false;
+    }
+
+
+    total_percentage = Math.round(total_percentage);
+
+
+    var radCount;
+    var radArray = document.getElementsByName('payment[user_entered_amount]');
+    var boolVar = "false"
+    for( radCount = 0 ; radCount < radArray.length-1; radCount++){
+      if(radArray[radCount].checked == true){
+        boolVar = "true"
+      }
+    }
+    if($('who_will_choose_fund_option').value != "all_gifts_will_be_unrestritced"){
+      if(boolVar.toString() == "true" ){
+        if(total_percentage == 0 ){
+          alert("Please allocate your donation to a specific fund.");
+          scroll(0,0);
+          return false;
+        }
+
+        if(total_percentage < 100 ){
+          alert("Please check your fund allocation percentages; they add to less than 100 percent.");
+          scroll(0,0);
+          return false;
+        }else if(total_percentage > 100 ){
+          alert("Please check your fund allocation percentages; they add to more than 100 percent.");
+          scroll(0,0);
+          return false;
+        }else{
+          $('submit_btn').disabled = true;
+          document.DoDirectPaymentForm.submit();
+        }
+      }else{       
+      if($("custom_amount") == null){        
+        if( $("payment_user_entered_amount").value != "" && $("payment_user_entered_amount").value > 0 )
+          {            
+            if(total_percentage == 0 ){
+              alert("Please allocate your donation to a specific fund.");
+              scroll(0,0);
+              return false;
+            }
+            if(total_percentage < 100 ){
+              alert("Please check your fund allocation percentages; they add to less than 100 percent.");
+              scroll(0,0);
+              return false;
+            }else if(total_percentage > 100 ){
+              alert("Please check your fund allocation percentages; they add to more than 100 percent.");
+              scroll(0,0);
+              return false;
+            }else{              
+              $('submit_btn').disabled = true;
+              document.DoDirectPaymentForm.submit();
+            }
+          }else{
+            alert("Please select or enter a valid amount")
+            scroll(0,0);
+            return false;
+          }
+      }
+      else{        
+        if($("custom_amount") != null || $("custom_amount").checked == true){
+          if( $("payment_custom_amount").value != "" && $("payment_custom_amount").value > 0 )
+          {
+            if(total_percentage == 0 ){
+              alert("Please allocate your donation to a specific fund.");
+              scroll(0,0);
+              return false;
+            }
+            if(total_percentage < 100 ){
+              alert("Please check your fund allocation percentages; they add to less than 100 percent.");
+              scroll(0,0);
+              return false;
+            }else if(total_percentage > 100 ){
+              alert("Please check your fund allocation percentages; they add to more than 100 percent.");
+              scroll(0,0);
+              return false;
+            }else{
+              $('submit_btn').disabled = true;
+              document.DoDirectPaymentForm.submit();
+            }
+          }else{
+            alert("Please select or enter a valid amount")
+            scroll(0,0);
+            return false;
+          }
+        }else{
+          if(total_percentage == 0 ){
+            alert("Please allocate your donation to a specific fund.");
+            scroll(0,0);
+            return false;
+          }
+          if(total_percentage < 100 ){
+            alert("Please check your fund allocation percentages; they add to less than 100 percent.");
+            scroll(0,0);
+            return false;
+          }else if(total_percentage > 100 ){
+            alert("Please check your fund allocation percentages; they add to more than 100 percent.");
+            scroll(0,0);
+            return false;
+          }else{
+
+            $('submit_btn').disabled = true;
+            document.DoDirectPaymentForm.submit();
+          }
+        }
+      }
+    }
+
+    }
+
+  }
+
+  function calculateAllocationTotal(elem)
+  {
+    elementArray = document.getElementsByName('displayed_fund_text_box[]')
+    var text_boxes_length = elementArray.length;
+    var total_percentage = 0 ;
+    for(var count = 0 ; count < text_boxes_length ; count++){
+      if( elementArray[count].value != "" ){
+        total_percentage = parseInt(total_percentage) + parseInt(elementArray[count].value)
+      }
+    }
+    if(elem.value == 0 || elem.value == ""){
+      $('id_of_fund_is_'+elem.id.substr(18)).checked = false;
+    }else{
+      $('id_of_fund_is_'+elem.id.substr(18)).checked = true;
+    }
+    $("total_allocation_left").value = total_percentage
+    if(total_percentage == 100 ){
+      $("total_allocation_left").style.color = "green"
+    }else{
+      $("total_allocation_left").style.color = "black"
+    }
+
+  }
+
+  function popup(mylink, windowname)
+  {
+    if (! window.focus)return true;
+    var href;
+    if (typeof(mylink) == 'string')
+      href=mylink;
+    else
+      href=mylink.href;
+    window.open(href, windowname, 'width=900,height=800,scrollbars=yes');
+    return false;
+  }
+
+  function checkIt(evt) {
+    evt = (evt) ? evt : window.event
+
+    var charCode = (evt.which) ? evt.which : evt.keyCode
+
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      status = "This field accepts numbers only."
+      return false
+    }
+    status = ""
+    if(charCode != 8)
+    {
+      if($('payment_user_entered_acct').value.length == 4 || $('payment_user_entered_acct').value.length == 9 || $('payment_user_entered_acct').value.length == 14)
+      {
+        $('payment_user_entered_acct').value = $('payment_user_entered_acct').value + '-'
+      }
+    }
+    else
+    {
+      if($('payment_user_entered_acct').value.length == 16 ||$('payment_user_entered_acct').value.length == 11 || $('payment_user_entered_acct').value.length == 6 )
+      {
+        $('payment_user_entered_acct').value = $('payment_user_entered_acct').value.substring(0, $('payment_user_entered_acct').value.length -1)
+      }
+    }
+    return true
+  }
+</script>

@@ -1,0 +1,107 @@
+<%puts "in profile show"%>
+<%= cms("dashboard_header", %|<h1>My Profile</h1>|, false) %>
+<div class="profile-container">
+
+	<!-- Left column -->
+	<div class="profile-left-column" >
+		<ul>
+			<li>
+				<h2>About Me</h2>
+				<div class="profile-about-me">
+					<div id="profile_right_of_photo" ><%=load_thumb(logged_in_user)%></div>
+					<div style="clear:both;"></div>
+
+					<% @questions.each do |attribute|%>
+					<%if attribute.value != ''%>
+					<label><%= attribute.user_attribute.text%></label><br/>
+					<div class="attribute" ><%= attribute.value %></div>
+					<%end%>
+					<%end%>
+
+					<a style="font-size:0.8em;" href="/my_account/profile">Edit your profile information</a><br />
+					<a style="font-size:0.8em;" href="/my_account/password">Change your password</a>
+				</div>
+			</li>
+			<li>
+              <%puts "fund rasing page before"%>
+				<!-- Campaign manager -->
+				<h2> Manage Fundraising Pages </h2>
+				<div id="current_campaigns" class="profile-campaigns">
+					You own <%= pluralize(@owned_campaigns.size, 'fundraising page') %>:
+					<div class="campaign-list">
+						<%= render :partial => "profiles/list_owned_campaigns", :locals => { :campaigns => @owned_campaigns.first(@campaigns_to_show) } %>
+
+						<% if @owned_campaigns.size > @campaigns_to_show %>
+						<div id="hidden_campaigns_owned" style="display:none;">
+							<%= render :partial => "profiles/list_owned_campaigns", :locals => { :campaigns => @owned_campaigns[@campaigns_to_show..-1] } %>
+						</div>
+						<a onclick="toggle_campaign_view('hidden_campaigns_owned', this); return false" href="#">see more...</a>
+						<% end%>
+					</div>
+					
+					<% if @owned_campaigns.size > 0 %>
+					<a href="#" style="line-height:1.2em;" onclick="$('campaign-manage-info-popup').toggle(); return false">What's the difference between 'close' and 'delete'?</a>
+	               <div id="campaign-manage-info-popup" style="display:none;">
+	                    <%= cms("dashboard_campaign_expl", %|
+						You should close a campaign when it has successfully reached its goal, but it will still remain viewable.<br/>
+	                    <br/>
+	                    Deleting a campaign will remove it from the system altogether.|)%>
+						<br><a href="#" onclick="$('campaign-manage-info-popup').toggle(); return false">close this message</a>
+					</div>
+					<br><br>
+					<% end %>
+
+
+				</div>
+			</li>
+			<li>
+				<h2>Notifications</h2>
+				<a href="/user_broadcasts/edit/1" style="font-size: 0.8em;">Change Notification Settings</a>
+			</li>
+		</ul>
+
+	</div>
+    <%puts "alert say pehlay" %>
+
+	<!-- Alerts code added 09-09-09 acuanote points 245,249 -->
+	<% if @is_org_user %>
+		<% @orgs.each do |o| %>
+			<div class="profile_org_logo">
+				<% if !o.branded_logo.nil? %>
+                  <%if o.organization_addresses.first.url_portion.nil? || o.organization_addresses.first.url_portion == ""%>
+                    <a href="/organizations/<%= o.id %>"><%= image_tag o.branded_logo.public_filename %></a>
+                  <%else%>
+                    <a href="/organizations/<%= o.organization_addresses.first.url_portion %>"><%= image_tag o.branded_logo.public_filename %></a>
+                  <%end%>
+				<% else %>
+                  <%if o.organization_addresses.first.url_portion.nil? || o.organization_addresses.first.url_portion == ""%>
+                    <a href="/organizations/<%= o.id %>"><%= image_tag o.name %></a>
+                  <%else%>
+                    <a href="/organizations/<%= o.organization_addresses.first.url_portion %>"><%= image_tag o.name %></a>
+                  <%end%>
+				<% end %>
+			</div>
+		<% end %>
+	<% end %>
+	
+	<div class="alerts-column">
+		<h2>Alerts!</h2>
+		<div class=".fl-prof-alert-content">
+			<%= profile_change_content(@change_list) %>
+		</div>
+		<div style="clear:both"></div>
+	</div>
+
+	<div class="clear"></div>
+</div>
+
+
+<script>
+var toggle_campaign_view = function(eid, event_elm) {
+	if ($(eid).toggle().style.display == "") {
+		event_elm.innerHTML = "see less...";
+	} else {
+		event_elm.innerHTML = "see more...";
+	}
+}
+</script>

@@ -1,0 +1,40 @@
+<%= error_messages_for :policy_statement %>
+        <% form_for :policy_statement, :url=>{:controller=>"admin" , :action=>"create_policy_statement"}, :html => { :multipart => true } do |f| -%>
+          <div>
+            <br/>
+
+<strong>Upload a new policy statement</strong>
+            <br/>
+            <br/>
+            <span>Select a file:</span>
+            <span>
+              <%= f.file_field :uploaded_data %> (only pdf files are allowed)
+            </span>
+          </div>
+
+
+          <div >
+
+            
+            <%= radio_button_tag 'type_of_policy', 'privacy_policy' ,true %>Privacy Policy
+            <%= radio_button_tag 'type_of_policy', 'security_statement' ,false %>Security Statement
+            <%= radio_button_tag 'type_of_policy', 'terms_of_service' ,false %>Terms of Service
+            <%= radio_button_tag 'type_of_policy', 'services_agreement' ,false %>Services Agreement
+          </div>
+          <div>
+
+            <span><%= submit_tag "Upload"%>
+            </span>
+<br/>
+          </div>
+        <% end -%>
+<br/><br/>
+
+<strong>Existing Policy Statements</strong><br/><br/>
+<% @privacy_policies.each do |privacy_policy|%>
+			<span><%= privacy_policy.type_of_policy%> <%= link_to 'Download',{:controller=>'admin', :action => 'download', :id => privacy_policy.id} %>
+| <%= link_to 'Delete',{:controller=>'admin', :action => 'delete_privacy_statement', :id => privacy_policy.id}, :confirm => "Are you sure you want to delete this item?" %>
+
+</span><br/>
+			<%end%>
+			

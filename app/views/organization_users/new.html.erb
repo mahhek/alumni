@@ -1,0 +1,34 @@
+<h1>Add a new organization admin</h1>
+
+<style>
+#search_results span{
+	color:#000;
+}
+</style>
+
+<% form_for(@organization_user) do |f| %>
+	<%= f.error_messages %>
+	
+	<table class="generic_form">
+		<tr>
+			<th style="width:200px">Organization Name</th>
+			<td><%= select(:organization_user, :organization_id, @organizations.collect{|org| [org.name.empty? ? org.school.name : org.name, org.id]}) %></td>
+		</tr>
+		<tr>
+			<th>Email, First Name, or <br> Last Name:</th>
+			<td><input type="text" id="name_search_field" onkeyup="<%=remote_function(:update => "search_results",
+			:url => { :action => :search_users ,:controller=>:users }, :with=>"'search_text=' + this.value" )%>" /></td>
+		</tr>
+		<tr>
+			<th></th>
+			<td>
+				<div  id="search_results">
+				</div>
+			</td>
+		</tr>
+	</table>
+	
+	<br><br>
+	<%= f.submit "Add" %> or <%= link_to 'cancel', organization_users_path %>
+
+<% end %>

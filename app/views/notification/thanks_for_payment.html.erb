@@ -1,0 +1,15 @@
+<%= "#{@payment.first_name} #{@payment.last_name}" %><br>
+<br>
+<%= @payment.address1 %><br>
+<% if !@payment.address2.to_s.empty? %> <%= @payment.address2 %><br> <% end %>
+<%= @payment.city %>, <%= @payment.state %> <%= @payment.zip %><br>
+<br>
+_______________________________________________________________________<br>
+<br>
+Amount Received: <%= number_to_currency @payment.amount %><br>
+<br>
+In Support of: <%= @campaign.organization.name %>, Designated for <%= @campaign.fund_raiser.name.strip %><br>
+_______________________________________________________________________<br>
+<%= @organization.thank_you_email %>
+_________<br>
+<a href="<%= @link %>"><%= @link %></a>

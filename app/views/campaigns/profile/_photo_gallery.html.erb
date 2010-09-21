@@ -1,0 +1,66 @@
+<div id="gallery_images">
+	<div id="image_nav">
+		<a href="#" onclick="prev_image(); return false;" id="image_nav_previous"></a>
+		<a href="#" onclick="next_image(); return false;" id="image_nav_next"><%= (@photos.size <= 1) ? "" : "Next"  %></a>
+	</div>
+	<div style="clear:both"></div>
+	
+	<% @photos.each_with_index do |image,i| %>
+		<% if image.public_filename('gallery') != "" %>
+			<div id="gallery_image_<%= i + 1 %>" style="<%= (i > 0) ? "display:none;" : ""  %>" class="gallery_image">
+				<img src="<%=image.public_filename('gallery')%>"/>
+				<p><%= image.caption %></p>
+			</div>
+		<% end %>
+	<% end %>
+	
+	<% if @photos.empty? %>
+		No photos have been uploaded yet.
+	<% end %>
+	<div style="clear:both"></div>
+	
+</div>
+
+<script>
+	var current_image = 1;
+	var total_images = <%= @photos.size %>;
+	var image_id = "gallery_image_";
+	
+	var prev_image = function() {
+		var index = current_image - 1;
+		if (index < 1) { index = 1; }
+		switch_image_to(index);
+		redraw_nav();
+	};
+	
+	var next_image = function() {
+		var index = current_image + 1;
+		if (index > total_images) { index = total_images; }
+		switch_image_to(index);
+		redraw_nav();
+	};
+	
+	var switch_image_to = function(new_image) {
+		$(image_id + current_image).style.display = "none";
+		$(image_id + new_image).style.display = "block";
+		current_image = new_image;
+	};
+	
+	// I know this is a stupid way of switching the nav links,
+	//   but it avoids an IE6 display issue
+	var redraw_nav = function() {
+		if (current_image == 1) {
+			if (total_images > 1)
+				$('image_nav_next').innerHTML = "Next";
+			$('image_nav_previous').innerHTML = "";
+		} else if (current_image == total_images) {
+			if (total_images > 1)
+				$('image_nav_previous').innerHTML = "Previous";
+			$('image_nav_next').innerHTML = "";
+		} else {
+			$('image_nav_previous').innerHTML = "Previous";
+			$('image_nav_next').innerHTML = "Next";
+		}
+	};
+	
+</script>

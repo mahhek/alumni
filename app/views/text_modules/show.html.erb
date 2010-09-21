@@ -1,0 +1,23 @@
+<p>
+  <b>Text content:</b>
+  <%=h @text_module.text_content %>
+</p>
+
+<p>
+  <b>Controller:</b>
+  <%=h @text_module.controller %>
+</p>
+
+<p>
+  <b>Action:</b>
+  <%=h @text_module.action %>
+</p>
+
+<p>
+  <b>Key:</b>
+  <%=h @text_module.key %>
+</p>
+
+
+<%= link_to 'Edit', edit_text_module_path(@text_module) %> |
+<%= link_to 'Back', text_modules_path %>

@@ -1,0 +1,29 @@
+<div id="<%= type %>_step_2" style="display:none;">
+	<table class="generic_form">
+		<tr>
+			<th>To:</th>
+			<td id="<%= type %>_step_recipients"></td>
+		</tr>
+		
+		<tr>
+			<th>Subject:</th>
+			<td><input type="text" name="promotion[subject]" value="<%= subject %>" size="45" /></td>
+		</tr>
+
+		<tr>
+			<th class="tall_label">Message:</th>
+			<td class="email_body">
+				<textarea name="promotion[body]" rows="15" cols="30" id="promotion_body" class="promotion_body"><%= body %></textarea>
+				<%= render :partial => "notification/campaign_email_footer", :locals => { :campaign => @campaign } %>
+			</td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td>
+				<input type="submit" value="Send" /> or 
+				<a href="#" onclick="manage_appeals_toggle('<%= type %>_step'); return false">cancel</a>
+			</td>
+		</tr>
+	</table>
+</div>

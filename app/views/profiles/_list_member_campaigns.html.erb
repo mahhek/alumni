@@ -1,0 +1,9 @@
+<% campaigns.each do |campaign_user| %>
+<div class="profile-campaign-item">
+	<div class="profile-campaign-item-name"><%= campaign_user.campaign.name[0..32] %></div>
+	<div class="profile-campaign-item-actions">
+		<a href="/<%=campaign_user.campaign.url%>.html">visit</a> |
+		<%=link_to "leave", :action =>"delete_campaign_user",:id=>campaign_user.id %>
+	</div>
+</div>
+<% end %>

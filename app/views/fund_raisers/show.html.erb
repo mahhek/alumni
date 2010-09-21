@@ -1,0 +1,13 @@
+<p>
+  <b>Name:</b>
+  <%=h @fund_raiser.name %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%=h @fund_raiser.description %>
+</p>
+
+
+<%= link_to 'Edit', edit_fund_raiser_path(@fund_raiser) %> |
+<%= link_to 'Back', fund_raisers_path %>
